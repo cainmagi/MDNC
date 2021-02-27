@@ -55,7 +55,6 @@ Now we have such progress on the semi-product:
   * [ ] `draw`: Wrapped `matplotlib` drawing tools. Most of the utilities are designed as call-back based functions. ![80%](https://progress-bar.dev/80)
 * [ ] `contribs`
   * [x] `torchsummary` [:link:](https://github.com/sksq96/pyTorch-summary): Keras style model.summary() in pyTorch, with some bugs gotten fixed (modified) (MIT licensed). ![100%](https://progress-bar.dev/100)
-  * [ ] `tqdm` [:link:](https://github.com/tqdm/tqdm): A revised tqdm package designed for logging the training/testing progress. To avoid incorporating new licenses, would imported as a dependency (not modified) (MPLv2.0, MIT licensed). ![0%](https://progress-bar.dev/0)
   * [ ] `tensorboard` [:link:](https://pyTorch.org/docs/stable/tensorboard.html): Wrapped `torch.utils.tensorboard`, supporting context-style writer and tensorboard.log converted to `h5py` format (not modified). ![0%](https://progress-bar.dev/0)
 
 ## Documentation
@@ -78,14 +77,14 @@ python -m mdnc
 
 The compatibility test is shown as below. The checked item means this package performs well in the specific enviroment.
 
-| Enviroment | Status |
-| :---- | :----: |
-| pyTorch 1.7.0, Python 3.8 | :white_check_mark: |
-| pyTorch 1.8.0, Python 3.8 | |
-| pyTorch 1.6.0, Python 3.7 | |
-| pyTorch 1.4.0, Python 3.7 | |
-| pyTorch 1.2.0, Python 3.6 | |
-| pyTorch 1.0.0, Python 3.5 | |
+| Enviroment | Win | Linux |
+| :---- | :----: | :----: |
+| pyTorch 1.7.0, Python 3.8 | :white_check_mark: | |
+| pyTorch 1.8.0, Python 3.8 | | |
+| pyTorch 1.6.0, Python 3.7 | | |
+| pyTorch 1.4.0, Python 3.7 | | |
+| pyTorch 1.2.0, Python 3.6 | | |
+| pyTorch 1.0.0, Python 3.5 | | |
 
 ## Update reports
 
@@ -96,3 +95,5 @@ The compatibility test is shown as below. The checked item means this package pe
 3. Finish `modules.conv`, `modules.resnet`.
 4. Finish `data.h5py`, `data.webtools`.
 5. Finish `contribs.torchsummary`.
+6. Drop the plan for support `contribs.tqdm`, add `utils.ContexWrapper` as for instead.
+7. Add testing function for `data.webtools.DataChecker`.

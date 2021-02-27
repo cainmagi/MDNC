@@ -64,3 +64,38 @@ class EpochMetrics(dict):
     def items(self):
         for k, log_list in super().items():
             yield k, self.reducer(log_list)
+
+
+class ContexWrapper:
+    '''A simple wrapper for adding contex support to some special classes.
+    For example, there is an instance f, it defines f.close(), but does
+    not support the contex. In this case, we could use this wrapper to
+    add contex support:
+    ```python
+    f = create_f(...)
+    with mdnc.utils.tools.ContexWrapper(f) as fc:
+        do some thing ...
+    # When leaving the contex, the f.close() method would be called
+    # automatically.
+    ```
+    '''
+    def __init__(self, instance, exit_method=None):
+        '''Initialization
+        Arguments:
+            instance: an instance requring the contex support.
+            exit_method: a function, if not provided, would call the
+                         instance.close() method during the exiting
+                         stage. If provided, would call
+                            exit_method(instance) instead.
+        '''
+        self.instance = instance
+        self.exit_method = exit_method
+
+    def __enter__(self):
+        return self.instance
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        if self.exit_method is None:
+            self.instance.close()
+        else:
+            self.exit_method(self.instance)

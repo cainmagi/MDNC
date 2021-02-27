@@ -16,9 +16,11 @@
 ################################################################
 '''
 
+import time
 import argparse
 
 import numpy as np
+import tqdm
 
 from mdnc import __version__
 import mdnc.utils as engine
@@ -157,6 +159,13 @@ class TestTools:
         print('utils.tools: EpochMetrics["val1"]={0}, np.mean(records)={1}.'.format(recorder['val1'], np.mean(records)))
         print('utils.tools: EpochMetrics["val2"]={0}, np.max(records)={1}.'.format(recorder['val2'], val2))
 
+    def test_ctxwrapper(self):
+        num_iters = 100
+        with engine.tools.ContexWrapper(tqdm.tqdm(total=num_iters)) as tq:
+            for i in range(num_iters):
+                tq.update(1)
+                time.sleep(0.001)
+
 
 # Argparser
 def str2bool(v):
@@ -194,6 +203,7 @@ def test_utl_tools():
     print('Compatibility test: mdnc.utils.tools.')
     tester = TestTools()
     tester.test_recorder()
+    tester.test_ctxwrapper()
 
 
 registered_tests = {

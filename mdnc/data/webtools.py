@@ -188,11 +188,11 @@ class DataChecker:
             json.dump(fp=f, obj={
                 'set_list': [
                     {
-                        'tag': 'v0',
-                        'asset': 'datasets.tar.xz',
+                        'tag': 'test',
+                        'asset': 'test-datasets-1.tar.xz',
                         'items': [
-                            'dataset_file_name_01',
-                            'dataset_file_name_02'
+                            'dataset_file_name_01.txt',
+                            'dataset_file_name_02.txt'
                         ]
                     }
                 ],
@@ -222,23 +222,27 @@ class DataChecker:
 
     def query(self):
         '''Search the files in the query list, and download the datasets.'''
-        query_list = set(map(lambda x:os.path.splitext(x)[0], self.query_list))
+        query_list = set(self.query_list)
         set_folder = os.path.join(self.root)
         required_sets = list()
         for dinfo in self.set_list['set_list']:
             for set_name in dinfo['items']:
-                if set_name in query_list and (not os.path.isfile(os.path.join(set_folder, set_name+'.h5'))):
+                set_name, set_ext = os.path.splitext(set_name)
+                if set_ext == '':
+                    set_ext = '.h5'
+                set_name = set_name + set_ext
+                if set_name in query_list and (not os.path.isfile(os.path.join(set_folder, set_name))):
                     required_sets.append(dinfo)
                     break
         if required_sets:
             print('data.webtools: There are required dataset missing. Start downloading from the online repository...')
-            token = engine.webtools.get_token(self.token)
+            token = get_token(self.token)
             user = self.set_list.get('user', 'cainmagi')
             repo = self.set_list.get('repo', 'Dockerfiles')
             for reqset in required_sets:
-                engine.webtools.download_tarball_private(user=user, repo=repo,
-                                                         tag=reqset['tag'], asset=reqset['asset'], path=set_folder,
-                                                         token=token)
+                download_tarball_private(user=user, repo=repo,
+                                         tag=reqset['tag'], asset=reqset['asset'], path=set_folder,
+                                         token=token)
             print('data.webtools: Successfully download all required datasets.')
         else:
             print('data.webtools: All required datasets are available.')

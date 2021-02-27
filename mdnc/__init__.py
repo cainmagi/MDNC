@@ -22,6 +22,9 @@
 #   3. Finish `modules.conv`, `modules.resnet`.
 #   4. Finish `data.h5py`, `data.webtools`.
 #   5. Finish `contribs.torchsummary`.
+#   6. Drop the plan for support `contribs.tqdm`, add
+#      `utils.ContexWrapper` as for instead.
+#   7. Add testing function for `data.webtools.DataChecker`.
 ################################################################
 '''
 

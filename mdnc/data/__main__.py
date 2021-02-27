@@ -202,6 +202,13 @@ class TestWebTools:
         self.token = engine.webtools.get_token(token='')
         os.makedirs(self.root, exist_ok=True)
 
+    def test_data_checker(self):
+        set_list_file = os.path.join(self.root, 'web-data')
+        engine.webtools.DataChecker.init_set_list(set_list_file)
+        dc = engine.webtools.DataChecker(root=self.root, set_list_file=set_list_file, token='')
+        dc.add_query_file('dataset_file_name_01.txt')
+        dc.query()
+
     def test_download_public(self):
         engine.webtools.download_tarball('https://github.com/cainmagi/Dockerfiles/releases/download/xubuntu-v1.5-u20.04/share-pixmaps.tar.xz', path=self.root)
 
@@ -348,6 +355,7 @@ def test_dat_webtools():
     tester = TestWebTools()
     tester.test_download_public()
     tester.test_download_private()
+    tester.test_data_checker()
 
 
 def test_dat_preprocs():
