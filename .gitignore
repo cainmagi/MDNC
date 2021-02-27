@@ -1,6 +1,7 @@
 # Ignore temp files.
 /alpha*
 /legacy*
+/.vscode/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
