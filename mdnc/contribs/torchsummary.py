@@ -30,7 +30,9 @@
 #       "bias".
 #    9. Drop the np.sum/prod to fix the overflow problem during
 #       calculating the total size.
-#   10. Add docstring.
+#   10. Drop the features for gathering the input_shape. This
+#       feature is not used during generating the report.
+#   11. Add docstring.
 ################################################################
 '''
 
@@ -109,8 +111,12 @@ def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=Non
             m_key = '{name:s}-{idx:d}'.format(name=class_name, idx=module_idx + 1)
             sum_layer = collections.OrderedDict()
             summary[m_key] = sum_layer
-            sum_layer["input_shape"] = list(input[0].size())
-            sum_layer["input_shape"][0] = batch_size
+            # The following codes are not actually used, skipped.
+            # if isinstance(input[0], dict):
+            #     sum_layer["input_shape"] = list(next(iter(input[0].values())).size())
+            # else:
+            #     sum_layer["input_shape"] = list(input[0].size())
+            # sum_layer["input_shape"][0] = batch_size
             if isinstance(output, dict):
                 sum_layer["output_shape"] = [
                     [-1] + list(o.size())[1:] for o in output.values()
@@ -126,7 +132,7 @@ def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=Non
             params = 0
             params_trainable = 0
             for param in module.parameters(recurse=False):
-                nb_param = torch.prod(torch.LongTensor(list(param.size())))
+                nb_param = torch.prod(torch.LongTensor(list(param.size()))).item()
                 params += nb_param
                 params_trainable += nb_param if param.requires_grad else 0
             sum_layer["nb_params"] = params
@@ -179,7 +185,7 @@ def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=Non
     total_output = 0
     trainable_params = 0
     for layer in summary:
-        # input_shape, output_shape, trainable, nb_params
+        # output_shape, trainable, nb_params
         sum_layer = summary[layer]
         if len(layer) > 20:
             layer_disp = '{lhead}...{ltail}'.format(lhead=layer[:8], ltail=layer[-9:])  # 20 = 9 + 8 + 3
