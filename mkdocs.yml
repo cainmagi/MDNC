@@ -36,7 +36,7 @@ theme:
   palette:
     scheme: default
     primary: red
-    accent: amber
+    accent: deep orange
   font:
     text: Noto Sans
     code: Roboto Mono
@@ -44,7 +44,7 @@ theme:
   logo: assets/icons/logo.svg
 
 plugins:
-# #  - git-revision-date-localized
+  - git-revision-date-localized
   - macros
   - search
 
@@ -59,7 +59,7 @@ extra:
     - icon: fontawesome/brands/github-alt
       link: https://github.com/cainmagi
     - icon: fontawesome/brands/steam
-      link: https://twitter.com/squidfunk
+      link: https://steamcommunity.com/id/cainmagi
     - icon: fontawesome/brands/weibo
       link: https://weibo.com/u/5885093621
     - icon: fontawesome/brands/youtube

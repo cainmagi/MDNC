@@ -53,7 +53,7 @@ Now we have such progress on the semi-product:
     * [x] `webtools`: Web tools for downloading tarball-packed datasets from Github. [=100% "100%"]
 * [ ] `funcs`
 * [ ] `utils`
-    * [ ] `tools`: Light-weighted recording parsing tools used during training or testing. [=10% "10%"]
+    * [ ] `tools`: Light-weighted record parsing tools used during training or testing. [=10% "10%"]
     * [ ] `draw`: Wrapped `matplotlib` drawing tools. Most of the utilities are designed as call-back based functions. [=80% "80%"]
 * [ ] `contribs`
     * [x] `torchsummary` [:fontawesome-solid-external-link-alt:](https://github.com/sksq96/pyTorch-summary): Keras style model.summary() in pyTorch, with some bugs gotten fixed (modified) (MIT licensed). [=100% "100%"]
@@ -67,6 +67,7 @@ Now we have such progress on the semi-product:
 To perform the compatibility test, just run
 
 ```bash
+cd <root-of-this-repo>
 python -m mdnc
 ```
 

@@ -40,3 +40,9 @@ This package could be also installed by the following command:
     ```
 
 Install the package by this way would make the package available globally. Make sure that the version is exactly what you want.
+
+After the installation, the module could be imported by
+
+```python
+import mdnc
+```
