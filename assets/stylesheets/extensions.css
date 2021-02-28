@@ -1,0 +1,217 @@
+/* float right */
+div .fl-right{
+  clear: right;
+  text-align: left;
+  float: right;
+}
+
+@media screen and (max-width: 600px) {
+  div .fl-right{
+      float: none;
+      margin-right: auto;
+      margin-left:auto;
+  }
+}
+
+/* Image box with shadow */
+a.boxedThumb {
+    display:block;
+    padding:4px;
+    line-height:20px;
+    margin: 0 auto;
+    width: fit-content; 
+    height: fit-content;
+    border:1px solid #ddd;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    -webkit-box-shadow:0 1px 3px rgba(0,0,0,0.055);
+    -moz-box-shadow:0 1px 3px rgba(0,0,0,0.055);
+    box-shadow:0 1px 3px rgba(0,0,0,0.055);
+    -webkit-transition: -webkit-transform .15s ease;
+    -moz-transition: -moz-transform .15s ease;
+    -o-transition: -o-transform .15s ease;
+    -ms-transition: -ms-transform .15s ease;
+    transition: transform .15s ease;
+}
+
+a.boxedThumb:hover {
+  -webkit-transform: scale(1.05);
+  -moz-transform: scale(1.05);
+  -o-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  transform: scale(1.05);
+  z-index: 5;
+}
+
+.superfences-content a.boxedThumb {
+  width: fit-content;
+  max-height: 350px;
+  min-width: 320px;
+  max-width: 80%;
+  text-align: center;
+}
+
+.superfences-content a.boxedThumb img {
+  max-height: 340px;
+}
+
+.superfences-content table a.boxedThumb {
+  max-width: auto;
+  min-width: 0;
+  max-height: auto;
+}
+.superfences-content table a.boxedThumb img {
+  max-height: auto;
+}
+
+/* Change code tab color */
+html .md-typeset .superfences-tabs>label:hover{
+  color: #ff9100;
+}
+
+/* Progress bar */
+.progress-label {
+  position: absolute;
+  text-align: center;
+  font-weight: 700;
+  width: 100%;
+  margin: -1.4rem;
+  line-height: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.md-typeset .progress-label {
+    margin-top: 0rem;
+}
+
+.progress-bar {
+  height: 1.2rem;
+  float: left;
+  background-color: #2979ff;
+}
+
+.progress {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  height: 1.2rem;
+  background-color: #eeeeee;
+  position: relative;
+}
+
+.progress.thin {
+  margin-top: 0.9rem;
+  height: 0.4rem;
+}
+
+.progress.thin .progress-label {
+  margin-top: -.4rem;
+}
+
+.progress.thin .progress-bar {
+  height: 0.4rem;
+}
+
+.progress-100plus .progress-bar {
+  background-color: #00e676;
+}
+
+.progress-80plus .progress-bar {
+  background-color: #fbc02d;
+}
+
+.progress-60plus .progress-bar {
+  background-color: #ff9100;
+}
+
+.progress-40plus .progress-bar {
+  background-color: #ff5252;
+}
+
+.progress-20plus .progress-bar {
+  background-color: #ff1744;
+}
+
+.progress-0plus .progress-bar {
+  background-color: #f50057;
+}
+
+/* extensions */
+.md-typeset .admonition, .md-typeset details {
+    font-size: .75rem
+}
+
+.mermaid {
+  text-align: center;
+}
+
+/* with scroll bar */
+div .overflow {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+div .overflow .check{
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  overflow: -moz-scrollbars-vertical;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* magic link */
+.md-typeset .magiclink-repository.magiclink-github:before {
+  content: ""
+}
+.md-typeset .magiclink-repository.magiclink-gitlab:before {
+  content: ""
+}
+.md-typeset .magiclink-repository.magiclink-bitbucket:before{
+  content:""
+}
+.md-typeset .keys .key-backspace:before{
+  padding-left:.2rem;
+  content:"←"
+}
+.md-typeset .keys .key-command:before{
+  padding-left:.2rem;content:"⌘"
+}
+.md-typeset .keys .key-windows:before{
+  padding-left:.2rem;content:"⊞"
+}
+.md-typeset .keys .key-caps-lock:before{
+  padding-left:.2rem;content:"⇪"
+}
+.md-typeset .keys .key-control:before{
+  padding-left:.2rem;content:"⌃"
+}
+.md-typeset .keys .key-meta:before{
+  padding-left:.2rem;content:"◆"
+}
+.md-typeset .keys .key-shift:before{
+  padding-left:.2rem;content:"⇧"
+}
+.md-typeset .keys .key-option:before{
+  padding-left:.2rem;content:"⌥"
+}
+.md-typeset .keys .key-tab:after{
+  padding-left:.2rem;content:"↹"
+}
+.md-typeset .keys .key-num-enter:after{
+  padding-left:.2rem;content:"↵"
+}
+.md-typeset .keys .key-enter:after{
+  padding-left:.2rem;content:"↩"
+}
+.md-typeset .magiclink:before {
+  position: relative;
+  padding-right: .25rem;
+  font-family: FontAwesome;
+  -webkit-font-smoothing: initial
+}
