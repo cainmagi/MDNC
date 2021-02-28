@@ -13,30 +13,44 @@
 # here:
 #   https://github.com/sksq96/pytorch-summary
 # The revision includes:
-#   1. Fix the bug of parameter number calculation when there
-#      is more than one output variables, including both
-#      sequence case and dict case.
-#   2. Make multiple output variables split into multiple
-#      lines.
-#   3. Remove the last line break of summary_string()
-#   4. Enable argument "device" to accept both str and
-#      torch.device.
-#   5. Fix a bug when the model requires "batch_size" to be a
-#      specific number.
-#   6. Fix a bug caused by multiple input cases when
-#      "dtypes=None".
-#   7. Add text auto wrap when the layer name is too long.
-#   8. Support counting all parameters instead of "weight" and
-#      "bias".
-#   9. Add docstring.
+#    1. Fix the bug of parameter number calculation when there
+#       is more than one output variables, including both
+#       sequence case and dict case.
+#    2. Make multiple output variables split into multiple
+#       lines.
+#    3. Remove the last line break of summary_string()
+#    4. Enable argument "device" to accept both str and
+#       torch.device.
+#    5. Fix a bug when the model requires "batch_size" to be a
+#       specific number.
+#    6. Fix a bug caused by multiple input cases when
+#       "dtypes=None".
+#    7. Add text auto wrap when the layer name is too long.
+#    8. Support counting all parameters instead of "weight" and
+#       "bias".
+#    9. Drop the np.sum/prod to fix the overflow problem during
+#       calculating the total size.
+#   10. Add docstring.
 ################################################################
 '''
 
+import functools
 import collections
-import numpy as np
 
 import torch
 import torch.nn as nn
+
+
+def long_sum(v):
+    if not all(map(lambda x: isinstance(x, int), v)):
+        raise ValueError('contribs.torchsummary: The long_sum only supports the sequence with all int elements.')
+    return functools.reduce(lambda x, y: x + y, v)
+
+
+def long_prod(v):
+    if not all(map(lambda x: isinstance(x, int), v)):
+        raise ValueError('contribs.torchsummary: The long_sum only supports the sequence with all int elements.')
+    return functools.reduce(lambda x, y: x * y, v)
 
 
 def summary(model, input_size, batch_size=-1, device='cuda:0', dtypes=None):
@@ -192,14 +206,14 @@ def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=Non
 
         output_shape = sum_layer["output_shape"]
         if isinstance(output_shape[0], (list, tuple)):
-            total_output += np.sum(list(map(np.prod, output_shape)), dtype=np.int)
+            total_output += long_sum(list(map(long_prod, output_shape)))
         else:
-            total_output += np.prod(output_shape, dtype=np.int)
+            total_output += long_prod(output_shape)
         trainable_params += sum_layer["nb_params_trainable"]
         summary_str += line_new + "\n"
 
     # assume 4 bytes/number (float on cuda).
-    total_input_size = abs(np.sum(list(map(np.prod, input_size))) * batch_size * 4. / (1024 ** 2.))
+    total_input_size = abs(long_sum(list(map(long_prod, input_size))) * batch_size * 4. / (1024 ** 2.))
     total_output_size = abs(2. * total_output * 4. / (1024 ** 2.))  # x2 for gradients
     total_params_size = abs(total_params * 4. / (1024 ** 2.))
     total_size = total_params_size + total_output_size + total_input_size

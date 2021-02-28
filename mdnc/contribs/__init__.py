@@ -18,6 +18,7 @@
 #      - Fix bugs caused by "batch_size" and "dtypes".
 #      - Add text auto wrap.
 #      - Fix the parameter counting in general cases.
+#      - Fix the size overflow problem.
 #      - Add docstring.
 # 0.1.0 @ 2/25/2021
 #   1. Create sub-packages: torchsummary.
