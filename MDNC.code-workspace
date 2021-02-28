@@ -9,5 +9,21 @@
 			"--ignore", "E501"
 		],
 		"cSpell.enabled": false
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "MDNC: all",
+				"type": "python",
+				"request": "launch",
+				"module": "mdnc",
+				"console": "integratedTerminal",
+				"cwd": "${workspaceFolder}",
+				"args": [
+					"-all"
+				]
+			},
+		]
 	}
 }

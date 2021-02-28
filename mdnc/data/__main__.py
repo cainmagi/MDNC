@@ -9,6 +9,7 @@
 #   python 3.5+
 #   urllib3 1.26.2+
 #   numpy 1.13+
+#   scipy 1.0.0+
 #   h5py 3.1.0+
 #   tqdm 4.50.2+
 #   matplotlib 3.1.1+
@@ -209,12 +210,12 @@ class TestWebTools:
         dc.add_query_file('dataset_file_name_01.txt')
         dc.query()
 
-    def test_download_public(self):
-        engine.webtools.download_tarball('https://github.com/cainmagi/Dockerfiles/releases/download/xubuntu-v1.5-u20.04/share-pixmaps.tar.xz', path=self.root)
+    def test_download_by_address(self):
+        engine.webtools.download_tarball_link('https://github.com/cainmagi/Dockerfiles/releases/download/xubuntu-v1.5-u20.04/share-pixmaps.tar.xz', path=self.root, verbose=True)
 
-    def test_download_private(self):
-        engine.webtools.download_tarball_private(user='cainmagi', repo='AGT-FWI-2020', tag='v1-v2-0.4', asset='true.tar.xz', path=self.root, token=self.token)
-        engine.webtools.download_tarball_private(user='cainmagi', repo='Dockerfiles', tag='xubuntu-v1.5-u20.04', asset='xconfigs-u20-04.tar.xz', path=self.root, token=self.token)
+    def test_download_by_info(self):
+        engine.webtools.download_tarball(user='cainmagi', repo='AGT-FWI-2020', tag='v1-v2-0.4', asset='true.tar.xz', path=self.root, token=self.token, verbose=True)
+        engine.webtools.download_tarball(user='cainmagi', repo='Dockerfiles', tag='xubuntu-v1.5-u20.04', asset='xconfigs-u20-04.tar.xz', path=self.root, token=self.token, verbose=True)
 
 
 class _ProcTest(engine.preprocs.ProcAbstract):
@@ -235,6 +236,10 @@ class _ProcTest(engine.preprocs.ProcAbstract):
 
 
 class _ProcTest2(_ProcTest):
+    def postprocess(self, x):
+        print('data.preprocs: Post,', self.__p())
+        return x
+
     def __p(self):
         return self.number * 100
 
@@ -248,7 +253,7 @@ class TestPreProcs:
         self.file_name = os.path.join(self.root, 'test.pkl')
 
     def test_simple(self):
-        x = _ProcTest2(number=3, parent=_ProcTest2(number=2, parent=_ProcTest2(number=1)))
+        x = _ProcTest2(number=3, parent=_ProcTest(number=2, parent=_ProcTest(number=1)))
         with open(self.file_name, 'wb') as f:
             pickle.dump(x, f)
         with open(self.file_name, 'rb') as f:
@@ -263,25 +268,40 @@ class TestPreProcs:
             y = pickle.load(f)
         t = y.preprocess(np.arange(10), np.arange(10))
         t_b = y.postprocess(*t)
-        print('data.preprocs:', t, t_b)
+        print('data.preprocs: Stack manner,', t, t_b)
 
-    def test_1d(self):
-        x = engine.preprocs.ProcNSTScaler(dim=1, kernel_length=257)
+        x = engine.preprocs.ProcMerge(num_procs=2)
+        x[:] = engine.preprocs.ProcScaler()
+        x[1] = engine.preprocs.ProcScaler(shift=0)
         with open(self.file_name, 'wb') as f:
             pickle.dump(x, f)
         with open(self.file_name, 'rb') as f:
             y = pickle.load(f)
-        data = 1 + 0.01 * np.random.rand(1, 12000)
+        t = y.preprocess(np.arange(10), np.arange(10))
+        t_b = y.postprocess(*t)
+        print('data.preprocs: Merge manner,', t, t_b)
+
+    def test_1d(self):
+        x = engine.preprocs.ProcPad(pad_width=((0, 0), (200, -200)), mode='reflect', parent=engine.preprocs.ProcNSTScaler(dim=1, kernel_length=257, parent=engine.preprocs.ProcNSTFilter1d(length=1024, filter_type='fft', band_low=3.0, band_high=15.0, nyquist=100)))
+        with open(self.file_name, 'wb') as f:
+            pickle.dump(x, f)
+        with open(self.file_name, 'rb') as f:
+            y = pickle.load(f)
+        data = 1 + 0.01 * np.random.rand(1, 1024)
         t = y.preprocess(data)
-        t_b = y.postprocess(t)
-        fig, axs = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(12, 4))
+        tb = y.postprocess(t)
+        fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
         axs[0].plot(t[0])
-        axs[1].plot(t_b[0])
-        axs[1].plot(data[0])
+        axs[1].plot(tb[0])
+        axs[2].plot(data[0])
+        axs[0].set_ylabel('Preprocessing')
+        axs[1].set_ylabel('Inversed preprocessing')
+        axs[2].set_ylabel('Raw data')
+        plt.tight_layout()
         plt.show()
 
     def test_2d(self):
-        x = engine.preprocs.ProcNSTScaler()
+        x = engine.preprocs.ProcNSTScaler(parent=engine.preprocs.ProcLifter(a=1.0, parent=engine.preprocs.ProcPad(pad_width=((0, 0), (10, -10), (-10, 10)), mode='constant', constant_values=0.0)))
         with open(self.file_name, 'wb') as f:
             pickle.dump(x, f)
         with open(self.file_name, 'rb') as f:
@@ -289,11 +309,17 @@ class TestPreProcs:
         data = np.random.rand(10, 30, 30)
         t = y.preprocess(data)
         t_b = y.postprocess(t)
-        fig, axs = plt.subplots(nrows=1, ncols=2, sharex=True, sharey=True, figsize=(9, 4))
+        fig, axs = plt.subplots(nrows=1, ncols=3, sharex=True, sharey=True, figsize=(12, 4))
         im1 = axs[0].imshow(t[2])
-        im2 = axs[1].imshow(t_b[0] - data[0])
-        fig.colorbar(im1, ax=axs[0])
-        fig.colorbar(im2, ax=axs[1])
+        im2 = axs[1].imshow(t_b[0])
+        im3 = axs[2].imshow(data[0])
+        fig.colorbar(im1, ax=axs[0], pad=0.1, orientation='horizontal')
+        fig.colorbar(im2, ax=axs[1], pad=0.1, orientation='horizontal')
+        fig.colorbar(im3, ax=axs[2], pad=0.1, orientation='horizontal')
+        axs[0].set_ylabel('Preprocessing')
+        axs[1].set_ylabel('Inversed preprocessing')
+        axs[2].set_ylabel('Raw data')
+        plt.tight_layout()
         plt.show()
 
 
@@ -353,8 +379,8 @@ def test_dat_h5py():
 
 def test_dat_webtools():
     tester = TestWebTools()
-    tester.test_download_public()
-    tester.test_download_private()
+    tester.test_download_by_address()
+    tester.test_download_by_info()
     tester.test_data_checker()
 
 

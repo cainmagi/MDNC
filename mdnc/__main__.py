@@ -35,6 +35,17 @@ def str2bool(v):
         raise argparse.ArgumentTypeError('Unsupported value encountered.')
 
 
+def parse_args(parser, return_args=True):
+    parser.add_argument(
+        '-all', '--test_all', type=str2bool, nargs='?', const=True, default=False, metavar='bool',
+        help='''Test all sub-modules.'''
+    )
+    if return_args:
+        return parser.parse_args()
+    else:
+        return
+
+
 if __name__ == '__main__':
     __spec__ = None  # Handle the error caused by pdb module.
 
@@ -49,14 +60,13 @@ if __name__ == '__main__':
     test_data.parse_args(aparser, return_args=False)
     test_modules.parse_args(aparser, return_args=False)
     test_utils.parse_args(aparser, return_args=False)
+    args = vars(parse_args(aparser))
 
     registered_tests = collections.OrderedDict()
     registered_tests.update(test_contribs.registered_tests)
     registered_tests.update(test_data.registered_tests)
     registered_tests.update(test_modules.registered_tests)
     registered_tests.update(test_utils.registered_tests)
-
-    args = vars(aparser.parse_args())
 
     if not any(args.values()):
         aparser.print_help()
@@ -65,6 +75,9 @@ if __name__ == '__main__':
         if is_all:
             for tfunc in registered_tests.values():
                 tfunc()
+    elif args['test_all']:
+        for tfunc in registered_tests.values():
+            tfunc()
     else:
         for k, req_run in args.items():
             if req_run:

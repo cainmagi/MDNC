@@ -13,6 +13,12 @@
 ################################################################
 # Update reports:
 # ---------------
+# 0.1.2 @ 2/27/2021
+#   1. Enhance the torchsummary module by:
+#      - Fix bugs caused by "batch_size" and "dtypes".
+#      - Add text auto wrap.
+#      - Fix the parameter counting in general cases.
+#      - Add docstring.
 # 0.1.0 @ 2/25/2021
 #   1. Create sub-packages: torchsummary.
 ################################################################

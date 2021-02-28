@@ -19,15 +19,16 @@ with open('README.md', 'r') as fh:
 
 INSTALL_REQUIRES = [
     'numpy>=1.13.0',
+    'scipy>=1.0.0',
     'h5py>=3.1.0',
     'matplotlib>=3.1.1',
     'urllib3>=1.26.2',
-    'tqdm>=4.50.2+'
+    'tqdm>=4.50.2'
 ]
 
 setuptools.setup(
     name='MDNC',
-    version='0.1.0',
+    version='0.1.2',
     author='Yuchen Jin',
     author_email='cainmagi@gmail.com',
     description='Modern Deep Network Toolkits for PyTorch. This is a extension for PyTorch 1.x.',

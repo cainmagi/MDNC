@@ -20,6 +20,19 @@ import json
 import tarfile
 import urllib3
 
+import tqdm
+
+
+class _SafePoolManager(urllib3.PoolManager):
+    '''A wrapped urllib3.PoolManager with contex supported.
+    This is a private class. Should not be used by users.
+    '''
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.clear()
+
 
 def get_token(token=''):
     '''Automatically get the token, if the token is missing.'''
@@ -27,7 +40,7 @@ def get_token(token=''):
         token = os.environ.get('GITTOKEN', None)
         if token is None:
             token = os.environ.get('GITHUB_API_TOKEN', None)
-        if token is not None:
+        if isinstance(token, str) and token != '':
             token = token.split(':')[-1]
         else:
             print('data.webtools: A Github OAuth token is required for downloading the data in private repository. Please provide your OAuth token:')
@@ -58,8 +71,10 @@ def get_tarball_mode(name, mode='auto'):
     return mode
 
 
-def download_tarball(link, path='.', mode='auto'):
+def download_tarball_link(link, path='.', mode='auto', verbose=False):
     '''Download an online tarball and extract it automatically.
+    The tarball is directed by the link. This tool would not work on
+    private github repository.
     The tarball would be sent to pipeline and not get stored.
     Now supports gz or xz format.
     Arguments:
@@ -67,29 +82,98 @@ def download_tarball(link, path='.', mode='auto'):
         path: the extracted data root path. Should be a folder path.
         mode: the mode of extraction. Could be 'gz', 'bz2', 'xz' or
               'auto'.
+        verbose: a flag, whether to show the downloaded size during
+                 the web request.
     '''
     mode = get_tarball_mode(name=link, mode=mode)
     os.makedirs(path, exist_ok=True)
     # Initialize urllib3
-    http = urllib3.PoolManager(
-        retries=urllib3.util.Retry(connect=5, read=2, redirect=5),
-        timeout=urllib3.util.Timeout(connect=5.0)
-    )
-    # Get the data.
-    git_header = {
-        'User-Agent': 'cainmagi/webtools'
-    }
-    req = http.request(url=link, headers=git_header, method='GET', preload_content=False)
-    if req.status < 400:
-        with tarfile.open(fileobj=req, mode='r|{0}'.format(mode)) as tar:
-            tar.extractall(path)
-    else:
-        raise FileNotFoundError('data.webtools: Fail to get access to the tarball. Maybe the repo or the tag is not correct, or the repo is private, or the network is not available. The error message is: {0}'.format(req.read().decode('utf-8')))
-    req.release_conn()
+    with _SafePoolManager(retries=urllib3.util.Retry(connect=5, read=2, redirect=5),
+                          timeout=urllib3.util.Timeout(connect=5.0)) as http:
+        # Get the data.
+        git_header = {
+            'User-Agent': 'cainmagi/webtools'
+        }
+        req = http.request(url=link, headers=git_header, method='GET', preload_content=False)
+        if req.status < 400:
+            if verbose:
+                file_name = os.path.split(link)[-1]
+                with tqdm.tqdm.wrapattr(req, 'read', total=0, desc='Get {0}'.format(file_name)) as req:
+                    with tarfile.open(fileobj=req, mode='r|{0}'.format(mode)) as tar:
+                        tar.extractall(path)
+            else:
+                with tarfile.open(fileobj=req, mode='r|{0}'.format(mode)) as tar:
+                    tar.extractall(path)
+        else:
+            raise FileNotFoundError('data.webtools: Fail to get access to the tarball. Maybe the repo or the tag is not correct, or the repo is private, or the network is not available. The error message is: {0}'.format(req.read().decode('utf-8')))
+        req.release_conn()
 
 
-def download_tarball_private(user, repo, tag, asset, path='.', mode='auto', token=None):
+def __download_tarball_from_repo(user, repo, tag, asset, path='.', mode='auto', token=None, verbose=False):
     '''Download an online tarball and extract it automatically.
+    A base tool. Should not used by users. Please use
+        download_tarball, or
+        download_tarball_public, or
+        download_tarball_private
+    for instead.
+    '''
+    # Initialize the urllib3
+    with _SafePoolManager(retries=urllib3.util.Retry(connect=5, read=2, redirect=5),
+                          timeout=urllib3.util.Timeout(connect=5.0)) as http:
+        # Get the release info.
+        link_full = 'https://api.github.com/repos/{user}/{repo}/releases/tags/{tag}'.format(user=user, repo=repo, tag=tag)
+        git_header = {
+            'Accept': 'application/vnd.github.v3+json',
+            'User-Agent': 'cainmagi/webtools'
+        }
+        if token:
+            git_header['Authorization'] = 'token {token}'.format(token=token)
+        req = http.request(url=link_full, headers=git_header, method='GET', preload_content=False)
+        if req.status < 400:
+            info = json.load(req)
+            link_assets = info['assets_url']
+        else:
+            raise FileNotFoundError('data.webtools: Fail to get access to the release. Maybe the repo or the tag is not correct, or the authentication fails, or the network is not available. The error message is: {0}'.format(req.read().decode('utf-8')))
+        req.release_conn()
+        # Get the assets info.
+        req = http.request(url=link_assets, headers=git_header, method='GET', preload_content=False)
+        if req.status < 400:
+            info = json.load(req)
+            asset_info = next(filter(lambda aitem: aitem['name'] == asset, info), None)
+            if asset_info is None:
+                raise FileNotFoundError('data.webtools: Fail to locate the asset "{asset}" in the given release.'.format(asset=asset))
+            link_asset = asset_info['url']
+        else:
+            raise FileNotFoundError('data.webtools: Fail to get access to the release. Maybe the asset address is not correct. The error message is: {0}'.format(req.read().decode('utf-8')))
+        req.release_conn()
+        # Download the data.
+        git_header = {
+            'Accept': 'application/octet-stream',
+            'User-Agent': 'cainmagi/webtools'
+        }
+        if token:
+            git_header['Authorization'] = 'token {token}'.format(token=token)
+        # req = http.request(method='GET', url=link_asset, headers=git_header)
+        req = http.request(url=link_asset, headers=git_header, method='GET', preload_content=False)
+        if req.status < 400:
+            if verbose:
+                with tqdm.tqdm.wrapattr(req, 'read', total=0, desc='Get {0}'.format(asset)) as req:
+                    with tarfile.open(fileobj=req, mode='r|{0}'.format(mode)) as tar:
+                        tar.extractall(path)
+            else:
+                with tarfile.open(fileobj=req, mode='r|{0}'.format(mode)) as tar:
+                    tar.extractall(path)
+        else:
+            raise FileNotFoundError('data.webtools: Fail to get access to the asset. The error message is: {0}'.format(req.read().decode('utf-8')))
+        req.release_conn()
+
+
+def download_tarball_public(user, repo, tag, asset, path='.', mode='auto', verbose=False):
+    '''Download an online tarball and extract it automatically
+    (public).
+    This tool only supports public github repositories. This method
+    could be replaced by download_tarball_link(), but we do not
+    recommend to do that.
     The tarball would be sent to pipeline and not get stored.
     Now supports gz or xz format.
     Arguments:
@@ -101,56 +185,89 @@ def download_tarball_private(user, repo, tag, asset, path='.', mode='auto', toke
         mode: the mode of extraction. Could be 'gz', 'bz2', 'xz' or
               'auto'.
         token: the token required for downloading the private asset.
+        verbose: a flag, whether to show the downloaded size during
+                 the web request.
+    '''
+    mode = get_tarball_mode(name=asset, mode=mode)
+    os.makedirs(path, exist_ok=True)
+    __download_tarball_from_repo(user=user, repo=repo, tag=tag, asset=asset,
+                                 path=path, mode=mode, token=None, verbose=verbose)
+
+
+def download_tarball_private(user, repo, tag, asset, path='.', mode='auto', token=None, verbose=False):
+    '''Download an online tarball and extract it automatically
+    (private).
+    This tool should only be used for downloading assets from
+    private repositories. Although it could be also used for
+    public repositories, we do not recommend to use it in those
+    cases, because it would still require a token.
+    The tarball would be sent to pipeline and not get stored.
+    Now supports gz or xz format.
+    Arguments:
+        user:  the github user name.
+        repo:  the github repository name.
+        tag:   the github release tag.
+        asset: the github asset (tarball) to be downloaded.
+        path: the extracted data root path. Should be a folder path.
+        mode: the mode of extraction. Could be 'gz', 'bz2', 'xz' or
+              'auto'.
+        token: the token required for downloading the private asset.
+        verbose: a flag, whether to show the downloaded size during
+                 the web request.
     '''
     mode = get_tarball_mode(name=asset, mode=mode)
     os.makedirs(path, exist_ok=True)
     token = get_token(token)
-    # Initialize the urllib3
-    http = urllib3.PoolManager(
-        retries=urllib3.util.Retry(connect=5, read=2, redirect=5),
-        timeout=urllib3.util.Timeout(connect=5.0)
-    )
-    # Get the release info.
-    link_full = 'https://api.github.com/repos/{user}/{repo}/releases/tags/{tag}'.format(user=user, repo=repo, tag=tag)
-    git_header = {
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'cainmagi/webtools'
-    }
-    if token:
-        git_header['Authorization'] = 'token {token}'.format(token=token)
-    req = http.request(url=link_full, headers=git_header, method='GET', preload_content=False)
-    if req.status < 400:
-        info = json.load(req)
-        link_assets = info['assets_url']
+    __download_tarball_from_repo(user=user, repo=repo, tag=tag, asset=asset,
+                                 path=path, mode=mode, token=token, verbose=verbose)
+
+
+def download_tarball(user, repo, tag, asset, path='.', mode='auto', token=None, verbose=False):
+    '''Download an online tarball and extract it automatically.
+    This tool is used for downloading the assets from github
+    repositories. It would try to detect the data info in public
+    mode, and switch to private downloading mode when the Github
+    repository could not be accessed.
+    The tarball would be sent to pipeline and not get stored.
+    Now supports gz or xz format.
+    Arguments:
+        user:  the github user name.
+        repo:  the github repository name.
+        tag:   the github release tag.
+        asset: the github asset (tarball) to be downloaded.
+        path: the extracted data root path. Should be a folder path.
+        mode: the mode of extraction. Could be 'gz', 'bz2', 'xz' or
+              'auto'.
+        token: the token required for downloading the private asset,
+               when downloading public asses, this value would not
+               be used.
+        verbose: a flag, whether to show the downloaded size during
+                 the web request.
+    '''
+    mode = get_tarball_mode(name=asset, mode=mode)
+    os.makedirs(path, exist_ok=True)
+    # Detect the repository infomation first.
+    is_public_mode = True
+    with _SafePoolManager(retries=urllib3.util.Retry(connect=5, read=2, redirect=5),
+                          timeout=urllib3.util.Timeout(connect=5.0)) as http:
+        link_full = 'https://api.github.com/repos/{user}/{repo}/releases/tags/{tag}'.format(user=user, repo=repo, tag=tag)
+        git_header = {
+            'Accept': 'application/vnd.github.v3+json',
+            'User-Agent': 'cainmagi/webtools'
+        }
+        req = http.request(url=link_full, headers=git_header, method='GET', preload_content=False)
+        if req.status < 400:
+            is_public_mode = is_public_mode
+        else:
+            is_public_mode = False
+        req.release_conn()
+    if is_public_mode:
+        __download_tarball_from_repo(user=user, repo=repo, tag=tag, asset=asset,
+                                     path=path, mode=mode, token=None, verbose=verbose)
     else:
-        raise FileNotFoundError('data.webtools: Fail to get access to the release. Maybe the repo or the tag is not correct, or the authentication fails, or the network is not available. The error message is: {0}'.format(req.read().decode('utf-8')))
-    req.release_conn()
-    # Get the assets info.
-    req = http.request(url=link_assets, headers=git_header, method='GET', preload_content=False)
-    if req.status < 400:
-        info = json.load(req)
-        asset_info = next(filter(lambda aitem: aitem['name'] == asset, info), None)
-        if asset_info is None:
-            raise FileNotFoundError('data.webtools: Fail to locate the asset "{asset}" in the given release.'.format(asset=asset))
-        link_asset = asset_info['url']
-    else:
-        raise FileNotFoundError('data.webtools: Fail to get access to the release. Maybe the asset address is not correct. The error message is: {0}'.format(req.read().decode('utf-8')))
-    req.release_conn()
-    # Download the data.
-    git_header = {
-        'Accept': 'application/octet-stream',
-        'User-Agent': 'cainmagi/webtools'
-    }
-    if token:
-        git_header['Authorization'] = 'token {token}'.format(token=token)
-    # req = http.request(method='GET', url=link_asset, headers=git_header)
-    req = http.request(url=link_asset, headers=git_header, method='GET', preload_content=False)
-    if req.status < 400:
-        with tarfile.open(fileobj=req, mode='r|{0}'.format(mode)) as tar:
-            tar.extractall(path)
-    else:
-        raise FileNotFoundError('data.webtools: Fail to get access to the asset. The error message is: {0}'.format(req.read().decode('utf-8')))
-    req.release_conn()
+        token = get_token(token)
+        __download_tarball_from_repo(user=user, repo=repo, tag=tag, asset=asset,
+                                     path=path, mode=mode, token=token, verbose=verbose)
 
 
 class DataChecker:
@@ -160,14 +277,17 @@ class DataChecker:
     A private repository requires a token.
     '''
 
-    def __init__(self, root='./datasets', set_list_file='web-data', token=''):
+    def __init__(self, root='./datasets', set_list_file='web-data', token='', verbose=False):
         '''Initialization
         Arguments:
             root: the root path of all maintained local datasets.
             set_list_file: a json file recording the online repository paths of the
                            required datasets.
             token: the default Github OAuth token for downloading files from private
-                   repositories.
+                   repositories. If not set, the downloading from public
+                   repositories would not be influenced.
+            verbose: a flag, whether to show the downloaded size during
+                     the web request.
         '''
         set_list_file = os.path.splitext(set_list_file)[0] + '.json'
         with open(set_list_file, 'r') as f:
@@ -175,6 +295,7 @@ class DataChecker:
         self.query_list = list()
         self.root = root
         self.token = token
+        self.verbose = verbose
 
     @staticmethod
     def init_set_list(file_name='web-data'):
@@ -236,13 +357,12 @@ class DataChecker:
                     break
         if required_sets:
             print('data.webtools: There are required dataset missing. Start downloading from the online repository...')
-            token = get_token(self.token)
             user = self.set_list.get('user', 'cainmagi')
             repo = self.set_list.get('repo', 'Dockerfiles')
             for reqset in required_sets:
-                download_tarball_private(user=user, repo=repo,
-                                         tag=reqset['tag'], asset=reqset['asset'], path=set_folder,
-                                         token=token)
+                download_tarball(user=user, repo=repo,
+                                 tag=reqset['tag'], asset=reqset['asset'], path=set_folder,
+                                 token=self.token, verbose=self.verbose)
             print('data.webtools: Successfully download all required datasets.')
         else:
             print('data.webtools: All required datasets are available.')

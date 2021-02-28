@@ -73,7 +73,7 @@ class TestModuleAbstract(abc.ABC):
 
 
 class TestConv(TestModuleAbstract):
-    '''Test functions for conv sub-modules.
+    '''Test functions for conv sub-module.
     '''
     def __init__(self):
         super().__init__()
@@ -84,7 +84,7 @@ class TestConv(TestModuleAbstract):
 
 
 class TestResNet(TestModuleAbstract):
-    '''Test functions for resnet sub-modules.
+    '''Test functions for resnet sub-module.
     '''
     def __init__(self):
         super().__init__()

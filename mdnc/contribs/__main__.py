@@ -25,9 +25,9 @@ from mdnc import __version__
 import mdnc.contribs as engine
 
 
-class _TestTorchSummaryModule(nn.Module):
+class _TestTupleOutModule(nn.Module):
     '''Test module for torchsummary.
-    See the module here:
+    This module is modified from here:
         https://github.com/sksq96/pytorch-summary/blob/011b2bd0ec7153d5842c1b37d1944fc6a7bf5feb/torchsummary/tests/test_models/test_model.py#L39
     '''
     def __init__(self):
@@ -46,14 +46,44 @@ class _TestTorchSummaryModule(nn.Module):
         x2 = self.fc2b(x2)
         # set x2 to FloatTensor
         x = torch.cat((x1, x2), 0)
-        return F.log_softmax(x, dim=1)
+        return F.log_softmax(x, dim=1), F.log_softmax(x1, dim=1), F.log_softmax(x2, dim=1)
+
+
+class _TestDictOutModule(nn.Module):
+    '''Test module for torchsummary.
+    See the module here:
+        https://github.com/sksq96/pytorch-summary/blob/011b2bd0ec7153d5842c1b37d1944fc6a7bf5feb/torchsummary/tests/test_models/test_model.py#L39
+    '''
+    def __init__(self):
+        super().__init__()
+        self.fc1a = nn.Linear(300, 50)
+        self.fc1b = nn.Linear(50, 10)
+
+        self.fc2 = nn.Sequential(
+            nn.Linear(300, 50),
+            nn.ReLU(),
+            nn.Linear(50, 10))
+
+    def forward(self, x1, x2):
+        x1 = F.relu(self.fc1a(x1))
+        x1 = self.fc1b(x1)
+        x2 = x2.type(torch.FloatTensor)
+        x2 = self.fc2(x2)
+        # set x2 to FloatTensor
+        x = torch.cat((x1, x2), 0)
+        return {
+            'x': F.log_softmax(x, dim=1),
+            'x1': F.log_softmax(x1, dim=1),
+            'x2': F.log_softmax(x2, dim=1)
+        }
 
 
 class TestTorchSummary:
     '''Test functions for torchsummary sub-module.
     '''
     def __init__(self):
-        self.module = _TestTorchSummaryModule()
+        self.module_tuple = _TestTupleOutModule()
+        self.module_dict = _TestDictOutModule()
 
     def test(self):
         '''See
@@ -61,9 +91,11 @@ class TestTorchSummary:
         '''
         input1 = (1, 300)
         input2 = (1, 300)
-        dtypes = [torch.FloatTensor, torch.LongTensor]
+        dtypes = (torch.FloatTensor, torch.LongTensor)
         total_params, trainable_params = engine.torchsummary.summary(
-            self.module, [input1, input2], device='cpu', dtypes=dtypes)
+            self.module_tuple, (input1, input2), device='cpu', dtypes=dtypes)
+        total_params, trainable_params = engine.torchsummary.summary(
+            self.module_dict, (input1, input2), device='cpu', dtypes=dtypes)
 
 
 # Argparser

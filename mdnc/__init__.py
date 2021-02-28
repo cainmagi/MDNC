@@ -8,6 +8,7 @@
 #   python 3.5+
 #   pyTorch 1.0.0+
 #   numpy 1.13+
+#   scipy 1.0.0+
 #   matplotlib 3.1.1+
 #   ... other modules, see setup.py
 # A collection of pyTorch modules, functions, optimizers,
@@ -16,6 +17,10 @@
 ################################################################
 # Update reports:
 # ---------------
+# 0.1.2 @ 2/27/2021
+#   1. Fix more feature problems in `contribs.torchsummary`.
+#   2. Fix bugs and finish `data.preprocs`.
+#   3. Add more features in `data.webtools`.
 # 0.1.0 @ 2/26/2021
 #   1. Create this project.
 #   2. Add packages: `contribs`, `data`, `modules`, `utils`.
@@ -34,7 +39,7 @@ from . import data
 from . import modules
 from . import utils
 
-__version__ = '0.1.0'
+__version__ = '0.1.2'
 
 __all__ = [
     'contribs', 'data', 'modules', 'utils'

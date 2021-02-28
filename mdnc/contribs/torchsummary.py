@@ -14,11 +14,21 @@
 #   https://github.com/sksq96/pytorch-summary
 # The revision includes:
 #   1. Fix the bug of parameter number calculation when there
-#      are more than one variables.
-#   2. Make multuple output variables split into multiple lines.
+#      is more than one output variables, including both
+#      sequence case and dict case.
+#   2. Make multiple output variables split into multiple
+#      lines.
 #   3. Remove the last line break of summary_string()
 #   4. Enable argument "device" to accept both str and
 #      torch.device.
+#   5. Fix a bug when the model requires "batch_size" to be a
+#      specific number.
+#   6. Fix a bug caused by multiple input cases when
+#      "dtypes=None".
+#   7. Add text auto wrap when the layer name is too long.
+#   8. Support counting all parameters instead of "weight" and
+#      "bias".
+#   9. Add docstring.
 ################################################################
 '''
 
@@ -30,6 +40,22 @@ import torch.nn as nn
 
 
 def summary(model, input_size, batch_size=-1, device='cuda:0', dtypes=None):
+    '''Keras-style torch summary
+    Iterate the whole pytorch model and summarize the infomation as a Keras-style
+    text report. The output would be store in a str.
+    Arguments:
+        model: an instance of nn.Module
+        input_size: a sequence (list/tuple) or a sequence of sequnces, indicating
+                    the size of the each model input variable.
+        batch_size: a int. The batch size used for testing and displaying the
+                    results.
+        device: a str or torch.device. Should be set according to the deployed
+                device of the argument "model".
+        dtype: a list or torch data type for each input variable.
+    Returns:
+        1. tensor, total parameter numbers.
+        2. tensor, trainable parameter numbers.
+    '''
     if isinstance(device, str):
         device = torch.device(device)
     result, params_info = summary_string(
@@ -40,11 +66,24 @@ def summary(model, input_size, batch_size=-1, device='cuda:0', dtypes=None):
 
 
 def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=None):
+    '''Keras-style torch summary (string output)
+    Iterate the whole pytorch model and summarize the infomation as a Keras-style
+    text report. The output would be store in a str.
+    Arguments:
+        model: an instance of nn.Module
+        input_size: a sequence (list/tuple) or a sequence of sequnces, indicating
+                    the size of the each model input variable.
+        batch_size: a int. The batch size used for testing and displaying the
+                    results.
+        device: a str or torch.device. Should be set according to the deployed
+                device of the argument "model".
+        dtype: a list or torch data type for each input variable.
+    Returns:
+        1. str, the summary text report.
+        2. tuple, (total parameter numbers, trainable parameter numbers)
+    '''
     if isinstance(device, str):
         device = torch.device(device)
-
-    if dtypes is None:
-        dtypes = [torch.FloatTensor] * len(input_size)
 
     summary_str = ''
 
@@ -53,32 +92,46 @@ def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=Non
             class_name = str(module.__class__).split(".")[-1].split("'")[0]
             module_idx = len(summary)
 
-            m_key = "%s-%i" % (class_name, module_idx + 1)
-            summary[m_key] = collections.OrderedDict()
-            summary[m_key]["input_shape"] = list(input[0].size())
-            summary[m_key]["input_shape"][0] = batch_size
-            if isinstance(output, (list, tuple)):
-                summary[m_key]["output_shape"] = [
+            m_key = '{name:s}-{idx:d}'.format(name=class_name, idx=module_idx + 1)
+            sum_layer = collections.OrderedDict()
+            summary[m_key] = sum_layer
+            sum_layer["input_shape"] = list(input[0].size())
+            sum_layer["input_shape"][0] = batch_size
+            if isinstance(output, dict):
+                sum_layer["output_shape"] = [
+                    [-1] + list(o.size())[1:] for o in output.values()
+                ]
+            elif isinstance(output, (list, tuple)):
+                sum_layer["output_shape"] = [
                     [-1] + list(o.size())[1:] for o in output
                 ]
             else:
-                summary[m_key]["output_shape"] = list(output.size())
-                summary[m_key]["output_shape"][0] = batch_size
+                sum_layer["output_shape"] = list(output.size())
+                sum_layer["output_shape"][0] = batch_size
 
             params = 0
-            if hasattr(module, "weight") and hasattr(module.weight, "size"):
-                params += torch.prod(torch.LongTensor(list(module.weight.size())))
-                summary[m_key]["trainable"] = module.weight.requires_grad
-            if hasattr(module, "bias") and hasattr(module.bias, "size"):
-                params += torch.prod(torch.LongTensor(list(module.bias.size())))
-            summary[m_key]["nb_params"] = params
+            params_trainable = 0
+            for param in module.parameters(recurse=False):
+                nb_param = torch.prod(torch.LongTensor(list(param.size())))
+                params += nb_param
+                params_trainable += nb_param if param.requires_grad else 0
+            sum_layer["nb_params"] = params
+            sum_layer["nb_params_trainable"] = params_trainable
 
         if (not isinstance(module, nn.Sequential) and not isinstance(module, nn.ModuleList)):
             hooks.append(module.register_forward_hook(hook))
 
     # multiple inputs to the network
-    if isinstance(input_size, tuple):
-        input_size = [input_size]
+    if isinstance(input_size, (list, tuple)) and len(input_size) > 0:
+        if not isinstance(input_size[0], (list, tuple)):
+            input_size = (input_size, )
+    else:
+        raise ValueError('contribs.torchsummary: The argument "input_size" is not a tuple of a sequence of tuple. Given "{0}".'.format(input_size))
+
+    if dtypes is None:
+        dtypes = [torch.FloatTensor] * len(input_size)
+    if len(dtypes) != len(input_size):
+        raise ValueError('contribs.torchsummary: The lengths of the arguments "input_size" and "dtypes" does not correspond to each other.')
 
     # batch_size of 2 for batchnorm
     if batch_size == -1:
@@ -114,9 +167,13 @@ def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=Non
     for layer in summary:
         # input_shape, output_shape, trainable, nb_params
         sum_layer = summary[layer]
+        if len(layer) > 20:
+            layer_disp = '{lhead}...{ltail}'.format(lhead=layer[:8], ltail=layer[-9:])  # 20 = 9 + 8 + 3
+        else:
+            layer_disp = layer
         if len(sum_layer["output_shape"]) > 0 and isinstance(sum_layer["output_shape"][0], (list, tuple)):  # Add multiple output support
             line_new = ["{:>20}  {:>25} {:>15}".format(
-                layer,
+                layer_disp,
                 str(sum_layer["output_shape"][0]),
                 "{0:,}".format(sum_layer["nb_params"]),
             )]
@@ -127,7 +184,7 @@ def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=Non
             line_new = '\n'.join(line_new)
         else:
             line_new = "{:>20}  {:>25} {:>15}".format(
-                layer,
+                layer_disp,
                 str(sum_layer["output_shape"]),
                 "{0:,}".format(sum_layer["nb_params"]),
             )
@@ -138,9 +195,7 @@ def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=Non
             total_output += np.sum(list(map(np.prod, output_shape)), dtype=np.int)
         else:
             total_output += np.prod(output_shape, dtype=np.int)
-        if "trainable" in sum_layer:
-            if sum_layer["trainable"] is True:
-                trainable_params += sum_layer["nb_params"]
+        trainable_params += sum_layer["nb_params_trainable"]
         summary_str += line_new + "\n"
 
     # assume 4 bytes/number (float on cuda).
