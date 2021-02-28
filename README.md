@@ -14,6 +14,12 @@ To update the theme, use
 git submodule update --remote --recursive
 ```
 
+Users may need to install the requirements:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
 ## Run
 
 Use the following command to run the debug mode. The website would be served on http://localhost:8000/.
