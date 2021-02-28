@@ -127,6 +127,5 @@ nav:
       - Licenses: licenses.md
 
 # Google Analytics
-google_analytics:
-  - UA-119875813-2
-  - auto
+google_analytics_4:
+  - G-PDY947X8DD
