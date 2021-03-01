@@ -35,24 +35,24 @@ mermaid.initialize({
 
 // MathJax
 window.MathJax = {
-    jax: ["input/TeX","output/HTML-CSS"],
-    tex2jax: {
-      inlineMath: [ ["\\(","\\)"] ],
-      displayMath: [ ["\\[","\\]"] ]
+  jax: ["input/TeX","output/HTML-CSS"],
+  tex2jax: {
+    inlineMath: [ ["\\(","\\)"] ],
+    displayMath: [ ["\\[","\\]"] ]
+  },
+  TeX: {
+    TagSide: "right",
+    TagIndent: ".8em",
+    MultLineWidth: "85%",
+    equationNumbers: {
+      autoNumber: "AMS",
     },
-    TeX: {
-      TagSide: "right",
-      TagIndent: ".8em",
-      MultLineWidth: "85%",
-      equationNumbers: {
-        autoNumber: "AMS",
-      },
-      extensions: ["boldsymbol.js", "color.js"],
-      unicode: {
-        fonts: "STIXGeneral,'Arial Unicode MS'"
-      }
-    },
-    displayAlign: "center",
-    showProcessingMessages: false,
-    messageStyle: "none",
-  };
+    extensions: ["boldsymbol.js", "color.js"],
+    unicode: {
+      fonts: "STIXGeneral,'Arial Unicode MS'"
+    }
+  },
+  displayAlign: "center",
+  showProcessingMessages: false,
+  messageStyle: "none",
+};
