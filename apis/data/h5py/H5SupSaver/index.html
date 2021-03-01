@@ -652,6 +652,42 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5GParser/" class="md-nav__link">
+        H5GParser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5CParser/" class="md-nav__link">
+        H5CParser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5RParser/" class="md-nav__link">
+        H5RParser
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -816,12 +852,12 @@
     <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enable_read</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 </code></pre></div>
-<p>Save supervised data set as <code>.h5</code> file. This class allows users to dump multiple datasets into one file handle, then it would save it as a <code>.h5</code> file. The keywords of the sets should be assigned by users. It supports both the context management and the dictionary-style nesting. It is built on top of <code>!#py h5py.Group</code> and <code>!# h5py.Dataset</code>.</p>
+<p>Save supervised data set as <code>.h5</code> file. This class allows users to dump multiple datasets into one file handle, then it would save it as a <code>.h5</code> file. The keywords of the sets should be assigned by users. It supports both the context management and the dictionary-style nesting. It is built on top of <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Group</span></code> and <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span></code>.</p>
 <p>The motivation of using this saver includes:</p>
 <ul>
 <li>Provide an easier way for saving resizable datasets. All datasets created by this saver are resizable.</li>
-<li>Provide convenient APIs for creating <code>h5py.Softlink</code>, <code>h5py.Attributes</code> and <code>h5py.VirtualDataSet</code>.</li>
-<li>Add context nesting supports for <code>h5py.Group</code>. This would makes the codes more elegant.</li>
+<li>Provide convenient APIs for creating <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Softlink</span></code>, <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Attributes</span></code> and <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">VirtualDataSet</span></code>.</li>
+<li>Add context nesting supports for <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Group</span></code>. This would makes the codes more elegant.</li>
 </ul>
 <h2 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h2>
 <p><strong>Requries</strong></p>
@@ -855,7 +891,7 @@
 <table>
 <thead>
 <tr>
-<th align="center" class="w-6rem">Argument</th>
+<th align="center" class="w-5rem">Argument</th>
 <th align="center" class="w-4rem">Type</th>
 <th align="left" class="w-8rem">Description</th>
 </tr>
@@ -875,16 +911,14 @@
 </table>
 <hr />
 <h3 id="get_config"><code>get_config</code><a class="headerlink" href="#get_config" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">saver</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">cfg</span> <span class="o">=</span> <span class="n">saver</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Get the current configuration value by the given <code>name</code>.</p>
-<details class="warning"><summary>Warning</summary><p>This method does not support nesting APIs. It should only be loaded by the</p>
-</details>
 <p><strong>Requries</strong></p>
 <table>
 <thead>
 <tr>
-<th align="center" class="w-6rem">Argument</th>
+<th align="center" class="w-5rem">Argument</th>
 <th align="center" class="w-4rem">Type</th>
 <th align="left" class="w-8rem">Description</th>
 </tr>
@@ -897,16 +931,31 @@
 </tr>
 </tbody>
 </table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-5rem">Argument</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>cfg</code></td>
+<td align="left">The required config value.</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h3 id="open"><code>open</code><a class="headerlink" href="#open" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">saver</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">enable_read</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">f</span> <span class="o">=</span> <span class="n">saver</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">enable_read</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Open a new file. If a file has been opened before, this file would be closed. This method and the <code>__init__</code> method (need to specify <code>file_name</code>) support context management.</p>
 <p><strong>Requries</strong></p>
 <table>
 <thead>
 <tr>
-<th align="center" class="w-7rem">Argument</th>
+<th align="center" class="w-6rem">Argument</th>
 <th align="center" class="w-4rem">Type</th>
 <th align="left" class="w-8rem">Description</th>
 </tr>
@@ -938,8 +987,8 @@
 <table>
 <thead>
 <tr>
-<th align="center" class="w-7rem">Argument</th>
-<th align="center" class="w-4rem">Type</th>
+<th align="center" class="w-6rem">Argument</th>
+<th align="center" class="w-6rem">Type</th>
 <th align="left" class="w-8rem">Description</th>
 </tr>
 </thead>
@@ -970,7 +1019,7 @@
 <table>
 <thead>
 <tr>
-<th align="center" class="w-7rem">Argument</th>
+<th align="center" class="w-6rem">Argument</th>
 <th align="center" class="w-4rem">Type</th>
 <th align="left" class="w-8rem">Description</th>
 </tr>
@@ -995,14 +1044,14 @@
 </table>
 <hr />
 <h3 id="set_attrs"><code>set_attrs</code><a class="headerlink" href="#set_attrs" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">saver</span><span class="o">.</span><span class="n">set_attrs</span><span class="p">(</span><span class="n">keyword</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwattrs</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">saver</span><span class="o">.</span><span class="n">set_attrs</span><span class="p">(</span><span class="n">keyword</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 <p>Set attrs for an existed data group or dataset.</p>
 <p><strong>Requries</strong></p>
 <table>
 <thead>
 <tr>
-<th align="center" class="w-7rem">Argument</th>
+<th align="center" class="w-6rem">Argument</th>
 <th align="center" class="w-4rem">Type</th>
 <th align="left" class="w-8rem">Description</th>
 </tr>
@@ -1035,7 +1084,7 @@
 <thead>
 <tr>
 <th align="center" class="w-7rem">Argument</th>
-<th align="center" class="w-4rem">Type</th>
+<th align="center" class="w-5rem">Type</th>
 <th align="left" class="w-8rem">Description</th>
 </tr>
 </thead>
@@ -1069,8 +1118,12 @@
 2
 3
 4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
-<span class="k">with</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5SupSaver</span><span class="p">(</span><span class="s1">&#39;new_file.h5&#39;</span><span class="p">,</span> <span class="n">enable_read</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">mdnc</span>
+
+<span class="k">with</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5SupSaver</span><span class="p">(</span><span class="s1">&#39;test_h5supsaver.h5&#39;</span><span class="p">,</span> <span class="n">enable_read</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
     <span class="n">s</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">logver</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fletcher32</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
     <span class="n">s</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">25</span><span class="p">,</span> <span class="mi">20</span><span class="p">]),</span> <span class="n">chunks</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
     <span class="n">s</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="s1">&#39;zero&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">25</span><span class="p">,</span> <span class="mi">10</span><span class="p">]),</span> <span class="n">chunks</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
@@ -1091,10 +1144,14 @@
  9
 10
 11
-12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">mdnc</span>
+
 <span class="n">saver</span> <span class="o">=</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5SupSaver</span><span class="p">(</span><span class="n">enable_read</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">saver</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">logver</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fletcher32</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
-<span class="k">with</span> <span class="n">saver</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;new_file_2.h5&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">saver</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;test_h5supsaver.h5&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
     <span class="n">s</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="s1">&#39;test1&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span> <span class="mi">20</span><span class="p">]))</span>
     <span class="n">gb</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;group1&#39;</span><span class="p">]</span>
     <span class="k">with</span> <span class="n">gb</span><span class="p">[</span><span class="s1">&#39;group2&#39;</span><span class="p">]</span> <span class="k">as</span> <span class="n">g</span><span class="p">:</span>
@@ -1156,6 +1213,20 @@
           </div>
         </a>
       
+      
+        <a href="../H5GParser/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              H5GParser
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
       
     </nav>
   

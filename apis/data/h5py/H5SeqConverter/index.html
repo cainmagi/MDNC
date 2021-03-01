@@ -611,6 +611,42 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5GParser/" class="md-nav__link">
+        H5GParser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5CParser/" class="md-nav__link">
+        H5CParser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5RParser/" class="md-nav__link">
+        H5RParser
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -907,8 +943,10 @@
 2
 3
 4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
-<span class="k">with</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5SeqConverter</span><span class="p">(</span><span class="s1">&#39;dataset.h5&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cvt</span><span class="p">:</span>
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
+
+<span class="k">with</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5SeqConverter</span><span class="p">(</span><span class="s1">&#39;test_seqconverter.h5&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cvt</span><span class="p">:</span>
     <span class="n">cvt</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">logver</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fletcher32</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
     <span class="n">cvt</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;data_to_sequence&#39;</span><span class="p">)</span>
     <span class="n">cvt</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;data_only_copied&#39;</span><span class="p">)</span>
@@ -918,21 +956,23 @@
 </div>
 </details>
 <details class="example" open="open"><summary>Example 2</summary><div class="tabbed-set" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">Codes</label><div class="tabbed-content">
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
+
 <span class="n">converter</span> <span class="o">=</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5SeqConverter</span><span class="p">()</span>
 <span class="n">converter</span><span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="n">logver</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fletcher32</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
-<span class="k">with</span> <span class="n">converter</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;dataset.h5&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cvt</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">converter</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;test_seqconverter.h5&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cvt</span><span class="p">:</span>
     <span class="n">cvt</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;data_to_sequence&#39;</span><span class="p">)</span>
     <span class="n">cvt</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;data_only_copied&#39;</span><span class="p">)</span>
-<span class="k">with</span> <span class="n">converter</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;dataset2.h5&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cvt</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">converter</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;test_seqconverter2.h5&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cvt</span><span class="p">:</span>
     <span class="n">cvt</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;data_to_sequence&#39;</span><span class="p">)</span>
     <span class="n">cvt</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;data_only_copied&#39;</span><span class="p">)</span>
 </code></pre></div>

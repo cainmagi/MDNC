@@ -583,6 +583,42 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5GParser/" class="md-nav__link">
+        H5GParser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5CParser/" class="md-nav__link">
+        H5CParser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5RParser/" class="md-nav__link">
+        H5RParser
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -787,10 +823,12 @@
 2
 3
 4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
-<span class="n">cvt_o</span> <span class="o">=</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5Converter</span><span class="p">(</span><span class="s1">&#39;dataset.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">,</span> <span class="n">to_other</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
+
+<span class="n">cvt_o</span> <span class="o">=</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5Converter</span><span class="p">(</span><span class="s1">&#39;test_converter.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">,</span> <span class="n">to_other</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">cvt_o</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>  <span class="c1"># From HDF5 dataset to txt files.</span>
-<span class="n">cvt_i</span> <span class="o">=</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5Converter</span><span class="p">(</span><span class="s1">&#39;dataset.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">,</span> <span class="n">to_other</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">cvt_i</span> <span class="o">=</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5Converter</span><span class="p">(</span><span class="s1">&#39;test_converter.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">,</span> <span class="n">to_other</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">cvt_i</span><span class="o">.</span><span class="n">convert</span><span class="p">()</span>  <span class="c1"># From txt files to HDF5 dataset.</span>
 </code></pre></div>
 </td></tr></table>

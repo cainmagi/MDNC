@@ -1,0 +1,1466 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The tutorial and API reference for the Modern Deep Network Toolkits for pyTorch (MDNC) which is a pyTorch framework for simplifying the data IO, visualization, and construction of deep-learning projects.">
+      
+      
+      
+        <meta name="author" content="Yuchen Jin (cainmagi)">
+      
+      
+        <link rel="canonical" href="https://cainmagi.github.io/MDNC/apis/data/h5py/H5GParser/">
+      
+      <link rel="shortcut icon" href="../../../../assets/icons/logo.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.3">
+    
+    
+      
+        <title>H5GParser - MDNC Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.77f3fd56.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#ef5552">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Noto Sans";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/custom.css">
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/extensions.css">
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/simpleLightbox.min.css">
+    
+    
+      
+        
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PDY947X8DD"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);} gtag('js',new Date());gtag('config','G-PDY947X8DD');</script>
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="red" data-md-color-accent="deep-orange">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#datah5pyh5gparser" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="https://cainmagi.github.io/MDNC/" title="MDNC Documentation" class="md-header__button md-logo" aria-label="MDNC Documentation">
+      
+  <img src="../../../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MDNC Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              H5GParser
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/cainmagi/MDNC" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cainmagi/MDNC
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        Tutorial
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../overview/" class="md-tabs__link md-tabs__link--active">
+        APIs
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://cainmagi.github.io/MDNC/" title="MDNC Documentation" class="md-nav__button md-logo" aria-label="MDNC Documentation">
+      
+  <img src="../../../../assets/icons/logo.svg" alt="logo">
+
+    </a>
+    MDNC Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/cainmagi/MDNC" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cainmagi/MDNC
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" data-md-state="indeterminate" type="checkbox" id="__nav_1" checked>
+      
+      <label class="md-nav__link" for="__nav_1">
+        Tutorial
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tutorial" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorial
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../installation/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../licenses/" class="md-nav__link">
+        Licenses
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      <label class="md-nav__link" for="__nav_2">
+        APIs
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="APIs" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          APIs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" data-md-state="indeterminate" type="checkbox" id="__nav_2_2" checked>
+      
+      <label class="md-nav__link" for="__nav_2_2">
+        contribs
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="contribs" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          contribs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2_1" data-md-state="indeterminate" type="checkbox" id="__nav_2_2_1" checked>
+      
+      <label class="md-nav__link" for="__nav_2_2_1">
+        torchsummary
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="torchsummary" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          torchsummary
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contribs/torchsummary/summary/" class="md-nav__link">
+        summary
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contribs/torchsummary/summary_string/" class="md-nav__link">
+        summary_string
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" checked>
+      
+      <label class="md-nav__link" for="__nav_2_3">
+        data
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="data" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          data
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3_1" type="checkbox" id="__nav_2_3_1" checked>
+      
+      <label class="md-nav__link" for="__nav_2_3_1">
+        h5py
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="h5py" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          h5py
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5Converter/" class="md-nav__link">
+        H5Converter
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5SeqConverter/" class="md-nav__link">
+        H5SeqConverter
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5SupSaver/" class="md-nav__link">
+        H5SupSaver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          H5GParser
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        H5GParser
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check_dsets" class="md-nav__link">
+    check_dsets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_attrs" class="md-nav__link">
+    get_attrs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_file" class="md-nav__link">
+    get_file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start" class="md-nav__link">
+    start
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start_test" class="md-nav__link">
+    start_test
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#finish" class="md-nav__link">
+    finish
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#len-batch_num" class="md-nav__link">
+    len(), batch_num
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iter" class="md-nav__link">
+    iter()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#size" class="md-nav__link">
+    size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batch_size" class="md-nav__link">
+    batch_size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#preproc" class="md-nav__link">
+    preproc
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5CParser/" class="md-nav__link">
+        H5CParser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../H5RParser/" class="md-nav__link">
+        H5RParser
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    Arguments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check_dsets" class="md-nav__link">
+    check_dsets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_attrs" class="md-nav__link">
+    get_attrs
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_file" class="md-nav__link">
+    get_file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start" class="md-nav__link">
+    start
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start_test" class="md-nav__link">
+    start_test
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#finish" class="md-nav__link">
+    finish
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#len-batch_num" class="md-nav__link">
+    len(), batch_num
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iter" class="md-nav__link">
+    iter()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#size" class="md-nav__link">
+    size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#batch_size" class="md-nav__link">
+    batch_size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#preproc" class="md-nav__link">
+    preproc
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="datah5pyh5gparser">data.h5py.H5GParser<a class="headerlink" href="#datah5pyh5gparser" title="Permanent link">&para;</a></h1>
+<p>Class</p>
+<div class="highlight"><pre><span></span><code><span class="n">dset</span> <span class="o">=</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5GParser</span><span class="p">(</span>
+    <span class="n">file_name</span><span class="p">,</span> <span class="n">keywords</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shuffle_seed</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">preprocfunc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_buffer</span><span class="o">=</span><span class="mi">10</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Grouply parsing dataset. This class allows users to feed one .h5 file, and convert it to <a href="../sequence/MPSequence"><code>mdnc.data.sequence.MPSequence</code></a>. The realization could be described as:</p>
+<ol>
+<li>Create <code>.h5</code> file indexer, this indexer would be initialized by <a href="../sequence/MPSequence"><code>sequence.MPSequence</code></a>. It would use the user defined keywords to get a group of <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span></code>s.</li>
+<li>Estimate the <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span></code> sizes, each dataset should share the same size (but could have different shapes).</li>
+<li>Use the dataset size to create a <a href="../sequence/MPSequence"><code>sequence.MPSequence</code></a>, and allows it to randomly shuffle the indices in each epoch.</li>
+<li>Invoke the <a href="../sequence/MPSequence"><code>sequence.MPSequence</code></a> APIs to serve the parallel dataset parsing.</li>
+</ol>
+<p>Certainly, you could use this parser to load a single <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span></code>. To find details about the parallel parsing workflow, please check <a href="../sequence/MPSequence"><code>mdnc.data.sequence.MPSequence</code></a>.</p>
+<h2 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h2>
+<p><strong>Requries</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-6rem">Argument</th>
+<th align="center" class="w-5rem">Type</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>file_name</code></td>
+<td align="center"><code class="highlight"><span class="nb">str</span></code></td>
+<td align="left">The path of the <code>.h5</code> file (could be without postfix).</td>
+</tr>
+<tr>
+<td align="center"><code>keywords</code></td>
+<td align="center"><code class="highlight"><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">)</span></code></td>
+<td align="left">Should be a list of keywords (or a single keyword).</td>
+</tr>
+<tr>
+<td align="center"><code>batch_size</code></td>
+<td align="center"><code class="highlight"><span class="nb">int</span></code></td>
+<td align="left">Number of samples in each mini-batch.</td>
+</tr>
+<tr>
+<td align="center"><code>shuffle</code></td>
+<td align="center"><code class="highlight"><span class="nb">bool</span></code></td>
+<td align="left">If enabled, shuffle the data set at the beginning of each epoch.</td>
+</tr>
+<tr>
+<td align="center"><code>shuffle_seed</code></td>
+<td align="center"><code class="highlight"><span class="nb">int</span></code></td>
+<td align="left">The seed for random shuffling.</td>
+</tr>
+<tr>
+<td align="center"><code>preprocfunc</code></td>
+<td align="center"><code class="highlight"><span class="nb">object</span></code></td>
+<td align="left">This function would be added to the produced data so that it could serve as a pre-processing tool. Note that this tool would process the batches produced by the parser. The details about this argument would be shown in the following tips.</td>
+</tr>
+<tr>
+<td align="center"><code>num_workers</code></td>
+<td align="center"><code class="highlight"><span class="nb">int</span></code></td>
+<td align="left">The number of parallel workers.</td>
+</tr>
+<tr>
+<td align="center"><code>num_buffer</code></td>
+<td align="center"><code class="highlight"><span class="nb">int</span></code></td>
+<td align="left">The buffer size of the data pool, it means the maximal number of mini-batches stored in the memory.</td>
+</tr>
+</tbody>
+</table>
+<details class="tip"><summary>Tip</summary><p>The minimal requirement for the argument <code>preprocfunc</code> is to be a function, or implemented with the <code>__call__()</code> method. This function accepts all input mini-batch variables formatted as <code class="highlight"><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span></code>, and returns the pre-processed results. The returned varaible number could be different from the input variable number. In some cases, you could use the provided pre-processors in the <code>mdnc.data.preprocs</code> module. The processors in these module support our Broadcasting Pre- and Post- Processor Protocol. For example:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="tabbed-set" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">No args</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
+
+<span class="k">def</span> <span class="nf">preprocfunc</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x1</span> <span class="o">+</span> <span class="n">x2</span>
+
+<span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5GParser</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x_1&#39;</span><span class="p">,</span> <span class="s1">&#39;x_2&#39;</span><span class="p">],</span>
+                         <span class="n">preprocfunc</span><span class="o">=</span><span class="n">preprocfunc</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">With args</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
+
+<span class="k">class</span> <span class="nc">PreprocWithArgs</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="n">x2</span>
+
+<span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5GParser</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x_1&#39;</span><span class="p">,</span> <span class="s1">&#39;x_2&#39;</span><span class="p">],</span>
+                         <span class="n">preprocfunc</span><span class="o">=</span><span class="n">PreprocWithArgs</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><label for="__tabbed_1_3">Use data.preprocs</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
+
+<span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5GParser</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x_1&#39;</span><span class="p">,</span> <span class="s1">&#39;x_2&#39;</span><span class="p">],</span>
+                         <span class="n">preprocfunc</span><span class="o">=</span><span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">preprocs</span><span class="o">.</span><span class="n">ProcScaler</span><span class="p">())</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The argument <code>preprocfunc</code> requires to be a [picklable object][pydoc-picklable]. Therefore, a lambda function or a function implemented inside <code class="highlight"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span></code> is not allowed in this case.</p>
+</div>
+</details>
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
+<h3 id="check_dsets"><code>check_dsets</code><a class="headerlink" href="#check_dsets" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">sze</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">check_dsets</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">keywords</span><span class="p">)</span>
+</code></pre></div>
+<p>Check the size of <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span></code> and validate all datasets. A valid group of datasets requires each <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span></code> shares the same length (sample number). If success, would return the size of the datasets. This method is invoked during the initialization, and do not requires users to call explicitly.</p>
+<p><strong>Requries</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-5rem">Argument</th>
+<th align="center" class="w-5rem">Type</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>file_path</code></td>
+<td align="center"><code class="highlight"><span class="nb">str</span></code></td>
+<td align="left">The path of the HDF5 dataset to be validated.</td>
+</tr>
+<tr>
+<td align="center"><code>keywords</code></td>
+<td align="center"><code class="highlight"><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">)</span></code></td>
+<td align="left">The keywords to be validated. Each keyword should point to or redict to an <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-5rem">Argument</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>sze</code></td>
+<td align="left">A <code class="highlight"><span class="nb">int</span></code>, the size of all datasets.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="get_attrs"><code>get_attrs</code><a class="headerlink" href="#get_attrs" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">attrs</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="n">keyword</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">attr_names</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Get the attributes by the keyword.</p>
+<p><strong>Requries</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-6rem">Argument</th>
+<th align="center" class="w-5rem">Type</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>keyword</code></td>
+<td align="center"><code class="highlight"><span class="nb">str</span></code></td>
+<td align="left">The keyword of the to a <code>h5py.Dataset</code> in the to-be-loaded file.</td>
+</tr>
+<tr>
+<td align="center"><code>attr_names</code></td>
+<td align="center"><code class="highlight"><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">)</span></code></td>
+<td align="left">A sequence of required attribute names.</td>
+</tr>
+<tr>
+<td align="center"><code>*args</code></td>
+<td align="center"></td>
+<td align="left">other attribute names, would be attached to the argument <code>attr_names</code> by <code class="highlight"><span class="nb">list</span><span class="o">.</span><span class="n">extend</span><span class="p">()</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-5rem">Argument</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>attrs</code></td>
+<td align="left">A list of the required attribute values.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="get_file"><code>get_file</code><a class="headerlink" href="#get_file" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">f</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">get_file</span><span class="p">(</span><span class="n">enable_write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>Get a file object of the to-be-loaded file.</p>
+<p><strong>Requries</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-6rem">Argument</th>
+<th align="center" class="w-4rem">Type</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>enable_write</code></td>
+<td align="center"><code class="highlight"><span class="nb">bool</span></code></td>
+<td align="left">If enabled, would use the <code>a</code> mode to open the file. Otherwise, use the <code>r</code> mode.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-5rem">Argument</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>f</code></td>
+<td align="left">The <code class="highlight"><span class="n">h5py</span><span class="o">.</span><span class="n">File</span></code> object of the to-be-loaded file.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="start"><code>start</code><a class="headerlink" href="#start" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">dset</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">compat</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+<p>Start the process pool. This method is implemented by <a href="../sequence/MPSequence"><code>mdnc.data.sequence.MPSequence</code></a>. It supports context management.</p>
+<p>Running <code>start()</code> or <code>start_test()</code> would interrupt the started sequence.</p>
+<p><strong>Requries</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-5rem">Argument</th>
+<th align="center" class="w-4rem">Type</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>compat</code></td>
+<td align="center"><code class="highlight"><span class="nb">bool</span></code></td>
+<td align="left">Whether to fall back to multi-threading for the sequence out-type converter. If set None, the decision would be made by checking <code class="highlight"><span class="n">os</span><span class="o">.</span><span class="n">name</span></code>. The compatible mode requires to be enabled on Windows.</td>
+</tr>
+</tbody>
+</table>
+<details class="tip"><summary>Tip</summary><p>This method supports context management. Using the context is recommended. Here we show two examples:</p>
+<div class="tabbed-set" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">Without context</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="n">dset</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="k">for</span> <span class="o">...</span> <span class="ow">in</span> <span class="n">dset</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="n">dset</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+<input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><label for="__tabbed_2_2">With context</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">with</span> <span class="n">dset</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">as</span> <span class="n">ds</span><span class="p">:</span>
+    <span class="k">for</span> <span class="o">...</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">:</span>
+        <span class="o">...</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+</div>
+</details>
+<details class="danger"><summary>Danger</summary><p>The cuda.Tensor could not be put into the queue on Windows (but on Linux we could), see</p>
+<p><a href="https://pytorch.org/docs/stable/notes/windows.html#cuda-ipc-operations">https://pytorch.org/docs/stable/notes/windows.html#cuda-ipc-operations</a></p>
+<p>To solve this problem, we need to fall back to multi-threading for the sequence out-type converter on Windows.</p>
+</details>
+<hr />
+<h3 id="start_test"><code>start_test</code><a class="headerlink" href="#start_test" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">dset</span><span class="o">.</span><span class="n">start_test</span><span class="p">(</span><span class="n">test_mode</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>Start the test mode. In the test mode, the process pool would not be open. All operations would be finished in the main thread. However, the random indices are still generated in the same seed of the parallel <code class="highlight"><span class="n">dset</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></code> mode.</p>
+<p>Running <code>start()</code> or <code>start_test()</code> would interrupt the started sequence.</p>
+<p><strong>Requries</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center" class="w-6rem">Argument</th>
+<th align="center" class="w-4rem">Type</th>
+<th align="left" class="w-8rem">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code>test_mode</code></td>
+<td align="center"><code class="highlight"><span class="nb">str</span></code></td>
+<td align="left">Could be <code class="highlight"><span class="s1">&#39;default&#39;</span></code>, <code class="highlight"><span class="s1">&#39;cpu&#39;</span></code>, or <code class="highlight"><span class="s1">&#39;numpy&#39;</span></code>. <ul> <li><code class="highlight"><span class="s1">&#39;default&#39;</span></code>: the output would be converted as <code>start()</code> mode.</li> <li><code class="highlight"><span class="s1">&#39;cpu&#39;</span></code>: even set 'cuda' as output type, the testing output would be still not converted to GPU.</li> <li><code class="highlight"><span class="s1">&#39;numpy&#39;</span></code>: would ignore all out_type configurations and return the original output. This output is still pre-processed.</li> </ul></td>
+</tr>
+</tbody>
+</table>
+<details class="tip"><summary>Tip</summary><p>This method also supports context management. See <a href="#start"><code>data.h5py.H5GParser.start</code></a> to check how to use it.</p>
+</details>
+<hr />
+<h3 id="finish"><code>finish</code><a class="headerlink" href="#finish" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">dset</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+</code></pre></div>
+<p>Finish the process pool. The compatible mode would be auto detected by the previous <code>start()</code>.</p>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
+<h3 id="len-batch_num"><code>len()</code>, <code>batch_num</code><a class="headerlink" href="#len-batch_num" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">len</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span>
+<span class="n">dset</span><span class="o">.</span><span class="n">batch_num</span>
+</code></pre></div>
+<p>The length of the dataset. It is the number of mini-batches, also the number of iterations for each epoch.</p>
+<hr />
+<h3 id="iter"><code>iter()</code><a class="headerlink" href="#iter" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="o">...</span> <span class="ow">in</span> <span class="n">dset</span><span class="p">:</span>
+    <span class="o">...</span>
+</code></pre></div>
+<p>The iterator. Recommend to use it inside the context. The unpacked variables <code class="highlight"><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">...</span></code> are ordered according to the given argument <code class="highlight"><span class="n">keywords</span></code> during the initialization.</p>
+<hr />
+<h3 id="size">size<a class="headerlink" href="#size" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">dset</span><span class="o">.</span><span class="n">size</span>
+</code></pre></div>
+<p>The size of the dataset. It contains the total number of samples for each epoch.</p>
+<hr />
+<h3 id="batch_size">batch_size<a class="headerlink" href="#batch_size" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">dset</span><span class="o">.</span><span class="n">batch_size</span>
+</code></pre></div>
+<p>The size of each batch. This value is given by the argument <code class="highlight"><span class="n">batch_size</span></code> during the initialization. The last size of the batch may be smaller than this value.</p>
+<hr />
+<h3 id="preproc">preproc<a class="headerlink" href="#preproc" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">dset</span><span class="o">.</span><span class="n">preproc</span>
+</code></pre></div>
+<p>The argument <code class="highlight"><span class="n">preprocfunc</span></code> during the initialziation. This property helps users to invoke the preprocessor manually.</p>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
+<details class="example" open="open"><summary>Example 1</summary><div class="tabbed-set" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">Codes</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">mdnc</span>
+
+<span class="n">dset</span> <span class="o">=</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5GParser</span><span class="p">(</span><span class="s1">&#39;test_gparser&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;zero&#39;</span><span class="p">],</span>
+                                <span class="n">batch_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">preprocfunc</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">dset</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;data.h5py: Epoch 1, Batch </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;data.h5py: Epoch 2, Batch </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+</div>
+</details>
+<details class="example" open="open"><summary>Example 2</summary><div class="tabbed-set" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">Codes</label><div class="tabbed-content">
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">mdnc</span>
+
+<span class="n">dset</span> <span class="o">=</span> <span class="n">mdnc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">h5py</span><span class="o">.</span><span class="n">H5GParser</span><span class="p">(</span><span class="s1">&#39;test_gparser&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;zero&#39;</span><span class="p">],</span>
+                                <span class="n">batch_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">preprocfunc</span><span class="o">=</span><span class="n">mdnc</span><span class="o">.</span><span class="n">preprocs</span><span class="o">.</span><span class="n">ProcScaler</span><span class="p">())</span>
+<span class="k">with</span> <span class="n">dset</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">d_one</span><span class="p">,</span> <span class="n">d_two</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">d_one</span><span class="p">,</span> <span class="n">d_two</span> <span class="o">=</span> <span class="n">d_one</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">d_two</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">std_one</span><span class="p">,</span> <span class="n">std_two</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">d_one</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">d_two</span><span class="p">)</span>
+        <span class="n">d_one</span><span class="p">,</span> <span class="n">d_two</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">preproc</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">d_one</span><span class="p">,</span> <span class="n">d_two</span><span class="p">)</span>
+        <span class="n">std_one_</span><span class="p">,</span> <span class="n">std_two_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">d_one</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">d_two</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Before: </span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">; After: </span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">std_one</span><span class="p">,</span> <span class="n">std_two</span><span class="p">,</span> <span class="n">std_one_</span><span class="p">,</span> <span class="n">std_two_</span><span class="p">))</span>
+</code></pre></div>
+</td></tr></table>
+</div>
+</div>
+</details>
+                
+                  
+                    
+
+<hr>
+<div class="md-source-date">
+  <small>
+    
+      Last update: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 1, 2021</span>
+    
+  </small>
+</div>
+                  
+                
+              
+              
+                
+
+
+  <h2 id="__comments">Comments</h2>
+  <div id="disqus_thread"></div>
+  <script>var disqus_config=function(){this.page.url="https://cainmagi.github.io/MDNC/apis/data/h5py/H5GParser/",this.page.identifier="apis/data/h5py/H5GParser/"};window.addEventListener("load",function(){var e=document,i=e.createElement("script");i.src="//mdnc-documentation.disqus.com/embed.js",i.setAttribute("data-timestamp",+new Date),(e.head||e.body).appendChild(i)})</script>
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../H5SupSaver/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              H5SupSaver
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../H5CParser/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              H5CParser
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2021 Yuchen Jin
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://cainmagi.github.io/" target="_blank" rel="noopener" title="cainmagi.github.io" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M336.5 160C322 70.7 287.8 8 248 8s-74 62.7-88.5 152h177zM152 256c0 22.2 1.2 43.5 3.3 64h185.3c2.1-20.5 3.3-41.8 3.3-64s-1.2-43.5-3.3-64H155.3c-2.1 20.5-3.3 41.8-3.3 64zm324.7-96c-28.6-67.9-86.5-120.4-158-141.6 24.4 33.8 41.2 84.7 50 141.6h108zM177.2 18.4C105.8 39.6 47.8 92.1 19.3 160h108c8.7-56.9 25.5-107.8 49.9-141.6zM487.4 192H372.7c2.1 21 3.3 42.5 3.3 64s-1.2 43-3.3 64h114.6c5.5-20.5 8.6-41.8 8.6-64s-3.1-43.5-8.5-64zM120 256c0-21.5 1.2-43 3.3-64H8.6C3.2 212.5 0 233.8 0 256s3.2 43.5 8.6 64h114.6c-2-21-3.2-42.5-3.2-64zm39.5 96c14.5 89.3 48.7 152 88.5 152s74-62.7 88.5-152h-177zm159.3 141.6c71.4-21.2 129.4-73.7 158-141.6h-108c-8.8 56.9-25.6 107.8-50 141.6zM19.3 352c28.6 67.9 86.5 120.4 158 141.6-24.4-33.8-41.2-84.7-50-141.6h-108z"/></svg>
+      </a>
+    
+      
+      
+      <a href="mailto:cainmagi@gmail.com" target="_blank" rel="noopener" title="" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/cainmagi" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://steamcommunity.com/id/cainmagi" target="_blank" rel="noopener" title="steamcommunity.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M496 256c0 137-111.2 248-248.4 248-113.8 0-209.6-76.3-239-180.4l95.2 39.3c6.4 32.1 34.9 56.4 68.9 56.4 39.2 0 71.9-32.4 70.2-73.5l84.5-60.2c52.1 1.3 95.8-40.9 95.8-93.5 0-51.6-42-93.5-93.7-93.5s-93.7 42-93.7 93.5v1.2L176.6 279c-15.5-.9-30.7 3.4-43.5 12.1L0 236.1C10.2 108.4 117.1 8 247.6 8 384.8 8 496 119 496 256zM155.7 384.3l-30.5-12.6a52.79 52.79 0 0 0 27.2 25.8c26.9 11.2 57.8-1.6 69-28.4 5.4-13 5.5-27.3.1-40.3-5.4-13-15.5-23.2-28.5-28.6-12.9-5.4-26.7-5.2-38.9-.6l31.5 13c19.8 8.2 29.2 30.9 20.9 50.7-8.3 19.9-31 29.2-50.8 21zm173.8-129.9c-34.4 0-62.4-28-62.4-62.3s28-62.3 62.4-62.3 62.4 28 62.4 62.3-27.9 62.3-62.4 62.3zm.1-15.6c25.9 0 46.9-21 46.9-46.8 0-25.9-21-46.8-46.9-46.8s-46.9 21-46.9 46.8c.1 25.8 21.1 46.8 46.9 46.8z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://weibo.com/u/5885093621" target="_blank" rel="noopener" title="weibo.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M407 177.6c7.6-24-13.4-46.8-37.4-41.7-22 4.8-28.8-28.1-7.1-32.8 50.1-10.9 92.3 37.1 76.5 84.8-6.8 21.2-38.8 10.8-32-10.3zM214.8 446.7C108.5 446.7 0 395.3 0 310.4c0-44.3 28-95.4 76.3-143.7C176 67 279.5 65.8 249.9 161c-4 13.1 12.3 5.7 12.3 6 79.5-33.6 140.5-16.8 114 51.4-3.7 9.4 1.1 10.9 8.3 13.1 135.7 42.3 34.8 215.2-169.7 215.2zm143.7-146.3c-5.4-55.7-78.5-94-163.4-85.7-84.8 8.6-148.8 60.3-143.4 116s78.5 94 163.4 85.7c84.8-8.6 148.8-60.3 143.4-116zM347.9 35.1c-25.9 5.6-16.8 43.7 8.3 38.3 72.3-15.2 134.8 52.8 111.7 124-7.4 24.2 29.1 37 37.4 12 31.9-99.8-55.1-195.9-157.4-174.3zm-78.5 311c-17.1 38.8-66.8 60-109.1 46.3-40.8-13.1-58-53.4-40.3-89.7 17.7-35.4 63.1-55.4 103.4-45.1 42 10.8 63.1 50.2 46 88.5zm-86.3-30c-12.9-5.4-30 .3-38 12.9-8.3 12.9-4.3 28 8.6 34 13.1 6 30.8.3 39.1-12.9 8-13.1 3.7-28.3-9.7-34zm32.6-13.4c-5.1-1.7-11.4.6-14.3 5.4-2.9 5.1-1.4 10.6 3.7 12.9 5.1 2 11.7-.3 14.6-5.4 2.8-5.2 1.1-10.9-4-12.9z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://www.youtube.com/channel/UCzqpNK5qFMy5_cI1i0Z1nQw" target="_blank" rel="noopener" title="www.youtube.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg>
+      </a>
+    
+      
+      
+        
+        
+      
+      <a href="https://music.163.com/#/user/home?id=276304206" target="_blank" rel="noopener" title="music.163.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.38 1.51L150.41 96A32 32 0 0 0 128 126.51v261.41A139 139 0 0 0 96 384c-53 0-96 28.66-96 64s43 64 96 64 96-28.66 96-64V214.32l256-75v184.61a138.4 138.4 0 0 0-32-3.93c-53 0-96 28.66-96 64s43 64 96 64 96-28.65 96-64V32a32 32 0 0 0-41.62-30.49z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tabs", "navigation.expand"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.ca5457b8.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.9.1/mermaid.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      
+        <script src="../../../../assets/javascripts/simpleLightbox.min.js"></script>
+      
+        <script src="../../../../assets/javascripts/extensions.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.1.2/es5/tex-mml-chtml.min.js"></script>
+      
+    
+  </body>
+</html>

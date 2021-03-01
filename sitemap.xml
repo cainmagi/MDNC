@@ -35,5 +35,17 @@
      <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5SupSaver/</loc>
      <lastmod>2021-03-01</lastmod>
      <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5GParser/</loc>
+     <lastmod>2021-03-01</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5CParser/</loc>
+     <lastmod>2021-03-01</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5RParser/</loc>
+     <lastmod>2021-03-01</lastmod>
+     <changefreq>daily</changefreq>
     </url>
 </urlset>
