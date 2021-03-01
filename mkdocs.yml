@@ -28,7 +28,7 @@ theme:
   # Font, palette and git icon changed
   language: en
   features:
-    - navigation.sections
+    #- navigation.instant
     - navigation.tabs
     - navigation.expand
   icon:
@@ -113,7 +113,7 @@ markdown_extensions:
   - pymdownx.smartsymbols
   - pymdownx.superfences:
       custom_fences:
-        - { class: mermaid-experimental, name: mermaid, format: !!python/name:pymdownx.superfences.fence_div_format }
+        - { name: mermaid, class: mermaid, format: !!python/name:pymdownx.superfences.fence_div_format }
         - { name: math, class: overflow, format: !!python/name:pymdownx.superfences.fence_div_format }
   - pymdownx.tabbed
   - pymdownx.tasklist:
@@ -122,9 +122,20 @@ markdown_extensions:
 # Page tree
 nav:
   - Tutorial:
-      - Overview: index.md
-      - Installation: installation.md
-      - Licenses: licenses.md
+    - Overview: index.md
+    - Installation: installation.md
+    - Licenses: licenses.md
+  - APIs:
+    - Overview: apis/overview.md
+    - contribs:
+      - torchsummary:
+        - summary: apis/contribs/torchsummary/summary.md
+        - summary_string: apis/contribs/torchsummary/summary_string.md
+    - data:
+      - h5py:
+        - H5Converter: apis/data/h5py/H5Converter.md
+        - H5SeqConverter: apis/data/h5py/H5SeqConverter.md
+        - H5SupSaver: apis/data/h5py/H5SupSaver.md
 
 # Google Analytics
 google_analytics_4:

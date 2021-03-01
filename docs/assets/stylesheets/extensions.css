@@ -1,3 +1,34 @@
+/* Add root configs */
+:root {
+  --md-progress-stripe: hsla(0, 0%, 100%, 0.3);
+}
+
+@keyframes animate-stripes {
+  0% { background-position: 0 0; }
+  100% { background-position: 120px 0; }
+}
+
+/* min width configs */
+.w-4rem {
+  min-width: 4rem !important;
+}
+
+.w-5rem {
+  min-width: 5rem !important;
+}
+
+.w-6rem {
+  min-width: 6rem !important;
+}
+
+.w-7rem {
+  min-width: 7rem !important;
+}
+
+.w-8rem {
+  min-width: 8rem !important;
+}
+
 /* float right */
 div .fl-right{
   clear: right;
@@ -90,6 +121,16 @@ html .md-typeset .superfences-tabs>label:hover{
   height: 1.2rem;
   float: left;
   background-color: #2979ff;
+}
+
+.progress.candystripe .progress-bar {
+  background-image: linear-gradient(135deg, var(--md-progress-stripe) 27%,transparent 27%,transparent 52%,var(--md-progress-stripe) 52%,var(--md-progress-stripe) 77%,transparent 77%,transparent);
+  background-size: 2rem 2rem;
+}
+
+.candystripe-animate .progress-bar {
+  -webkit-animation: animate-stripes 3s linear infinite;
+  animation: animate-stripes 3s linear infinite;
 }
 
 .progress {

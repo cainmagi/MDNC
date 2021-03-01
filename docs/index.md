@@ -10,12 +10,17 @@ This is a pyTorch framework used for
 
 ???+ info
     Currently, this module is still under development. The current version is
-    [=12% "0.1.2"]
+    [=12% "0.1.2"]{: .candystripe .candystripe-animate}
     However, you could use this nightly version anyway. All available (stable) APIs of the current version would be recorded in this document.
 
 ## Overview
 
-The pyTorch has its own coding style. In brief, we could summarize the style as below:
+The pyTorch has its own coding style. In the shortest words, this style could be summarized as "Let users to implement as much as possible.". It seems to be very inconvenient, however, the pyTorch could benefit from this coding philosophy from the following aspects:
+
+* Everything is under-controlled by users. In comparison, a well-enclosed deep learning framework, like Keras, is certainly easier to use. However, it would be very difficult to hack into the enclosed APIs and perform some complicated modifications.
+* A well-enclosed tool often requires a lot of not exposed logics. Because the pyTorch is focused on the low-level APIs, the design of pyTorch is simple and neat enough. Users could contribute to the package easily.
+
+In details, such a coding style is implemented mainly in the following methods:
 
 * Modules, optimizers, and the training logic are separated from each other. The module is only used for defining the network graph. The optimizers are provided as instances used for loss functions. The training and testing logics require to be implemented by users.
 * The data loading and processing are paralleled by `torch.utils.data.DataLoader` and `torchvision` respectively. The users do not need to write codes about multi-processing management.
@@ -38,26 +43,26 @@ Now we have such progress on the semi-product:
 
 * [ ] `optimizers`
 * [ ] `modules`
-    * [x] `conv`: Modern convolutional layers and networks. [=100% "100%"]
-    * [x] `resnet`: Residual blocks and networks. [=100% "100%"]
-    * [ ] `resnext`: ResNeXt blocks and networks. [=0% "0%"]
-    * [ ] `incept`: Google inception blocks and networks. [=0% "0%"]
-    * [ ] `densenet`: Dense-net blocks and networks. [=0% "0%"]
+    * [x] `conv`: Modern convolutional layers and networks. [=100% "100%"]{: .candystripe}
+    * [x] `resnet`: Residual blocks and networks. [=100% "100%"]{: .candystripe}
+    * [ ] `resnext`: ResNeXt blocks and networks. [=0% "0%"]{: .candystripe .candystripe-animate}
+    * [ ] `incept`: Google inception blocks and networks. [=0% "0%"]{: .candystripe .candystripe-animate}
+    * [ ] `densenet`: Dense-net blocks and networks. [=0% "0%"]{: .candystripe .candystripe-animate}
 * [ ] `models`
 * [ ] `data`
-    * [x] `h5py`: Wrapped HDF5 datasets saver and loader. [=100% "100%"]
-    * [ ] `netcdf4`: Wrapped NETCDF4 datasets saver and loader. [=0% "0%"]
-    * [ ] `bcolz`: Wrapped Bcolz datasets saver and loader. [=0% "0%"]
-    * [ ] `text`: Wrapped text-based datasets saver and loader (CSV, JSON, TXT). [=0% "0%"]
-    * [x] `preprocs`: Useful pre- and post- processing tools for all data handles in this package. [=100% "100%"]
-    * [x] `webtools`: Web tools for downloading tarball-packed datasets from Github. [=100% "100%"]
+    * [x] `h5py`: Wrapped HDF5 datasets saver and loader. [=100% "100%"]{: .candystripe}
+    * [ ] `netcdf4`: Wrapped NETCDF4 datasets saver and loader. [=0% "0%"]{: .candystripe .candystripe-animate}
+    * [ ] `bcolz`: Wrapped Bcolz datasets saver and loader. [=0% "0%"]{: .candystripe .candystripe-animate}
+    * [ ] `text`: Wrapped text-based datasets saver and loader (CSV, JSON, TXT). [=0% "0%"]{: .candystripe .candystripe-animate}
+    * [x] `preprocs`: Useful pre- and post- processing tools for all data handles in this package. [=100% "100%"]{: .candystripe}
+    * [x] `webtools`: Web tools for downloading tarball-packed datasets from Github. [=100% "100%"]{: .candystripe}
 * [ ] `funcs`
 * [ ] `utils`
-    * [ ] `tools`: Light-weighted record parsing tools used during training or testing. [=10% "10%"]
-    * [ ] `draw`: Wrapped `matplotlib` drawing tools. Most of the utilities are designed as call-back based functions. [=80% "80%"]
+    * [ ] `tools`: Light-weighted record parsing tools used during training or testing. [=10% "10%"]{: .candystripe .candystripe-animate}
+    * [ ] `draw`: Wrapped `matplotlib` drawing tools. Most of the utilities are designed as call-back based functions. [=80% "80%"]{: .candystripe .candystripe-animate}
 * [ ] `contribs`
-    * [x] `torchsummary` [:fontawesome-solid-external-link-alt:](https://github.com/sksq96/pyTorch-summary): Keras style model.summary() in pyTorch, with some bugs gotten fixed (modified) (MIT licensed). [=100% "100%"]
-    * [ ] `tensorboard` [:fontawesome-solid-external-link-alt:](https://pyTorch.org/docs/stable/tensorboard.html): Wrapped `torch.utils.tensorboard`, supporting context-style writer and tensorboard.log converted to `h5py` format (not modified). [=0% "0%"]
+    * [x] `torchsummary` [:fontawesome-solid-external-link-alt:](https://github.com/sksq96/pyTorch-summary): Keras style model.summary() in pyTorch, with some bugs gotten fixed (modified) (MIT licensed). [=100% "100%"]{: .candystripe}
+    * [ ] `tensorboard` [:fontawesome-solid-external-link-alt:](https://pyTorch.org/docs/stable/tensorboard.html): Wrapped `torch.utils.tensorboard`, supporting context-style writer and tensorboard.log converted to `h5py` format (not modified). [=0% "0%"]{: .candystripe .candystripe-animate}
 
 ## Compatibility test
 
