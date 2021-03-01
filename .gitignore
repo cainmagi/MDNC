@@ -1,6 +1,7 @@
 # Ignore temp files.
 /alpha*
 /legacy*
+/docs*
 /.vscode/*
 
 # Byte-compiled / optimized / DLL files

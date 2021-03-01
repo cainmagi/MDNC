@@ -86,13 +86,12 @@ class H5Converter:
     folder, and each dataset would be mapped into a file.
     '''
     def __init__(self, file_name, oformat, to_other=True):
-        '''
-        Initialization and set format.
+        '''Initialization and set format.
         Arguments:
             file_name: a path where we find the dataset. If the
                        conversion is h52other, the path should
                        refer a folder containing several subfiles,
-                       otherwise, it should refer an HD5 file.
+                       otherwise, it should refer an HDF5 file.
             oformat:   the format function for a single dataset,
                        it could be provided by users, or use the
                        default configurations. (avaliable: 'txt',
@@ -163,6 +162,7 @@ class H5Converter:
                 print('data.h5py: Have dumped {0}'.format(dsetName))
 
     def convert(self):
+        '''Perform the data conversion.'''
         if self.__read:
             self.__other2h5()
         else:
@@ -220,7 +220,7 @@ class H5SeqConverter:
 
     def config(self, **kwargs):
         '''
-        Make configuration for the saver.
+        Make configuration for the converter.
         Arguments for this class:
             logver (int): the log level for dumping files.
         Arguments often used:
@@ -393,6 +393,7 @@ class H5SeqConverter:
         self.f_out = None
 
     def close(self):
+        '''Close the converter.'''
         if self.__in_contex:
             raise RuntimeError('data.h5py: Should not close the file explicitly when the saver is managing a contex. Try to exit the contex or create a new different saver.')
         self.__close()
@@ -516,6 +517,18 @@ class H5SupSaverGroup:
         if self.__root_valid:
             self.__root.config(**kwargs)
 
+    def get_config(self, name):
+        '''Get the config value.
+        Arguments:
+            name: the name of the required config value.
+        Returns:
+            1. the required config value.
+        '''
+        if self.__root_valid:
+            return self.__root.get_config(name)
+        else:
+            raise IndexError('data.h5py: The root H5SupSaver does not exist.')
+
     def dump(self, keyword, data, **kwargs):
         '''
         Dump the dataset with a keyword into the file.
@@ -582,14 +595,14 @@ class H5SupSaverGroup:
             if self.__kwargs_['logver'] > 0:
                 print('data.h5py: Create a soft link "{0}", pointting to "{1}".'.format(keyword, target))
 
-    def set_attrs(self, keyword, attrs=None, **kwattrs):
+    def set_attrs(self, keyword, attrs=None, **kwargs):
         '''
         Set attrs for an existed data group or dataset.
         Arguments:
             keyword: the keyword of the soft link.
             attrs:   the attributes those would be set.
-            kwattrs: more attributes those would be combined with
-                     attrs by .update().
+            kwargs: more attributes those would be combined with
+                    attrs by .update().
         '''
         if not self.is_open:
             raise OSError('data.h5py: This group has been closed. Should not set attributes with it. Please try to open a new file or create a new group.')
@@ -597,7 +610,7 @@ class H5SupSaverGroup:
             raise KeyError('data.h5py: Could not find the keyword "{0}" for setting the attrs.'.format(keyword))
         if attrs is None:
             attrs = dict()
-        attrs.update(kwattrs)
+        attrs.update(kwargs)
         g_attrs = self.h[keyword].attrs
         for k, v in attrs.items():
             if isinstance(v, dict):
@@ -702,7 +715,13 @@ class H5SupSaver:
                 self.__kwargs_[k] = v
         return kwargs
 
-    def get_config(self, name=None):
+    def get_config(self, name):
+        '''Get the config value.
+        Arguments:
+            name: the name of the required config value.
+        Returns:
+            1. the required config value.
+        '''
         if name == '$root':
             return self.__kwargs
         elif name == '$root_':
@@ -772,6 +791,7 @@ class H5SupSaver:
         return self
 
     def close(self):
+        '''Close the saver.'''
         if self.__in_contex:
             raise RuntimeError('data.h5py: Should not close the file explicitly when the saver is managing a contex. Try to exit the contex or create a new different saver.')
         if self.f is not None:
@@ -820,18 +840,18 @@ class H5SupSaver:
             raise OSError('data.h5py: Should not set links before opening a file.')
         self.f.set_link(keyword, target, overwrite=overwrite)
 
-    def set_attrs(self, keyword, attrs=None, **kwattrs):
+    def set_attrs(self, keyword, attrs=None, **kwargs):
         '''
         Set attrs for an existed data group or dataset.
         Arguments:
-            keyword: the keyword of the soft link.
+            keyword: the keyword where we set the attributes.
             attrs:   the attributes those would be set.
-            kwattrs: more attributes those would be combined with
-                     attrs by .update().
+            kwargs: more attributes those would be combined with
+                    attrs by .update().
         '''
         if self.f is None:
             raise OSError('data.h5py: Should not set attributes before opening a file.')
-        self.f.set_attrs(keyword, attrs=attrs, **kwattrs)
+        self.f.set_attrs(keyword, attrs=attrs, **kwargs)
 
     def set_virtual_set(self, keyword, sub_set_keys, fill_value=0.0):
         '''
@@ -882,9 +902,14 @@ class _H5AParser(abc.ABC):
             return get_len
 
     def check_dsets(self, file_path, keywords):
-        '''
-        Check the size of datasets and validate all datasets.
+        '''Check the size of datasets and validate all datasets.
         If success, would return the size of the datasets.
+        Arguments:
+            file_path: the path of the HDF5 dataset to be validated.
+            keywords: the keywords to be validated. Each keyword should
+                      point to or redict to a dataset.
+        Returns:
+            1. the size of all datasets.
         '''
         with h5py.File(file_path, 'r') as f:
             dsets = []
@@ -898,9 +923,15 @@ class _H5AParser(abc.ABC):
                     raise TypeError('data.h5py: The assigned keywords do not correspond to each other.')
         return sze
 
-    def get_attrs(self, keyword, attr_names, *args_anames):
-        '''
-        Get the attributes from the keyword.
+    def get_attrs(self, keyword, *args, attr_names=None):
+        '''Get the attributes by the keyword.
+        Arguments:
+            keyword: the keyword of a dataset.
+            attr_names: a sequence of required attribute names.
+            *args: other attribute names, would be attached to the argument
+                   "attr_names".
+        Returns:
+            1. a list of the required attribute values.
         '''
         if not isinstance(attr_names, (list, tuple)):
             attr_names = [str(attr_names)]
@@ -908,7 +939,7 @@ class _H5AParser(abc.ABC):
             attr_names = list()
         else:
             attr_names = list(attr_names)
-        attr_names.extend(args_anames)
+        attr_names.extend(args)
         with h5py.File(self.file_path, 'r') as f:
             attrs = f[keyword].attrs
             res = list()
@@ -920,6 +951,13 @@ class _H5AParser(abc.ABC):
         return res
 
     def get_file(self, enable_write=False):
+        '''Get a file object of the to-be-loaded file.
+        Arguments:
+            enable_write: if enabled, would use the `a` mode to open the file.
+                          Otherwise, use the `r` mode.
+        Returns:
+            1. the h5py.File object of the to-be-loaded file.
+        '''
         mode = 'a' if enable_write else 'r'
         return h5py.File(self.file_path, mode)
 
@@ -936,7 +974,7 @@ class _H5AParser(abc.ABC):
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.smanager.__exit__(exc_type, exc_value, exc_traceback)
 
-    def start(self, compat=True):
+    def start(self, compat=None):
         '''Start the process pool.
         Could be used like:
         ```python
@@ -1254,16 +1292,16 @@ class _H5RParser:
 class H5GParser(_H5AParser):
     '''Grouply parsing dataset
     This class allows users to feed one .h5 file, and convert it to
-    mdnt.Sequence. The realization could be described as:
-        (1) Create .h5 file handle.
-        (2) Using the user defined keywords to get a group of datasets.
-        (3) Estimate the dataset sizes, and generate indices. Note that
-            each dataset should share the same size (but could be
-            different shapes).
-        (4) Use the indices to create a tf.data.Dataset, and allows it
-            to randomly shuffle the indices in each epoch.
-        (5) Use Dataset.map() to address the data by the index from the
-            index dataset.
+    data.sequence.MPSequence. The realization could be described as:
+        (1) Create `.h5` file indexer, this indexer would be
+            initialized by sequence.MPSequence. It would use the
+            user defined keywords to get a group of datasets.
+        (2) Estimate the dataset sizes, each dataset should share the
+            same size (but could have different shapes).
+        (3) Use the dataset size to create a sequence.MPSequence, and
+            allows it to randomly shuffle the indices in each epoch.
+        (4) Invoke the MPSequence APIs to serve the parallel dataset
+            parsing.
     Certainly, you could use this parser to load a single dataset.
     '''
     def __init__(self, file_name, keywords, batch_size=32, shuffle=True, shuffle_seed=1000, preprocfunc=None, num_workers=4, num_buffer=10):
@@ -1273,7 +1311,8 @@ class H5GParser(_H5AParser):
             file_name: the data path of the file (could be without postfix).
             keywords: should be a list of keywords (or a single keyword).
             batch_size: number of samples in each batch.
-            shuffle: if on, shuffle the data set at the end of each epoch.
+            shuffle: if on, shuffle the data set at the beginning of each
+                     epoch.
             shuffle_seed: the seed for random shuffling.
             preprocfunc: this function would be added to the produced data
                          so that it could serve as a pre-processing tool.
@@ -1307,7 +1346,7 @@ class H5GParser(_H5AParser):
 class H5CParser(_H5AParser):
     '''Continuously parsing dataset
     This class allows users to feed one .h5 file, and convert it to
-    mdnt.Sequence. The realization could be described as:
+    data.sequence.MPSequence. The realization could be described as:
     This Parser is the upgraded version of H5GParser, it is specially
     designed for parsing data to LSTM/ConvLSTM. A `sequence` dimension
     would be inserted between `batches` and `channels`. In each batch,
@@ -1329,8 +1368,8 @@ class H5CParser(_H5AParser):
                             list would be parsed as (B, C1, C2, ...). It should
                             be a list of keywords (or a single keyword).
             batch_size: number of samples in each batch.
-            sequence_size: the size of each sequence. It represents `S` in
-                           of (B, S, C1, C2, ...).
+            sequence_size: the size of each sequence. It represents `S` of
+                           (B, S, C1, C2, ...).
             sequence_position: the aligned position between the single values
                                and the sequence values. It should be in the
                                range of >= 0 and < 'sequence_size'.
@@ -1425,14 +1464,14 @@ class H5CParser(_H5AParser):
 class H5RParser(_H5AParser):
     '''Randomly parsing dataset
     This class allows users to feed one .h5 file, and convert it to
-    mdnt.Sequence. The realization could be described as:
+    data.sequence.MPSequence. The realization could be described as:
         (1) Create .h5 file handle.
         (2) Using the user defined keywords to get a group of datasets.
         (3) Check the dataset size, and register the dataset list.
         (4) In each iteration, iterate all datasets.
     Certainly, you could use this parser to load a single dataset.
     '''
-    def __init__(self, file_name, keywords, preprocfunc, batch_num=100, shuffle=True, shuffle_seed=1000, num_workers=4, num_buffer=10):
+    def __init__(self, file_name, keywords, preprocfunc, batch_num=100, num_workers=4, num_buffer=10):
         '''
         Create the parser and its h5py file handle.
         Arguments:
@@ -1442,8 +1481,6 @@ class H5RParser(_H5AParser):
                          so that it could serve as a pre-processing tool.
             batch_num: the number of mini-batches in each epoch.
             batch_size: number of samples in each mini-batch.
-            shuffle: if on, shuffle the data set at the end of each epoch.
-            shuffle_seed: the seed for random shuffling.
             num_workers: the number of workers.
             num_buffer: the buffer size of the data pool, it means the number
                         of mini-batches.
@@ -1466,4 +1503,4 @@ class H5RParser(_H5AParser):
 
         self.worker = functools.partial(_H5RParser, file_name=file_name, keywords=keywords, procfunc=preprocfunc)
         self.preproc = preprocfunc if preprocfunc is not None else super()._preproc
-        self.smanager = sequence.MPSequence(self.worker, dset_size=self.size, num_workers=num_workers, num_converters=1, batch_size=1, buffer=num_buffer, shuffle=shuffle, seed=shuffle_seed)
+        self.smanager = sequence.MPSequence(self.worker, dset_size=self.size, num_workers=num_workers, num_converters=1, batch_size=1, buffer=num_buffer, shuffle=False)

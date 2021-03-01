@@ -67,7 +67,7 @@ def summary(model, input_size, batch_size=-1, device='cuda:0', dtypes=None):
                     results.
         device: a str or torch.device. Should be set according to the deployed
                 device of the argument "model".
-        dtype: a list or torch data type for each input variable.
+        dtypes: a list or torch data type for each input variable.
     Returns:
         1. tensor, total parameter numbers.
         2. tensor, trainable parameter numbers.
@@ -93,7 +93,7 @@ def summary_string(model, input_size, batch_size=-1, device='cuda:0', dtypes=Non
                     results.
         device: a str or torch.device. Should be set according to the deployed
                 device of the argument "model".
-        dtype: a list or torch data type for each input variable.
+        dtypes: a list or torch data type for each input variable.
     Returns:
         1. str, the summary text report.
         2. tuple, (total parameter numbers, trainable parameter numbers)
