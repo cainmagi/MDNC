@@ -8,13 +8,13 @@ saver = mdnc.data.h5py.H5SupSaver(
 )
 ```
 
-Save supervised data set as `.h5` file. This class allows users to dump multiple datasets into one file handle, then it would save it as a `.h5` file. The keywords of the sets should be assigned by users. It supports both the context management and the dictionary-style nesting. It is built on top of `!#py h5py.Group` and `!# h5py.Dataset`.
+Save supervised data set as `.h5` file. This class allows users to dump multiple datasets into one file handle, then it would save it as a `.h5` file. The keywords of the sets should be assigned by users. It supports both the context management and the dictionary-style nesting. It is built on top of `#!py h5py.Group` and `#!py h5py.Dataset`.
 
 The motivation of using this saver includes:
 
 * Provide an easier way for saving resizable datasets. All datasets created by this saver are resizable.
-* Provide convenient APIs for creating `#! h5py.Softlink`, `#! h5py.Attributes` and `#! h5py.VirtualDataSet`.
-* Add context nesting supports for `#! h5py.Group`. This would makes the codes more elegant.
+* Provide convenient APIs for creating `#!py h5py.Softlink`, `#!py h5py.Attributes` and `#!py h5py.VirtualDataSet`.
+* Add context nesting supports for `#!py h5py.Group`. This would makes the codes more elegant.
 
 ## Arguments
 
@@ -37,7 +37,7 @@ Make configuration for the saver. Only the explicitly given argument would be us
 
 **Requries**
 
-| Argument {: .w-6rem} | Type {: .w-4rem} | Description {: .w-8rem} |
+| Argument {: .w-5rem} | Type {: .w-4rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
 | `logver` | `#!py int` | The verbose level of the outputs. When setting 0, would run silently. |
 | `**kwargs` | | Any argument that would be used for creating `#!py h5py.Dataset`. The given argument would override the default value during the dataset creation. |
@@ -47,33 +47,36 @@ Make configuration for the saver. Only the explicitly given argument would be us
 ### `get_config`
 
 ```python
-saver.get_config(name=None)
+cfg = saver.get_config(name=None)
 ```
 
 Get the current configuration value by the given `name`.
 
-??? warning
-    This method does not support nesting APIs. It should only be loaded by the
-
 **Requries**
 
-| Argument {: .w-6rem} | Type {: .w-4rem} | Description {: .w-8rem} |
+| Argument {: .w-5rem} | Type {: .w-4rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
 | `name` | `#!py str` | The name of the required config value. |
+
+**Returns**
+
+| Argument {: .w-5rem} | Description {: .w-8rem} |
+| :------: | :---------- |
+| `cfg` | The required config value. |
 
 -----
 
 ### `open`
 
 ```python
-saver.open(file_name, enable_read=None)
+f = saver.open(file_name, enable_read=None)
 ```
 
 Open a new file. If a file has been opened before, this file would be closed. This method and the `__init__` method (need to specify `file_name`) support context management.
 
 **Requries**
 
-| Argument {: .w-7rem} | Type {: .w-4rem} | Description {: .w-8rem} |
+| Argument {: .w-6rem} | Type {: .w-4rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
 | `file_name` | `#!py str` | A path where we save the file. |
 | `enable_read` | `#!py bool` | When setting `#!py True`, enable the `a` mode. Otherwise, use `w` mode. This option is used when adding data to an existed file. If not set, the `enable_read` would be inherited from the class definition. Otherwise, the class definition `enable_read` would be updated by this new value. |
@@ -100,7 +103,7 @@ Dump the dataset with a keyword into the file. The dataset is resizable, so this
 
 **Requries**
 
-| Argument {: .w-7rem} | Type {: .w-4rem} | Description {: .w-8rem} |
+| Argument {: .w-6rem} | Type {: .w-6rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
 | `file_name` | `#!py str` | The keyword of the dumped dataset. |
 | `data` | `#!py np.ndarray` | A new batch of data items, should be a numpy array. The axes `#!py data[1:]` should match the shape of existing dataset. |
@@ -118,7 +121,7 @@ Create a h5py.Softlink.
 
 **Requries**
 
-| Argument {: .w-7rem} | Type {: .w-4rem} | Description {: .w-8rem} |
+| Argument {: .w-6rem} | Type {: .w-4rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
 | `keyword` | `#!py str` | The keyword of the to-be created soft link. |
 | `target` | `#!py str` | The reference (pointting position) of the soft link. |
@@ -129,14 +132,14 @@ Create a h5py.Softlink.
 ### `set_attrs`
 
 ```python
-saver.set_attrs(keyword, attrs=None, **kwattrs)
+saver.set_attrs(keyword, attrs=None, **kwargs)
 ```
 
 Set attrs for an existed data group or dataset.
 
 **Requries**
 
-| Argument {: .w-7rem} | Type {: .w-4rem} | Description {: .w-8rem} |
+| Argument {: .w-6rem} | Type {: .w-4rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
 | `keyword` | `#!py str` | The keyword where we set the attributes. |
 | `attrs` | `#!py dict` | The attributes those would be set. |
@@ -154,7 +157,7 @@ Create a virtual dataset based on a list of subsets. All subsets require to be h
 
 **Requries**
 
-| Argument {: .w-7rem} | Type {: .w-4rem} | Description {: .w-8rem} |
+| Argument {: .w-7rem} | Type {: .w-5rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
 | `keyword` | `#!py str` | The keyword of the dumped dataset. |
 | `sub_set_keys` | `#!py (str, )` | A sequence of sub-set keywords. Each sub-set should share the same shape (except for the first dimension). |
@@ -176,8 +179,10 @@ Supports using a dictionary to update the attributes of the current `h5py` objec
 ???+ example "Example 1"
     === "Codes"
         ```python linenums="1"
+        import numpy as np
         import mdnc
-        with mdnc.data.h5py.H5SupSaver('new_file.h5', enable_read=False) as s:
+
+        with mdnc.data.h5py.H5SupSaver('test_h5supsaver.h5', enable_read=False) as s:
             s.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
             s.dump('one', np.ones([25, 20]), chunks=(1, 20))
             s.dump('zero', np.zeros([25, 10]), chunks=(1, 10))
@@ -186,10 +191,12 @@ Supports using a dictionary to update the attributes of the current `h5py` objec
 ???+ example "Example 2"
     === "Codes"
         ```python linenums="1"
+        import numpy as np
         import mdnc
+
         saver = mdnc.data.h5py.H5SupSaver(enable_read=False)
         saver.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
-        with saver.open('new_file_2.h5') as s:
+        with saver.open('test_h5supsaver.h5') as s:
             s.dump('test1', np.zeros([100, 20]))
             gb = s['group1']
             with gb['group2'] as g:

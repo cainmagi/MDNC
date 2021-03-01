@@ -29,6 +29,28 @@
   min-width: 8rem !important;
 }
 
+@media screen and (max-width: 1600px) {
+  .w-4rem {
+    min-width: 4.5rem !important;
+  }
+  
+  .w-5rem {
+    min-width: 5.5rem !important;
+  }
+  
+  .w-6rem {
+    min-width: 6.5rem !important;
+  }
+
+  .w-7rem {
+    min-width: 7.5rem !important;
+  }
+  
+  .w-8rem {
+    min-width: 8.5rem !important;
+  }
+}
+
 /* float right */
 div .fl-right{
   clear: right;

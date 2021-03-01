@@ -136,6 +136,9 @@ nav:
         - H5Converter: apis/data/h5py/H5Converter.md
         - H5SeqConverter: apis/data/h5py/H5SeqConverter.md
         - H5SupSaver: apis/data/h5py/H5SupSaver.md
+        - H5GParser: apis/data/h5py/H5GParser.md
+        - H5CParser: apis/data/h5py/H5CParser.md
+        - H5RParser: apis/data/h5py/H5RParser.md
 
 # Google Analytics
 google_analytics_4:

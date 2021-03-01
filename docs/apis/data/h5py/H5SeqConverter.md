@@ -121,7 +121,8 @@ Close the converter.
     === "Codes"
         ```python linenums="1"
         import mdnc
-        with mdnc.data.h5py.H5SeqConverter('dataset.h5') as cvt:
+
+        with mdnc.data.h5py.H5SeqConverter('test_seqconverter.h5') as cvt:
             cvt.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
             cvt.convert('data_to_sequence')
             cvt.copy('data_only_copied')
@@ -131,12 +132,13 @@ Close the converter.
     === "Codes"
         ```python linenums="1"
         import mdnc
+
         converter = mdnc.data.h5py.H5SeqConverter()
         converter.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
-        with converter.open('dataset.h5') as cvt:
+        with converter.open('test_seqconverter.h5') as cvt:
             cvt.convert('data_to_sequence')
             cvt.copy('data_only_copied')
-        with converter.open('dataset2.h5') as cvt:
+        with converter.open('test_seqconverter2.h5') as cvt:
             cvt.convert('data_to_sequence')
             cvt.copy('data_only_copied')
         ```

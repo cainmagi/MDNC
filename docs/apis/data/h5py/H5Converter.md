@@ -76,8 +76,9 @@ Perform the data conversion.
     === "Codes"
         ```python linenums="1"
         import mdnc
-        cvt_o = mdnc.data.h5py.H5Converter('dataset.h5', 'txt', to_other=True)
+
+        cvt_o = mdnc.data.h5py.H5Converter('test_converter.h5', 'txt', to_other=True)
         cvt_o.convert()  # From HDF5 dataset to txt files.
-        cvt_i = mdnc.data.h5py.H5Converter('dataset.h5', 'txt', to_other=False)
+        cvt_i = mdnc.data.h5py.H5Converter('test_converter.h5', 'txt', to_other=False)
         cvt_i.convert()  # From txt files to HDF5 dataset.
         ```
