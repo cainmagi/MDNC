@@ -114,3 +114,31 @@ def cal_kernel_padding(kernel_size, ksize_plus=0):
         psize = ksize // 2
         stride = 2 if kernel_size > 1 else 1
         return ksize, psize, stride
+
+
+def cal_scaled_shapes(top_shape, level, stride=2):
+    if not isinstance(top_shape, (list, tuple)):
+        raise TypeError('modules.utils: The argument "top_shape" requires to be a sequence.')
+    if (not isinstance(level, int)) or level <= 0:
+        raise TypeError('modules.utils: The argument "level" requires to be a positive integer.')
+    if not isinstance(stride, (list, tuple)):
+        if isinstance(stride, int):
+            stride = (stride, ) * len(top_shape)
+        else:
+            raise TypeError('modules.utils: The argument "stride" requires to be a sequence or integer.')
+
+    def cal_down_scale(cur_shape):
+        next_shape = list()
+        for sh, st in zip(cur_shape, stride):
+            v = sh // st
+            if v == 0:
+                raise ValueError('modules.utils: The shape {0} is too small, it could not be retrieved from the level {1}.'.format(top_shape, level))
+            next_shape.append(v + (1 if sh % st > 0 else 0))
+        return tuple(next_shape)
+
+    shapes = [top_shape, ]
+    cur_shape = top_shape
+    for _ in range(level):
+        cur_shape = cal_down_scale(cur_shape)
+        shapes.append(cur_shape)
+    return tuple(shapes)

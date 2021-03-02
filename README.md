@@ -21,7 +21,7 @@ git submodule update --init --recursive
 After that, you could use the pacakge by
 
 ```python
-import mdnc.mdnc
+from mdnc import mdnc
 ```
 
 If you want to update the sub-module to the newest version, please use
@@ -72,6 +72,7 @@ Currently, this project has not been checked by compatibility tests. During the 
 To perform the compatibility test, just run
 
 ```bash
+cd <root-of-this-repo>
 python -m mdnc
 ```
 
@@ -87,6 +88,11 @@ The compatibility test is shown as below. The checked item means this package pe
 | pyTorch 1.0.0, Python 3.5 | | |
 
 ## Update reports
+
+### 0.1.5 @ 3/2/2021
+
+1. Add `DecoderNet` to our standard `module` protocol.
+2. Fix some bugs of `data.h5py` and `data.preprocs`.
 
 ### 0.1.2 @ 2/27/2021
 

@@ -281,7 +281,7 @@ class ProcMerge(ProcAbstract):
                     be used as the parent of the current instance.
         '''
         super().__init__(parent=parent, _disable_inds=True)
-        self.num_procs, self.procs_set = self.__init_with_procs(procs=procs, num_procs=num_procs)
+        self.num_procs, self.__procs_set = self.__init_with_procs(procs=procs, num_procs=num_procs)
 
     def __init_with_procs(self, procs, num_procs):
         if procs is not None and len(procs) > 0:
@@ -298,7 +298,7 @@ class ProcMerge(ProcAbstract):
         procs_set = dict()
         if procs is not None:
             for i, proc in enumerate(procs):
-                if proc not in procs_set:
+                if proc is not None and proc not in procs_set:
                     procs_set[proc] = set((i, ))
                 else:
                     procs_set[proc].add(i)
@@ -329,12 +329,12 @@ class ProcMerge(ProcAbstract):
         if not isinstance(value, ProcAbstract):
             raise TypeError('data.preprocs: The value used for setting the item of ProcMerge requires to be a processor.')
         # merge idx into the procs_set.
-        if value not in self.procs_set:
-            self.procs_set[value] = set()
-        proc_idx = self.procs_set[value]
+        if value not in self.__procs_set:
+            self.__procs_set[value] = set()
+        proc_idx = self.__procs_set[value]
         for i in idx:
             proc_idx.add(i)
-        for v, proc_idx in self.procs_set.items():
+        for v, proc_idx in self.__procs_set.items():
             if v is not value:
                 for i in idx:
                     proc_idx.discard(i)
@@ -342,13 +342,14 @@ class ProcMerge(ProcAbstract):
     def __getitem__(self, idx):
         if not isinstance(idx, int):
             raise TypeError('data.preprocs: The index extraction only supports the int index.')
-        for v, proc_idx in self.procs_set.items():
+        for v, proc_idx in self.__procs_set.items():
             if idx in proc_idx:
                 return v
+        return None
 
     def preprocess(self, *args):
         res_args = list(args)
-        for v, proc_idx in self.procs_set.items():
+        for v, proc_idx in self.__procs_set.items():
             arg_inlist = tuple(args[i] for i in proc_idx)
             res = v.preprocess(*arg_inlist)
             if not isinstance(res, (tuple, list)):
@@ -359,7 +360,7 @@ class ProcMerge(ProcAbstract):
 
     def postprocess(self, *args):
         res_args = list(args)
-        for v, proc_idx in self.procs_set.items():
+        for v, proc_idx in self.__procs_set.items():
             arg_inlist = tuple(args[i] for i in proc_idx)
             res = v.postprocess(*arg_inlist)
             if not isinstance(res, (tuple, list)):

@@ -19,12 +19,13 @@
 import torch
 import torch.nn as nn
 
-from .utils import get_convnd, get_normalizer, get_upscaler, get_activator, get_adaptive_pooling, check_is_stride, cal_kernel_padding
+from .utils import get_convnd, get_normalizer, get_upscaler, get_activator, get_adaptive_pooling, check_is_stride, cal_kernel_padding, cal_scaled_shapes
 
 __all__ = ['BlockPlain1d', 'BlockPlain2d', 'BlockPlain3d', 'BlockBottleneck1d', 'BlockBottleneck2d', 'BlockBottleneck3d',
            'UNet1d', 'UNet2d', 'UNet3d', 'unet16', 'unet32', 'unet44', 'unet65', 'unet83',
            'AE1d', 'AE2d', 'AE3d', 'ae16', 'ae32', 'ae44', 'ae65', 'ae83',
-           'ConvNet1d', 'ConvNet2d', 'ConvNet3d', 'cnn12', 'cnn32', 'cnn47', 'cnn62']
+           'EncoderNet1d', 'EncoderNet2d', 'EncoderNet3d', 'encnet12', 'encnet32', 'encnet47', 'encnet62',
+           'DecoderNet1d', 'DecoderNet2d', 'DecoderNet3d', 'decnet13', 'decnet33', 'decnet48', 'decnet63']
 
 
 class _BlockFactory:
@@ -330,8 +331,8 @@ class _BlockBottleneckNd(nn.Module):
 class _BlockResStkNd(nn.Module):
     '''Create the N-D stacked residual block.
     Each block contains several stacked residual blocks.
-    This module is used for building UNetNd, AENd and ResNetNd, should
-    not be used by users.
+    This module is used for building UNetNd, AENd and Enc/DecoderNetNd,
+    should not be used by users.
     '''
     def __init__(self, order, in_planes, out_planes, block='bottleneck',
                  hidden_planes=None, kernel_size=3, padding=1, stride=1,
@@ -436,7 +437,7 @@ class _UNetNd(nn.Module):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -510,7 +511,7 @@ class _AENd(nn.Module):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -581,8 +582,8 @@ class _AENd(nn.Module):
         return x
 
 
-class _ConvNetNd(nn.Module):
-    '''N-D residual down-scale network.
+class _EncoderNetNd(nn.Module):
+    '''N-D residual down-scale (encoder) network.
     This moule is a built-in model for residual network. The network could be
     used for down-scaling or classification.
     The network would down-sample and the input data according to the network
@@ -596,7 +597,7 @@ class _ConvNetNd(nn.Module):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -638,6 +639,91 @@ class _ConvNetNd(nn.Module):
         if self.is_out_vector:
             x = torch.flatten(x, 1)
             return self.fc(x)
+
+
+class _DecoderNetNd(nn.Module):
+    '''N-D residual up-scale (decoder) network.
+    This moule is a built-in model for residual network. The network could
+    be used for up-scaling or generating samples.
+    The network would up-sample and the input data according to the network
+    depth. The depth is given by the length of the argument "layers".
+    Different from the encoder network, this module requires the output
+    shape, and the input shape is inferred from the given output shape.
+    '''
+    def __init__(self, order, channel, layers, out_size, block='bottleneck', kernel_size=3, in_length=2, out_planes=1):
+        '''Initialization
+        Arguments:
+            order: the network dimension. For example, when order=2, the
+                   nn.Conv2d would be used.
+            channel: the channel number of the first layer, would also used
+                     as the base of the following channels.
+            layers: a list of layer numbers. Each number represents the number
+                    of residual blocks of a stage. The stage numer, i.e.
+                    the depth of the network is the length of this list.
+            out_size: the shape of the output data (without the sample and
+                      channel dimension). This argument is required, because
+                      the shape of the first layer is inferred from it.
+        Arguments (optional):
+            block: the block type, could be:
+                   - bottleneck, - plain
+            kernel_size: the kernel size of each block.
+            in_length: the length of the input vector, if not set, the
+                       input requires to be a specific shape tensor. Use
+                       the self.in_shape property to get it.
+            out_planes: the channel number of the output data.
+        '''
+        super().__init__()
+        if len(layers) < 2:
+            raise ValueError('modules.conv: The argument "layers" should contain at least 2 values, but provide "{0}"'.format(layers))
+        ConvNd = get_convnd(order=order)
+        ksize_e, psize_e, _ = cal_kernel_padding(kernel_size, ksize_plus=2)
+        ksize, psize, stride = cal_kernel_padding(kernel_size)
+        self.__order = order
+        self.shapes = cal_scaled_shapes(out_size, level=len(layers), stride=stride)
+        channels = tuple(map(lambda n: channel * (2 ** n), range(len(layers) - 1, -1, -1)))
+
+        # Require to convert the vector into channels
+        self.is_in_vector = (in_length is not None and in_length > 0)
+        if self.is_in_vector:
+            in_shapes = self.shapes[-1]
+            in_pad = tuple(s - 1 for s in in_shapes)
+            self.conv_in = ConvNd(in_length, channels[0], kernel_size=in_shapes, padding=in_pad, bias=True)
+
+        # Up scaling route
+        self.conv_first = ConvNd(channels[0], channels[0], kernel_size=ksize, stride=1, padding=psize, bias=False)
+        netbody = nn.ModuleList()
+        for i, layer in enumerate(layers[:-1]):
+            netbody.append(
+                _BlockResStkNd(order, channels[i], channels[i + 1], block=block, kernel_size=ksize, padding=psize,
+                               stride=stride, stack_level=layer, scaler='up'))
+        netbody.append(
+            _BlockResStkNd(order, channels[-1], channels[-1], block=block, kernel_size=ksize, padding=psize,
+                           stride=stride, stack_level=layers[-1], scaler='up'))
+        self.netbody = netbody
+        self.conv_last = ConvNd(channels[-1], out_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+
+    @staticmethod
+    def cropping(x, x_ref_s):
+        x_size = x.shape[2:]
+        x_ref_size = x_ref_s
+        x_slice = [Ellipsis]
+        for i in range(len(x_size)):
+            get_size = min(x_size[i], x_ref_size[i])
+            x_shift = (x_size[i] - get_size) // 2
+            x_slice.append(slice(x_shift, x_shift + get_size))
+        return x[tuple(x_slice)]  # Middle cropping
+
+    def forward(self, x):
+        if self.is_in_vector:
+            x = x[(Ellipsis, *((None,) * self.__order))]
+            x = self.conv_in(x)
+            x = self.cropping(x, self.shapes[-1])
+        x = self.conv_first(x)
+        for layer, xs in zip(self.netbody, self.shapes[-2::-1]):
+            x = layer(x)
+            x = self.cropping(x, xs)
+        x = self.conv_last(x)
+        return x
 
 
 class BlockPlain1d(_BlockPlainNd):
@@ -943,7 +1029,7 @@ class UNet1d(_UNetNd):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -971,7 +1057,7 @@ class UNet2d(_UNetNd):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -999,7 +1085,7 @@ class UNet3d(_UNetNd):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -1025,7 +1111,7 @@ class AE1d(_AENd):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -1051,7 +1137,7 @@ class AE2d(_AENd):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -1077,7 +1163,7 @@ class AE3d(_AENd):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -1090,8 +1176,8 @@ class AE3d(_AENd):
                          in_planes=in_planes, out_planes=out_planes)
 
 
-class ConvNet1d(_ConvNetNd):
-    '''1D residual down-scale network.
+class EncoderNet1d(_EncoderNetNd):
+    '''1D residual down-scale (encoder) network.
     This moule is a built-in model for residual network. The network could be
     used for down-scaling or classification.
     The network would down-sample and the input data according to the network
@@ -1103,7 +1189,7 @@ class ConvNet1d(_ConvNetNd):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -1117,8 +1203,8 @@ class ConvNet1d(_ConvNetNd):
                          in_planes=in_planes, out_length=out_length)
 
 
-class ConvNet2d(_ConvNetNd):
-    '''2D residual down-scale network.
+class EncoderNet2d(_EncoderNetNd):
+    '''2D residual down-scale (encoder) network.
     This moule is a built-in model for residual network. The network could be
     used for down-scaling or classification.
     The network would down-sample and the input data according to the network
@@ -1130,7 +1216,7 @@ class ConvNet2d(_ConvNetNd):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -1144,8 +1230,8 @@ class ConvNet2d(_ConvNetNd):
                          in_planes=in_planes, out_length=out_length)
 
 
-class ConvNet3d(_ConvNetNd):
-    '''3D residual down-scale network.
+class EncoderNet3d(_EncoderNetNd):
+    '''3D residual down-scale (encoder) network.
     This moule is a built-in model for residual network. The network could be
     used for down-scaling or classification.
     The network would down-sample and the input data according to the network
@@ -1157,7 +1243,7 @@ class ConvNet3d(_ConvNetNd):
             channel: the channel number of the first layer, would also used
                      as the base of the following channels.
             layers: a list of layer numbers. Each number represents the number
-                    of convolutional layers of a stage. The stage numer, i.e.
+                    of residual blocks of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
             block: the block type, could be:
@@ -1169,6 +1255,99 @@ class ConvNet3d(_ConvNetNd):
         '''
         super().__init__(3, channel=channel, layers=layers, block=block, kernel_size=kernel_size,
                          in_planes=in_planes, out_length=out_length)
+
+
+class DecoderNet1d(_DecoderNetNd):
+    '''1D residual up-scale (decoder) network.
+    This moule is a built-in model for residual network. The network
+    could be used for up-scaling or generating samples.
+    The network would up-sample and the input data according to the network
+    depth. The depth is given by the length of the argument "layers".
+    Different from the encoder network, this module requires the output
+    shape, and the input shape is inferred from the given output shape.
+    '''
+    def __init__(self, channel, layers, out_size, block='bottleneck', kernel_size=3, in_length=2, out_planes=1):
+        '''Initialization
+        Arguments:
+            channel: the channel number of the first layer, would also used
+                     as the base of the following channels.
+            layers: a list of layer numbers. Each number represents the number
+                    of residual blocks of a stage. The stage numer, i.e.
+                    the depth of the network is the length of this list.
+            out_size: the shape of the output data (without the sample and
+                      channel dimension). This argument is required, because
+                      the shape of the first layer is inferred from it.
+        Arguments (optional):
+            kernel_size: the kernel size of each block.
+            in_length: the length of the input vector, if not set, the
+                       input requires to be a specific shape tensor. Use
+                       the self.in_shape property to get it.
+            out_planes: the channel number of the output data.
+        '''
+        super().__init__(1, channel=channel, layers=layers, out_size=out_size, block=block,
+                         kernel_size=kernel_size, in_length=in_length, out_planes=out_planes)
+
+
+class DecoderNet2d(_DecoderNetNd):
+    '''2D residual up-scale (decoder) network.
+    This moule is a built-in model for residual network. The network
+    could be used for up-scaling or generating samples.
+    The network would up-sample and the input data according to the network
+    depth. The depth is given by the length of the argument "layers".
+    Different from the encoder network, this module requires the output
+    shape, and the input shape is inferred from the given output shape.
+    '''
+    def __init__(self, channel, layers, out_size, block='bottleneck', kernel_size=3, in_length=2, out_planes=1):
+        '''Initialization
+        Arguments:
+            channel: the channel number of the first layer, would also used
+                     as the base of the following channels.
+            layers: a list of layer numbers. Each number represents the number
+                    of residual blocks of a stage. The stage numer, i.e.
+                    the depth of the network is the length of this list.
+            out_size: the shape of the output data (without the sample and
+                      channel dimension). This argument is required, because
+                      the shape of the first layer is inferred from it.
+        Arguments (optional):
+            kernel_size: the kernel size of each block.
+            in_length: the length of the input vector, if not set, the
+                       input requires to be a specific shape tensor. Use
+                       the self.in_shape property to get it.
+            out_planes: the channel number of the output data.
+        '''
+        super().__init__(2, channel=channel, layers=layers, out_size=out_size, block=block,
+                         kernel_size=kernel_size, in_length=in_length, out_planes=out_planes)
+
+
+class DecoderNet3d(_DecoderNetNd):
+    '''3D residual up-scale (decoder) network.
+    This moule is a built-in model for residual network. The network
+    could be used for up-scaling or generating samples.
+    The network would up-sample and the input data according to the network
+    depth. The depth is given by the length of the argument "layers".
+    Different from the encoder network, this module requires the output
+    shape, and the input shape is inferred from the given output shape.
+    '''
+    def __init__(self, channel, layers, out_size, block='bottleneck', kernel_size=3, in_length=2, out_planes=1):
+        '''Initialization
+        Arguments:
+            channel: the channel number of the first layer, would also used
+                     as the base of the following channels.
+            layers: a list of layer numbers. Each number represents the number
+                    of residual blocks of a stage. The stage numer, i.e.
+                    the depth of the network is the length of this list.
+            out_size: the shape of the output data (without the sample and
+                      channel dimension). This argument is required, because
+                      the shape of the first layer is inferred from it.
+        Arguments (optional):
+            kernel_size: the kernel size of each block.
+            in_length: the length of the input vector, if not set, the
+                       input requires to be a specific shape tensor. Use
+                       the self.in_shape property to get it.
+            out_planes: the channel number of the output data.
+        '''
+        super().__init__(3, channel=channel, layers=layers, out_size=out_size, block=block,
+                         kernel_size=kernel_size, in_length=in_length, out_planes=out_planes)
 
 
 def __get_unet_nd(order):
@@ -1193,13 +1372,24 @@ def __get_ae_nd(order):
         raise ValueError('modules.resnet: The argument "order" could only be 1, 2, or 3.')
 
 
-def __get_convnet_nd(order):
+def __get_encnet_nd(order):
     if order == 3:
-        return ConvNet3d
+        return EncoderNet3d
     elif order == 2:
-        return ConvNet2d
+        return EncoderNet2d
     elif order == 1:
-        return ConvNet1d
+        return EncoderNet1d
+    else:
+        raise ValueError('modules.resnet: The argument "order" could only be 1, 2, or 3.')
+
+
+def __get_decnet_nd(order):
+    if order == 3:
+        return DecoderNet3d
+    elif order == 2:
+        return DecoderNet2d
+    elif order == 1:
+        return DecoderNet1d
     else:
         raise ValueError('modules.resnet: The argument "order" could only be 1, 2, or 3.')
 
@@ -1378,9 +1568,9 @@ def ae83(order=2, **kwargs):
     return model
 
 
-# cnn
-def cnn12(order=2, **kwargs):
-    '''Constructs a resnet.CNN-12 model.
+# encnet
+def encnet12(order=2, **kwargs):
+    '''Constructs a resnet.EncoderNet-12 model.
     Configurations:
         Network depth: 5
         Network block: plain
@@ -1389,15 +1579,15 @@ def cnn12(order=2, **kwargs):
     Arguments:
         order: the dimension of the network. For example, when
                order=2, the nn.Conv2d would be used.
-    Other Arguments (see mdnc.modules.resnet.ConvNet*d):
+    Other Arguments (see mdnc.modules.resnet.EncoderNet*d):
         in_planes, out_length, kernel_size
     '''
-    model = __get_convnet_nd(order)(64, [1, 1, 1, 1, 1], block='plain', **kwargs)
+    model = __get_encnet_nd(order)(64, [1, 1, 1, 1, 1], block='plain', **kwargs)
     return model
 
 
-def cnn32(order=2, **kwargs):
-    '''Constructs a resnet.CNN-32 model.
+def encnet32(order=2, **kwargs):
+    '''Constructs a resnet.EncoderNet-32 model.
     Configurations:
         Network depth: 5
         Network block: bottleneck
@@ -1406,15 +1596,15 @@ def cnn32(order=2, **kwargs):
     Arguments:
         order: the dimension of the network. For example, when
                order=2, the nn.Conv2d would be used.
-    Other Arguments (see mdnc.modules.resnet.ConvNet*d):
+    Other Arguments (see mdnc.modules.resnet.EncoderNet*d):
         in_planes, out_length, kernel_size
     '''
-    model = __get_convnet_nd(order)(64, [2, 2, 2, 2, 2], block='bottleneck', **kwargs)
+    model = __get_encnet_nd(order)(64, [2, 2, 2, 2, 2], block='bottleneck', **kwargs)
     return model
 
 
-def cnn47(order=2, **kwargs):
-    '''Constructs a resnet.CNN-47 model.
+def encnet47(order=2, **kwargs):
+    '''Constructs a resnet.EncoderNet-47 model.
     Configurations:
         Network depth: 5
         Network block: bottleneck
@@ -1423,15 +1613,15 @@ def cnn47(order=2, **kwargs):
     Arguments:
         order: the dimension of the network. For example, when
                order=2, the nn.Conv2d would be used.
-    Other Arguments (see mdnc.modules.resnet.ConvNet*d):
+    Other Arguments (see mdnc.modules.resnet.EncoderNet*d):
         in_planes, out_length, kernel_size
     '''
-    model = __get_convnet_nd(order)(64, [3, 3, 3, 3, 3], block='bottleneck', **kwargs)
+    model = __get_encnet_nd(order)(64, [3, 3, 3, 3, 3], block='bottleneck', **kwargs)
     return model
 
 
-def cnn62(order=2, **kwargs):
-    '''Constructs a resnet.CNN-62 model.
+def encnet62(order=2, **kwargs):
+    '''Constructs a resnet.EncoderNet-62 model.
     Configurations:
         Network depth: 5
         Network block: bottleneck
@@ -1440,14 +1630,81 @@ def cnn62(order=2, **kwargs):
     Arguments:
         order: the dimension of the network. For example, when
                order=2, the nn.Conv2d would be used.
-    Other Arguments (see mdnc.modules.resnet.ConvNet*d):
+    Other Arguments (see mdnc.modules.resnet.EncoderNet*d):
         in_planes, out_length, kernel_size
     '''
-    model = __get_convnet_nd(order)(64, [4, 4, 4, 4, 4], block='bottleneck', **kwargs)
+    model = __get_encnet_nd(order)(64, [4, 4, 4, 4, 4], block='bottleneck', **kwargs)
     return model
 
 
-if __name__ == '__main__':
-    from torchsummary import summary
-    model = cnn62(order=3, in_planes=3, out_length=2, kernel_size=(3, 3, 3))
-    summary(model, input_size=(3, 25, 25, 25), device='cpu')
+# decnet
+def decnet13(out_size, order=2, **kwargs):
+    '''Constructs a resnet.DecoderNet-13 model.
+    Configurations:
+        Network depth: 5
+        Network block: plain
+        Stage details: [1, 1, 1, 1, 1]
+        First channel number: 64
+    Arguments:
+        out_size: the output shape of the network.
+        order: the dimension of the network. For example, when
+               order=2, the nn.Conv2d would be used.
+    Other Arguments (see mdnc.modules.resnet.DecoderNet*d):
+        in_length, out_planes, kernel_size
+    '''
+    model = __get_decnet_nd(order)(64, [1, 1, 1, 1, 1], out_size=out_size, block='plain', **kwargs)
+    return model
+
+
+def decnet33(out_size, order=2, **kwargs):
+    '''Constructs a conv.DecoderNet-33 model.
+    Configurations:
+        Network depth: 5
+        Network block: bottleneck
+        Stage details: [2, 2, 2, 2, 2]
+        First channel number: 64
+    Arguments:
+        out_size: the output shape of the network.
+        order: the dimension of the network. For example, when
+               order=2, the nn.Conv2d would be used.
+    Other Arguments (see mdnc.modules.resnet.DecoderNet*d):
+        in_length, out_planes, kernel_size
+    '''
+    model = __get_decnet_nd(order)(64, [2, 2, 2, 2, 2], out_size=out_size, block='bottleneck', **kwargs)
+    return model
+
+
+def decnet48(out_size, order=2, **kwargs):
+    '''Constructs a conv.DecoderNet-48 model.
+    Configurations:
+        Network depth: 5
+        Network block: bottleneck
+        Stage details: [3, 3, 3, 3, 3]
+        First channel number: 64
+    Arguments:
+        out_size: the output shape of the network.
+        order: the dimension of the network. For example, when
+               order=2, the nn.Conv2d would be used.
+    Other Arguments (see mdnc.modules.resnet.DecoderNet*d):
+        in_length, out_planes, kernel_size
+    '''
+    model = __get_decnet_nd(order)(64, [3, 3, 3, 3, 3], out_size=out_size, block='bottleneck', **kwargs)
+    return model
+
+
+def decnet63(out_size, order=2, **kwargs):
+    '''Constructs a conv.DecoderNet-63 model.
+    Configurations:
+        Network depth: 5
+        Network block: bottleneck
+        Stage details: [4, 4, 4, 4, 4]
+        First channel number: 64
+    Arguments:
+        out_size: the output shape of the network.
+        order: the dimension of the network. For example, when
+               order=2, the nn.Conv2d would be used.
+    Other Arguments (see mdnc.modules.resnet.DecoderNet*d):
+        in_length, out_planes, kernel_size
+    '''
+    model = __get_decnet_nd(order)(64, [4, 4, 4, 4, 4], out_size=out_size, block='bottleneck', **kwargs)
+    return model

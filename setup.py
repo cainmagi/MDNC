@@ -28,7 +28,7 @@ INSTALL_REQUIRES = [
 
 setuptools.setup(
     name='MDNC',
-    version='0.1.2',
+    version='0.1.5',
     author='Yuchen Jin',
     author_email='cainmagi@gmail.com',
     description='Modern Deep Network Toolkits for PyTorch. This is a extension for PyTorch 1.x.',

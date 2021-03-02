@@ -507,6 +507,8 @@ class H5SupSaverGroup:
         h_attrs = self.h.attrs
         for k, v in new_attrs.items():
             h_attrs[k] = v
+        if self.__kwargs_['logver'] > 1:
+            print('data.h5py: Save attrs to "{0}", containing "{1}".'.format(self.h.name, ', '.join(new_attrs.keys())))
 
     def config(self, **kwargs):
         '''
@@ -560,7 +562,7 @@ class H5SupSaverGroup:
                 ds.resize(N + newN, axis=0)
                 ds[N:N + newN, ...] = data
                 if self.__kwargs_['logver'] > 0:
-                    print('data.h5py: Dump {smp} data samples into the existed dataset {ds}. The data shape is {sze} now.'.format(smp=newN, ds=keyword, sze=ds.shape))
+                    print('data.h5py: Dump {smp} data samples into the existed dataset {ds}. The data shape is {sze} now.'.format(smp=newN, ds=ds.name, sze=ds.shape))
             else:
                 raise ValueError('data.h5py: The data set shape {0} does not match the input shape {1}.'.format(dsshape, dshape))
         else:
@@ -611,13 +613,14 @@ class H5SupSaverGroup:
         if attrs is None:
             attrs = dict()
         attrs.update(kwargs)
+        name = self.h[keyword].name
         g_attrs = self.h[keyword].attrs
         for k, v in attrs.items():
             if isinstance(v, dict):
                 v = '$jsondict:' + json.dumps(v)
             g_attrs[k] = v
         if self.__kwargs_['logver'] > 0:
-            print('data.h5py: Save attrs to "{0}", containing "{1}".'.format(keyword, ', '.join(attrs.keys())))
+            print('data.h5py: Save attrs to "{0}", containing "{1}".'.format(name, ', '.join(attrs.keys())))
 
     def set_virtual_set(self, keyword, sub_set_keys, fill_value=0.0):
         '''
@@ -665,7 +668,9 @@ class H5SupSaverGroup:
             for i, ds in enumerate(ds_list):
                 vsource = h5py.VirtualSource(ds)
                 layout[:len(ds), i, ...] = vsource
-            self.h.create_virtual_dataset(keyword, layout, fillvalue=fill_value)
+            vds = self.h.create_virtual_dataset(keyword, layout, fillvalue=fill_value)
+            if self.__kwargs_['logver'] > 0:
+                print('data.h5py: Create a new virtual dataset "{0}", containing "{1}" samples, "{2}" subsets.'.format(vds.name, len_max, n_d))
 
 
 class H5SupSaver:
@@ -933,10 +938,10 @@ class _H5AParser(abc.ABC):
         Returns:
             1. a list of the required attribute values.
         '''
-        if not isinstance(attr_names, (list, tuple)):
-            attr_names = [str(attr_names)]
-        elif attr_names is None:
+        if attr_names is None:
             attr_names = list()
+        elif not isinstance(attr_names, (list, tuple)):
+            attr_names = [str(attr_names)]
         else:
             attr_names = list(attr_names)
         attr_names.extend(args)

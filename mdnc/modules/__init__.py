@@ -13,6 +13,9 @@
 ################################################################
 # Update reports:
 # ---------------
+# 0.1.5 @ 3/2/2021
+#   1. Add DecoderNet to conv, resnet.
+#   2. Rename ConvNet by EncoderNet in conv, resnet.
 # 0.1.0 @ 2/26/2021
 #   1. Create sub-packages: conv, resnet.
 ################################################################

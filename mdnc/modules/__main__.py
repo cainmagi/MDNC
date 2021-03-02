@@ -38,6 +38,7 @@ class TestModuleAbstract(abc.ABC):
         self.layers_2d = list()
         self.layers_3d = list()
         self.networks = list()
+        self.net_decs = list()
 
         self.orders = (1, 2, 3)
         self.input_sizes = (
@@ -71,6 +72,14 @@ class TestModuleAbstract(abc.ABC):
                 torchsummary.summary(test_module, input_size=input_size, device='cpu')
                 del test_module
 
+    def test_decodernets(self):
+        for order, out_size in zip(self.orders, self.input_sizes):
+            print('modules.modules: Test {0}d decoders.'.format(order))
+            for net in self.net_decs:
+                test_module = net(order=order, in_length=2, out_size=out_size[1:])
+                torchsummary.summary(test_module, input_size=(2, ), device='cpu')
+                del test_module
+
 
 class TestConv(TestModuleAbstract):
     '''Test functions for conv sub-module.
@@ -80,7 +89,8 @@ class TestConv(TestModuleAbstract):
         self.layers_1d = [engine.conv.ConvModern1d, ]
         self.layers_2d = [engine.conv.ConvModern2d, ]
         self.layers_3d = [engine.conv.ConvModern3d, ]
-        self.networks = [engine.conv.unet29, engine.conv.ae29, engine.conv.cnn22]
+        self.networks = [engine.conv.unet29, engine.conv.ae29, engine.conv.encnet22]
+        self.net_decs = [engine.conv.decnet22, ]
 
 
 class TestResNet(TestModuleAbstract):
@@ -91,7 +101,8 @@ class TestResNet(TestModuleAbstract):
         self.layers_1d = [engine.resnet.BlockPlain1d, engine.resnet.BlockBottleneck1d, ]
         self.layers_2d = [engine.resnet.BlockPlain2d, engine.resnet.BlockBottleneck2d, ]
         self.layers_3d = [engine.resnet.BlockPlain3d, engine.resnet.BlockBottleneck3d, ]
-        self.networks = [engine.resnet.unet83, engine.resnet.ae83, engine.resnet.cnn62]
+        self.networks = [engine.resnet.unet83, engine.resnet.ae83, engine.resnet.encnet62]
+        self.net_decs = [engine.resnet.decnet63, ]
 
 
 # Argparser
@@ -125,6 +136,7 @@ def test_mod_conv():
     tester = TestConv()
     tester.test_layers()
     tester.test_networks()
+    tester.test_decodernets()
 
 
 def test_mod_resnet():
@@ -132,6 +144,7 @@ def test_mod_resnet():
     tester = TestResNet()
     tester.test_layers()
     tester.test_networks()
+    tester.test_decodernets()
 
 
 registered_tests = {

@@ -17,6 +17,9 @@
 ################################################################
 # Update reports:
 # ---------------
+# 0.1.5 @ 3/2/2021
+#   1. Add DecoderNet to our standard module protocol.
+#   2. Fix some bugs of data.h5py and data.preprocs.
 # 0.1.2 @ 2/27/2021
 #   1. Fix more feature problems in `contribs.torchsummary`.
 #   2. Fix bugs and finish `data.preprocs`.
@@ -39,7 +42,7 @@ from . import data
 from . import modules
 from . import utils
 
-__version__ = '0.1.2'
+__version__ = '0.1.5'
 
 __all__ = [
     'contribs', 'data', 'modules', 'utils'
