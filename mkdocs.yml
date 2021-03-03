@@ -72,9 +72,9 @@ extra:
 extra_css:
   - 'assets/stylesheets/custom.css'
   - 'assets/stylesheets/magiclink.css'
+  - 'assets/stylesheets/magicicon.css'
   - 'assets/stylesheets/extensions.css'
   - 'assets/stylesheets/simpleLightbox.min.css'
-  - 'assets/stylesheets/codicon.css'
   
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.9.1/mermaid.min.js'
@@ -137,18 +137,18 @@ nav:
     - Licenses: licenses.md
   - APIs:
     - Overview: apis/overview.md
-    - "<i class='codicon codicon-package'></i> contribs":
-      - "<i class='codicon codicon-symbol-namespace'></i> torchsummary":
-        - "<i class='codicon codicon-symbol-method'></i> summary": apis/contribs/torchsummary/summary.md
-        - "<i class='codicon codicon-symbol-method'></i> summary_string": apis/contribs/torchsummary/summary_string.md
-    - "<i class='codicon codicon-package'></i> data":
-      - "<i class='codicon codicon-symbol-namespace'></i> h5py":
-        - "<i class='codicon codicon-symbol-class'></i> H5Converter": apis/data/h5py/H5Converter.md
-        - "<i class='codicon codicon-symbol-class'></i> H5SeqConverter": apis/data/h5py/H5SeqConverter.md
-        - "<i class='codicon codicon-symbol-class'></i> H5SupSaver": apis/data/h5py/H5SupSaver.md
-        - "<i class='codicon codicon-symbol-class'></i> H5GParser": apis/data/h5py/H5GParser.md
-        - "<i class='codicon codicon-symbol-class'></i> H5CParser": apis/data/h5py/H5CParser.md
-        - "<i class='codicon codicon-symbol-class'></i> H5RParser": apis/data/h5py/H5RParser.md
+    - "<span class='magic-codeicon-package'>contribs</span>":
+      - "<span class='magic-codeicon-module'>torchsummary</span>":
+        - "<span class='magic-codeicon-function'>summary</span>": apis/contribs/torchsummary/summary.md
+        - "<span class='magic-codeicon-function'>summary_string</span>": apis/contribs/torchsummary/summary_string.md
+    - "<span class='magic-codeicon-package'>data</span>":
+      - "<span class='magic-codeicon-module'>h5py</span>":
+        - "<span class='magic-codeicon-class'>H5Converter</span>": apis/data/h5py/H5Converter.md
+        - "<span class='magic-codeicon-class'>H5SeqConverter</span>": apis/data/h5py/H5SeqConverter.md
+        - "<span class='magic-codeicon-class'>H5SupSaver</span>": apis/data/h5py/H5SupSaver.md
+        - "<span class='magic-codeicon-class'>H5GParser</span>": apis/data/h5py/H5GParser.md
+        - "<span class='magic-codeicon-class'>H5CParser</span>": apis/data/h5py/H5CParser.md
+        - "<span class='magic-codeicon-class'>H5RParser</span>": apis/data/h5py/H5RParser.md
 
 # Google Analytics
 google_analytics_4:
