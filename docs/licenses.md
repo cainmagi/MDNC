@@ -23,3 +23,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## License of pytorch-summary
+
+The third-party module, `torchsummary` used in `MDNC` (@sksq96/pytorch-summary), grants:
+
+**MIT License**
+:   https://github.com/sksq96/pytorch-summary/blob/master/LICENSE
+
+## License of MkDocs-Material Theme
+
+The theme of this website (@squidfunk/mkdocs-material) grants:
+
+**MIT License**
+:   https://github.com/squidfunk/mkdocs-material/blob/master/LICENSE
+
+## License of VSCode-Codeicons
+
+The Codeicons pack (@microsoft/vscode-codicons) used in this website grants:
+
+**MIT License** for all source codes
+:   https://github.com/microsoft/vscode-codicons/blob/main/LICENSE-CODE
+
+**CC BY 4.0 License** for all materials
+:   https://github.com/microsoft/vscode-codicons/blob/main/LICENSE

@@ -27,6 +27,7 @@ flowchart LR
         models:::blank
         subgraph data
             dg_parse:::modgroup
+            sequence(sequence)
             subgraph dg_parse [Dataloaders]
                 h5py(h5py)
             end
@@ -47,3 +48,36 @@ flowchart LR
     classDef modgroup stroke-dasharray:10,10, width:100;
     classDef ops fill:#FFB11B, stroke:#AF811B;
 ```
+
+## List of packages
+
+### :codicons-package: `optimizers`
+
+To be built ...
+
+### :codicons-package: `modules`
+
+To be documented ...
+
+### :codicons-package: `models`
+
+To be built ...
+
+### :codicons-package: `data`
+
+* :codicons-symbol-namespace: `sequence`: The infrastructures of CPU-based parallel I/O and processing. This module is used by all data loaders.
+* :codicons-symbol-namespace: `h5py`: Wrapped HDF5 datasets savers, data converters and data loaders.
+* :codicons-symbol-namespace: `preprocs`: Useful pre- and post- processing tools for all data loaders in this package.
+* :codicons-symbol-namespace: `webtools`: Web tools for downloading tarball-packed datasets from Github.
+
+### :codicons-package: `funcs`
+
+To be built ...
+
+### :codicons-package: `utils`
+
+To be documented ...
+
+### :codicons-package: `contribs`
+
+* :codicons-symbol-namespace: `torchsummary`: The revised @sksq96/pytorch-summary. This is a Keras style `#!py model.summary()` in pyTorch, with some bugs gotten fixed. To view my modified version, see sksq96/pytorch-summary#165.

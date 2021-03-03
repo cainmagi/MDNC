@@ -61,7 +61,7 @@ Now we have such progress on the semi-product:
     * [ ] `tools`: Light-weighted record parsing tools used during training or testing. [=10% "10%"]{: .candystripe .candystripe-animate}
     * [ ] `draw`: Wrapped `matplotlib` drawing tools. Most of the utilities are designed as call-back based functions. [=80% "80%"]{: .candystripe .candystripe-animate}
 * [ ] `contribs`
-    * [x] `torchsummary` [:fontawesome-solid-external-link-alt:](https://github.com/sksq96/pyTorch-summary): Keras style model.summary() in pyTorch, with some bugs gotten fixed (modified) (MIT licensed). [=100% "100%"]{: .candystripe}
+    * [x] `torchsummary` [:fontawesome-solid-external-link-alt:](https://github.com/sksq96/pyTorch-summary): Keras style `#!py model.summary()` in pyTorch, with some bugs gotten fixed (modified) (MIT licensed). [=100% "100%"]{: .candystripe}
     * [ ] `tensorboard` [:fontawesome-solid-external-link-alt:](https://pyTorch.org/docs/stable/tensorboard.html): Wrapped `torch.utils.tensorboard`, supporting context-style writer and tensorboard.log converted to `h5py` format (not modified). [=0% "0%"]{: .candystripe .candystripe-animate}
 
 ## Compatibility test

@@ -1,6 +1,6 @@
 # data.h5py.H5Converter
 
-Class
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L82)
 
 ```python
 converter = mdnc.data.h5py.H5Converter(
@@ -62,7 +62,7 @@ Conversion between HDF5 data and other formats. The "other formats" would be arr
 
 ## Methods
 
-### `convert`
+### :codicons-symbol-method: `convert`
 
 ```python
 converter.convert()

@@ -1,6 +1,6 @@
 # data.h5py.H5SeqConverter
 
-Class
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L172)
 
 ```python
 converter = mdnc.data.h5py.H5SeqConverter(
@@ -31,7 +31,7 @@ The converted files should only get loaded by `mdnc.data.h5py.H5CParser`.
 
 ## Methods
 
-### `config`
+### :codicons-symbol-method: `config`
 
 ```python
 converter.config(logver=0, set_shuffle=False, seq_len=10, seq_len_max=20, random_seed=2048, **kwargs)
@@ -52,7 +52,7 @@ Make configuration for the converter. Only the explicitly given argument would b
 
 -----
 
-### `convert`
+### :codicons-symbol-method: `convert`
 
 ```python
 converter.convert(keyword, **kwargs)
@@ -71,7 +71,7 @@ If you have already converted or copied the keyword, please do not do it again.
 
 -----
 
-### `copy`
+### :codicons-symbol-method: `copy`
 
 ```python
 converter.copy(keyword, **kwargs)
@@ -90,7 +90,7 @@ If you have already converted or copied the keyword, please do not do it again.
 
 -----
 
-### `open`
+### :codicons-symbol-method: `open`
 
 ```python
 converter.open(file_in_name, file_out_name=None)
@@ -107,7 +107,7 @@ Open a new file. If a file has been opened before, this file would be closed. Th
 
 -----
 
-### `close`
+### :codicons-symbol-method: `close`
 
 ```python
 converter.close()

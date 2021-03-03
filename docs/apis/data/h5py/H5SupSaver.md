@@ -1,6 +1,6 @@
 # data.h5py.H5SupSaver
 
-Class
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L676)
 
 ```python
 saver = mdnc.data.h5py.H5SupSaver(
@@ -27,7 +27,7 @@ The motivation of using this saver includes:
 
 ## Methods
 
-### `config`
+### :codicons-symbol-method: `config`
 
 ```python
 saver.config(logver=0, **kwargs)
@@ -44,7 +44,7 @@ Make configuration for the saver. Only the explicitly given argument would be us
 
 -----
 
-### `get_config`
+### :codicons-symbol-method: `get_config`
 
 ```python
 cfg = saver.get_config(name=None)
@@ -66,10 +66,10 @@ Get the current configuration value by the given `name`.
 
 -----
 
-### `open`
+### :codicons-symbol-method: `open`
 
 ```python
-f = saver.open(file_name, enable_read=None)
+saver.open(file_name, enable_read=None)
 ```
 
 Open a new file. If a file has been opened before, this file would be closed. This method and the `__init__` method (need to specify `file_name`) support context management.
@@ -83,7 +83,7 @@ Open a new file. If a file has been opened before, this file would be closed. Th
 
 -----
 
-### `close`
+### :codicons-symbol-method: `close`
 
 ```python
 saver.close()
@@ -93,7 +93,7 @@ Close the saver.
 
 -----
 
-### `dump`
+### :codicons-symbol-method: `dump`
 
 ```python
 saver.dump(keyword, data, **kwargs)
@@ -111,7 +111,7 @@ Dump the dataset with a keyword into the file. The dataset is resizable, so this
 
 -----
 
-### `set_link`
+### :codicons-symbol-method: `set_link`
 
 ```python
 saver.set_link(keyword, target, overwrite=True)
@@ -129,7 +129,7 @@ Create a h5py.Softlink.
 
 -----
 
-### `set_attrs`
+### :codicons-symbol-method: `set_attrs`
 
 ```python
 saver.set_attrs(keyword, attrs=None, **kwargs)
@@ -147,7 +147,7 @@ Set attrs for an existed data group or dataset.
 
 -----
 
-### `set_virtual_set`
+### :codicons-symbol-method: `set_virtual_set`
 
 ```python
 saver.set_virtual_set(keyword, sub_set_keys, fill_value=0.0)
@@ -165,7 +165,7 @@ Create a virtual dataset based on a list of subsets. All subsets require to be h
 
 ## Properties
 
-### `attrs`
+### :codicons-symbol-property: `attrs`
 
 ```python
 attrs = saver.attrs  # Return the h5py.AttributeManager

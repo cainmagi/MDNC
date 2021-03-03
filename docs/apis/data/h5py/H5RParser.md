@@ -1,6 +1,6 @@
 # data.h5py.H5RParser
 
-Class
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1469)
 
 ```python
 dset = mdnc.data.h5py.H5RParser(
@@ -80,7 +80,7 @@ Certainly, you could use this parser to load a single dataset.
 
 ## Methods
 
-### `check_dsets`
+### :codicons-symbol-method: `check_dsets`
 
 ```python
 sze = dset.check_dsets(file_path, keywords)
@@ -103,7 +103,7 @@ Check the size of `#!py h5py.Dataset` and validate all datasets. A valid group o
 
 -----
 
-### `get_attrs`
+### :codicons-symbol-method: `get_attrs`
 
 ```python
 attrs = dset.get_attrs(keyword, *args, attr_names=None)
@@ -127,7 +127,7 @@ Get the attributes by the keyword.
 
 -----
 
-### `get_file`
+### :codicons-symbol-method: `get_file`
 
 ```python
 f = dset.get_file(enable_write=False)
@@ -149,7 +149,7 @@ Get a file object of the to-be-loaded file.
 
 -----
 
-### `start`
+### :codicons-symbol-method: `start`
 
 ```python
 dset.start(compat=None)
@@ -183,21 +183,24 @@ Running `start()` or `start_test()` would interrupt the started sequence.
         ```
 
 ??? danger
-    The cuda.Tensor could not be put into the queue on Windows (but on Linux we could), see
-    
+    The `#!py cuda.Tensor` could not be put into the queue on Windows (but on Linux we could), see
+
     https://pytorch.org/docs/stable/notes/windows.html#cuda-ipc-operations
 
     To solve this problem, we need to fall back to multi-threading for the sequence out-type converter on Windows.
 
+??? warning
+    Even if you set `#!py shuffle=False`, due to the mechanism of the parallelization, the sample order during the iteration may still get a little bit shuffled. To ensure your sample order not changed, please use `#!py shuffle=False` during the initialization and use [`#!py start_test()`](#start_test) instead.
+
 -----
 
-### `start_test`
+### :codicons-symbol-method: `start_test`
 
 ```python
 dset.start_test(test_mode='default')
 ```
 
-Start the test mode. In the test mode, the process pool would not be open. All operations would be finished in the main thread. However, the random indices are still generated in the same seed of the parallel `#!py dset.start()` mode.
+Start the test mode. In the test mode, the process pool would not be open. All operations would be finished in the main thread. However, the random indices are still generated with the same seed of the parallel `#!py dset.start()` mode.
 
 Running `start()` or `start_test()` would interrupt the started sequence.
 
@@ -212,7 +215,7 @@ Running `start()` or `start_test()` would interrupt the started sequence.
 
 -----
 
-### `finish`
+### :codicons-symbol-method: `finish`
 
 ```python
 dset.finish()
@@ -222,7 +225,7 @@ Finish the process pool. The compatible mode would be auto detected by the previ
 
 ## Properties
 
-### `len()`, `batch_num`
+### :codicons-symbol-property: `len()`, `batch_num`
 
 ```python
 len(dset)
@@ -233,7 +236,7 @@ The length of the dataset. It is the number of mini-batches, also the number of 
 
 -----
 
-### `iter()`
+### :codicons-symbol-property: `iter()`
 
 ```python
 for x1, x2, ... in dset:
@@ -244,7 +247,7 @@ The iterator. Recommend to use it inside the context. The unpacked variables `#!
 
 -----
 
-### size
+### :codicons-symbol-property: `size`
 
 ```python
 dset.size
@@ -254,7 +257,7 @@ The size of the dataset. It contains the total number of samples for each epoch.
 
 -----
 
-### preproc
+### :codicons-symbol-property: `preproc`
 
 ```python
 dset.preproc
@@ -293,17 +296,17 @@ The argument `#!py preprocfunc` during the initialziation. This property helps u
         import mdnc
 
         class ProcCustom(mdnc.data.preprocs.ProcAbstract):
-                def __init__(self, seed=1000, batch_size=16, inds=None, parent=None):
-                    super().__init__(inds=inds, parent=parent)
-                    self.batch_size = batch_size
-                    self.random_rng = np.random.default_rng(seed)
+            def __init__(self, seed=1000, batch_size=16, inds=None, parent=None):
+                super().__init__(inds=inds, parent=parent)
+                self.batch_size = batch_size
+                self.random_rng = np.random.default_rng(seed)
 
-                def preprocess(self, ds):
-                    ind = np.sort(self.random_rng.integers(len(ds), size=batch_size))
-                    return ds[ind, ...]
+            def preprocess(self, ds):
+                ind = np.sort(self.random_rng.integers(len(ds), size=batch_size))
+                return ds[ind, ...]
 
-                def postprocess(self, x):
-                    return x
+            def postprocess(self, x):
+                return x
 
         dset = mdnc.data.h5py.H5RParser('test_rparser', keywords=['one', 'zero'],
                                         preprocfunc=mdnc.data.preprocs.ProcScaler(parent=ProcCustom()))

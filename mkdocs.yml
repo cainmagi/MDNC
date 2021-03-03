@@ -50,6 +50,8 @@ plugins:
 
 # Customization
 extra:
+  source:
+    root: https://github.com/cainmagi/MDNC/blob/main/mdnc
   disqus: 'mdnc-documentation'
   social:
     - icon: fontawesome/solid/globe
@@ -71,6 +73,7 @@ extra_css:
   - 'assets/stylesheets/custom.css'
   - 'assets/stylesheets/extensions.css'
   - 'assets/stylesheets/simpleLightbox.min.css'
+  - 'assets/stylesheets/codicon.css'
   
 extra_javascript:
   - 'https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.9.1/mermaid.min.js'
@@ -101,14 +104,17 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+      options:
+        custom_icons:
+          - custom/.icons
   - pymdownx.inlinehilite:
       custom_inline:
         - { name: math, class: arithmatex, format: !!python/name:pymdownx.arithmatex.inline_mathjax_format }
   - pymdownx.keys
   - pymdownx.magiclink:
       repo_url_shorthand: true
-      user: squidfunk
-      repo: mkdocs-material
+      user: cainmagi
+      repo: MDNC
   - pymdownx.progressbar
   - pymdownx.smartsymbols
   - pymdownx.superfences:
@@ -127,18 +133,18 @@ nav:
     - Licenses: licenses.md
   - APIs:
     - Overview: apis/overview.md
-    - contribs:
-      - torchsummary:
-        - summary: apis/contribs/torchsummary/summary.md
-        - summary_string: apis/contribs/torchsummary/summary_string.md
-    - data:
-      - h5py:
-        - H5Converter: apis/data/h5py/H5Converter.md
-        - H5SeqConverter: apis/data/h5py/H5SeqConverter.md
-        - H5SupSaver: apis/data/h5py/H5SupSaver.md
-        - H5GParser: apis/data/h5py/H5GParser.md
-        - H5CParser: apis/data/h5py/H5CParser.md
-        - H5RParser: apis/data/h5py/H5RParser.md
+    - "<i class='codicon codicon-package'></i> contribs":
+      - "<i class='codicon codicon-symbol-namespace'></i> torchsummary":
+        - "<i class='codicon codicon-symbol-method'></i> summary": apis/contribs/torchsummary/summary.md
+        - "<i class='codicon codicon-symbol-method'></i> summary_string": apis/contribs/torchsummary/summary_string.md
+    - "<i class='codicon codicon-package'></i> data":
+      - "<i class='codicon codicon-symbol-namespace'></i> h5py":
+        - "<i class='codicon codicon-symbol-class'></i> H5Converter": apis/data/h5py/H5Converter.md
+        - "<i class='codicon codicon-symbol-class'></i> H5SeqConverter": apis/data/h5py/H5SeqConverter.md
+        - "<i class='codicon codicon-symbol-class'></i> H5SupSaver": apis/data/h5py/H5SupSaver.md
+        - "<i class='codicon codicon-symbol-class'></i> H5GParser": apis/data/h5py/H5GParser.md
+        - "<i class='codicon codicon-symbol-class'></i> H5CParser": apis/data/h5py/H5CParser.md
+        - "<i class='codicon codicon-symbol-class'></i> H5RParser": apis/data/h5py/H5RParser.md
 
 # Google Analytics
 google_analytics_4:

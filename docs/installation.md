@@ -13,7 +13,7 @@ git submodule update --init --recursive
 After that, you could use the pacakge by
 
 ```python
-import mdnc.mdnc
+from mdnc import mdnc
 ```
 
 If you want to update the sub-module to the newest version, please use

@@ -1,6 +1,6 @@
 # contribs.torchsummary.summary
 
-Function
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L84)
 
 ```python
 summary_str, params_info = mdnc.contribs.torchsummary.summary_str(
