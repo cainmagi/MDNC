@@ -71,6 +71,7 @@ extra:
 
 extra_css:
   - 'assets/stylesheets/custom.css'
+  - 'assets/stylesheets/magiclink.css'
   - 'assets/stylesheets/extensions.css'
   - 'assets/stylesheets/simpleLightbox.min.css'
   - 'assets/stylesheets/codicon.css'
@@ -112,7 +113,10 @@ markdown_extensions:
         - { name: math, class: arithmatex, format: !!python/name:pymdownx.arithmatex.inline_mathjax_format }
   - pymdownx.keys
   - pymdownx.magiclink:
+      repo_url_shortener: true
       repo_url_shorthand: true
+      social_url_shorthand: true
+      social_url_shortener: true
       user: cainmagi
       repo: MDNC
   - pymdownx.progressbar

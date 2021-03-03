@@ -80,4 +80,4 @@ To be documented ...
 
 ### :codicons-package: `contribs`
 
-* :codicons-symbol-namespace: `torchsummary`: The revised @sksq96/pytorch-summary. This is a Keras style `#!py model.summary()` in pyTorch, with some bugs gotten fixed. To view my modified version, see sksq96/pytorch-summary#165.
+* :codicons-symbol-namespace: `torchsummary`: The revised @sksq96/pytorch-summary. This is a Keras style `#!py model.summary()` in pyTorch, with some bugs gotten fixed. To view my modified version, see sksq96/pytorch-summary!165.
