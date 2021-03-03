@@ -51,6 +51,13 @@
   }
 }
 
+/* custom highlight */
+
+/* constant */
+.highlight .kc { 
+  color: #0000ff;
+}
+
 /* float right */
 div .fl-right{
   clear: right;
