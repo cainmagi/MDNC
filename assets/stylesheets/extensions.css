@@ -235,16 +235,7 @@ div .overflow .check{
   overflow-y: hidden;
 }
 
-/* magic link */
-.md-typeset .magiclink-repository.magiclink-github:before {
-  content: ""
-}
-.md-typeset .magiclink-repository.magiclink-gitlab:before {
-  content: ""
-}
-.md-typeset .magiclink-repository.magiclink-bitbucket:before{
-  content:""
-}
+/* Keysets */
 .md-typeset .keys .key-backspace:before{
   padding-left:.2rem;
   content:"←"
@@ -278,10 +269,4 @@ div .overflow .check{
 }
 .md-typeset .keys .key-enter:after{
   padding-left:.2rem;content:"↩"
-}
-.md-typeset .magiclink:before {
-  position: relative;
-  padding-right: .25rem;
-  font-family: FontAwesome;
-  -webkit-font-smoothing: initial
 }
