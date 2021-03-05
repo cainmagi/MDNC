@@ -1,0 +1,42 @@
+// Special format style
+div{
+  // float right
+  .fl-right{
+    clear: right;
+    text-align: left;
+    float: right;
+    // Small case.
+    @media screen and (max-width: 600px) {
+      float: none;
+      margin-right: auto;
+      margin-left:auto;
+    }
+  }
+
+  // overflow
+  .overflow {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    .check{
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+      overflow: -moz-scrollbars-vertical;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  }
+}
+
+// Min-width configs.
+@each $wsize in (4rem, 5rem, 6rem, 7rem, 8rem) {
+  .w-#{$wsize} {
+    min-width: $wsize !important;
+    @media screen and (max-width: 1600px) {
+      min-width: ($wsize + 0.5rem) !important;
+    }
+  }
+}

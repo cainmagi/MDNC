@@ -1,0 +1,63 @@
+// General styling for nav icons
+.md-nav__link {
+  .magic-codeicon-package,
+  .magic-codeicon-module,
+  .magic-codeicon-class,
+  .magic-codeicon-function {
+    &::before {
+      -webkit-mask-position: bottom;
+      mask-position: bottom;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: 16px auto;
+      mask-size: 16px auto;
+      position: relative;
+      width: 16px;
+      height: 16px;
+      padding-right: 11px;
+      margin-right: 5px;
+      background-color: var(--md-typeset-color);
+      background-size: 16px;
+      transition: background-color 125ms;
+      content: "\a0";
+    }
+  }
+}
+
+.md-nav__link{
+  &:hover, &:focus {
+    .magic-codeicon-package,
+    .magic-codeicon-module,
+    .magic-codeicon-class,
+    .magic-codeicon-function {
+      &::before {
+        background-color: var(--md-accent-fg-color);
+      }
+    }
+  }
+}
+
+.md-nav__link--active {
+  &, &:hover, &:focus {
+    .magic-codeicon-package,
+    .magic-codeicon-module,
+    .magic-codeicon-class,
+    .magic-codeicon-function {
+      &::before {
+        background-color: var(--md-typeset-a-color);
+      }
+    }
+  }
+}
+
+// Assign icons to nav icons
+@each $name in ("package", "module", "class", "function") {
+  .md-nav__link {
+    .magic-codeicon-#{$name} {
+      &::before {
+        -webkit-mask-image: svg-load-code($name);
+        mask-image: svg-load-code($name);
+      }
+    }
+  }
+}

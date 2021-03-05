@@ -42,7 +42,7 @@ This parser could also read the dataset converted by [`mdnc.data.h5py.H5SeqConve
     At least one keyword requires to be given in `keywords_sequence` or `keyword_single`. In some cases, we need to use both kinds of keywords. For example, the input could be a sequence, and the label may be a scalar.
 
 ??? tip
-    The minimal requirement for the argument `preprocfunc` is to be a function, or implemented with the `__call__()` method. This function accepts all input mini-batch variables formatted as `#!py np.ndarray`, and returns the pre-processed results. The returned varaible number could be different from the input variable number. In some cases, you could use the provided pre-processors in the `mdnc.data.preprocs` module. The processors in these module support our Broadcasting Pre- and Post- Processor Protocol. For example:
+    The minimal requirement for the argument `preprocfunc` is to be a function, or implemented with the `#!py __call__()` method. This function accepts all input mini-batch variables formatted as `#!py np.ndarray`, and returns the pre-processed results. The returned varaible number could be different from the input variable number. In some cases, you could use the provided pre-processors in the `mdnc.data.preprocs` module. The processors in these module support our Broadcasting Pre- and Post- Processor Protocol. For example:
 
     !!! example
         === "No args"
@@ -229,7 +229,7 @@ Finish the process pool. The compatible mode would be auto detected by the previ
 
 ## Properties
 
-### :codicons-symbol-property: `len()`, `batch_num`
+### :codicons-symbol-variable: `len()`, `batch_num`
 
 ```python
 len(dset)
@@ -240,7 +240,7 @@ The length of the dataset. It is the number of mini-batches, also the number of 
 
 -----
 
-### :codicons-symbol-property: `iter()`
+### :codicons-symbol-variable: `iter()`
 
 ```python
 for x1, x2, ... in dset:
@@ -251,7 +251,7 @@ The iterator. Recommend to use it inside the context. The unpacked variables `#!
 
 -----
 
-### :codicons-symbol-property: `size`
+### :codicons-symbol-variable: `size`
 
 ```python
 dset.size
@@ -261,7 +261,7 @@ The size of the dataset. It contains the total number of samples for each epoch.
 
 -----
 
-### :codicons-symbol-property: `batch_size`
+### :codicons-symbol-variable: `batch_size`
 
 ```python
 dset.batch_size
@@ -271,7 +271,7 @@ The size of each batch. This value is given by the argument `#!py batch_size` du
 
 -----
 
-### :codicons-symbol-property: `sequence_size`
+### :codicons-symbol-variable: `sequence_size`
 
 ```python
 dset.sequence_size
@@ -281,7 +281,7 @@ The length of each sequence. This value is given by the argument `#!py sequence_
 
 -----
 
-### :codicons-symbol-property: `sequence_position`
+### :codicons-symbol-variable: `sequence_position`
 
 ```python
 dset.sequence_position
@@ -291,7 +291,7 @@ The alignment between `keywords_sequence` and `keyword_single`. This value is gi
 
 -----
 
-### :codicons-symbol-property: `sequence_padding`
+### :codicons-symbol-variable: `sequence_padding`
 
 ```python
 dset.sequence_position
@@ -301,7 +301,7 @@ The padding method of each sequence. This value is given by the argument `#!py s
 
 -----
 
-### :codicons-symbol-property: `preproc`
+### :codicons-symbol-variable: `preproc`
 
 ```python
 dset.preproc

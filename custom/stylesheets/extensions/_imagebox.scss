@@ -1,0 +1,52 @@
+/* Image box with shadow */
+a.boxedThumb {
+  display:block;
+  padding:4px;
+  line-height:20px;
+  margin: 0 auto;
+  width: fit-content; 
+  height: fit-content;
+  border:1px solid #ddd;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  -webkit-box-shadow:0 1px 3px rgba(0,0,0,0.055);
+  -moz-box-shadow:0 1px 3px rgba(0,0,0,0.055);
+  box-shadow:0 1px 3px rgba(0,0,0,0.055);
+  -webkit-transition: -webkit-transform .15s ease;
+  -moz-transition: -moz-transform .15s ease;
+  -o-transition: -o-transform .15s ease;
+  -ms-transition: -ms-transform .15s ease;
+  transition: transform .15s ease;
+  &:hover {
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    transform: scale(1.05);
+    z-index: 5;
+  }
+}
+
+.superfences-content{
+  a.boxedThumb {
+    width: fit-content;
+    max-height: 350px;
+    min-width: 320px;
+    max-width: 80%;
+    text-align: center;
+    img {
+      max-height: 340px;
+    }
+  }
+  table {
+    a.boxedThumb {
+      max-width: auto;
+      min-width: 0;
+      max-height: auto;
+      img {
+        max-height: auto;
+      }
+    }
+  }
+}

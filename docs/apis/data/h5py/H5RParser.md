@@ -225,7 +225,7 @@ Finish the process pool. The compatible mode would be auto detected by the previ
 
 ## Properties
 
-### :codicons-symbol-property: `len()`, `batch_num`
+### :codicons-symbol-variable: `len()`, `batch_num`
 
 ```python
 len(dset)
@@ -236,7 +236,7 @@ The length of the dataset. It is the number of mini-batches, also the number of 
 
 -----
 
-### :codicons-symbol-property: `iter()`
+### :codicons-symbol-variable: `iter()`
 
 ```python
 for x1, x2, ... in dset:
@@ -247,7 +247,7 @@ The iterator. Recommend to use it inside the context. The unpacked variables `#!
 
 -----
 
-### :codicons-symbol-property: `size`
+### :codicons-symbol-variable: `size`
 
 ```python
 dset.size
@@ -257,7 +257,7 @@ The size of the dataset. It contains the total number of samples for each epoch.
 
 -----
 
-### :codicons-symbol-property: `preproc`
+### :codicons-symbol-variable: `preproc`
 
 ```python
 dset.preproc

@@ -34,7 +34,7 @@ Certainly, you could use this parser to load a single `#!py h5py.Dataset`. To fi
 | `num_buffer` | `#!py int` | The buffer size of the data pool, it means the maximal number of mini-batches stored in the memory. |
 
 ??? tip
-    The minimal requirement for the argument `preprocfunc` is to be a function, or implemented with the `__call__()` method. This function accepts all input mini-batch variables formatted as `#!py np.ndarray`, and returns the pre-processed results. The returned varaible number could be different from the input variable number. In some cases, you could use the provided pre-processors in the `mdnc.data.preprocs` module. The processors in these module support our Broadcasting Pre- and Post- Processor Protocol. For example:
+    The minimal requirement for the argument `preprocfunc` is to be a function, or implemented with the `#!py __call__()` method. This function accepts all input mini-batch variables formatted as `#!py np.ndarray`, and returns the pre-processed results. The returned varaible number could be different from the input variable number. In some cases, you could use the provided pre-processors in the `mdnc.data.preprocs` module. The processors in these module support our Broadcasting Pre- and Post- Processor Protocol. For example:
 
     !!! example
         === "No args"
@@ -221,7 +221,7 @@ Finish the process pool. The compatible mode would be auto detected by the previ
 
 ## Properties
 
-### :codicons-symbol-property: `len()`, `batch_num`
+### :codicons-symbol-variable: `len()`, `batch_num`
 
 ```python
 len(dset)
@@ -232,7 +232,7 @@ The length of the dataset. It is the number of mini-batches, also the number of 
 
 -----
 
-### :codicons-symbol-property: `iter()`
+### :codicons-symbol-variable: `iter()`
 
 ```python
 for x1, x2, ... in dset:
@@ -243,7 +243,7 @@ The iterator. Recommend to use it inside the context. The unpacked variables `#!
 
 -----
 
-### :codicons-symbol-property: `size`
+### :codicons-symbol-variable: `size`
 
 ```python
 dset.size
@@ -253,7 +253,7 @@ The size of the dataset. It contains the total number of samples for each epoch.
 
 -----
 
-### :codicons-symbol-property: `batch_size`
+### :codicons-symbol-variable: `batch_size`
 
 ```python
 dset.batch_size
@@ -263,7 +263,7 @@ The size of each batch. This value is given by the argument `#!py batch_size` du
 
 -----
 
-### :codicons-symbol-property: `preproc`
+### :codicons-symbol-variable: `preproc`
 
 ```python
 dset.preproc

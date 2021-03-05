@@ -1,0 +1,24 @@
+// Set colors
+:root {
+  --md-progress-stripe: hsla(0, 0%, 100%, 0.3);
+  --md-progress-100: #00e676;
+  --md-progress-80: #6fe600;
+  --md-progress-60: #fbc02d;
+  --md-progress-40: #ff9100;
+  --md-progress-20: #ff5252;
+  --md-progress-0: #ff1744;
+  --md-progress-default: #2979ff;
+}
+
+// Change code tab color
+.md-typeset {
+  .superfences-tabs>label:hover{
+    color: var(--md-typeset-a-color);
+  }
+}
+
+// Set animation
+@keyframes animate-stripes {
+  0% { background-position: 0 0; }
+  100% { background-position: 120px 0; }
+}

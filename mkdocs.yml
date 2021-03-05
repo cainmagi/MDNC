@@ -10,7 +10,7 @@ repo_url: https://github.com/cainmagi/MDNC
 edit_uri: ""
 
 # Copyright
-copyright: 'Copyright &copy; 2021 Yuchen Jin'
+copyright: 'Copyright &copy; 2021 cainmagi@github (Yuchen Jin)'
 
 # Configuration
 theme:
@@ -47,6 +47,13 @@ plugins:
   - git-revision-date-localized
   - macros
   - search
+  - minify:
+      minify_html: true
+      minify_js: true
+      htmlmin_opts:
+        remove_comments: true
+      js_files:
+        - assets/javascripts/extensions.js
 
 # Customization
 extra:
@@ -70,18 +77,14 @@ extra:
       link: https://music.163.com/#/user/home?id=276304206
 
 extra_css:
-  - 'assets/stylesheets/custom.css'
-  - 'assets/stylesheets/magiclink.css'
-  - 'assets/stylesheets/magicicon.css'
-  - 'assets/stylesheets/extensions.css'
+  - 'assets/stylesheets/extra.css'
   - 'assets/stylesheets/simpleLightbox.min.css'
   
 extra_javascript:
-  - 'https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.9.1/mermaid.min.js'
   - 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'
+  - 'https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.9.1/mermaid.min.js'
   - 'assets/javascripts/simpleLightbox.min.js'
   - 'assets/javascripts/extensions.js'
-  - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.1.2/es5/tex-mml-chtml.min.js'
 
 # Extensions
 markdown_extensions:
@@ -123,7 +126,7 @@ markdown_extensions:
   - pymdownx.smartsymbols
   - pymdownx.superfences:
       custom_fences:
-        - { name: mermaid, class: mermaid, format: !!python/name:pymdownx.superfences.fence_div_format }
+        - { name: mermaid, class: mermaid-container, format: !!python/name:pymdownx.superfences.fence_code_format }
         - { name: math, class: overflow, format: !!python/name:pymdownx.superfences.fence_div_format }
   - pymdownx.tabbed
   - pymdownx.tasklist:

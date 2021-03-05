@@ -165,7 +165,7 @@ Create a virtual dataset based on a list of subsets. All subsets require to be h
 
 ## Properties
 
-### :codicons-symbol-property: `attrs`
+### :codicons-symbol-variable: `attrs`
 
 ```python
 attrs = saver.attrs  # Return the h5py.AttributeManager
