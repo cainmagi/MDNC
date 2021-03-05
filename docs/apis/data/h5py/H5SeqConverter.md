@@ -12,7 +12,7 @@ Convert any supervised `.h5` data file into sequence version. This class allows 
 
 The following figure shows how the data get converted. The converted dataset would be cut into several segments with random lengths.
 
-![](../seq-read.svg){.img-fluid tag=1 title="Split the data into segments and read them."}
+![](./seq-read.svg){.img-fluid tag=1 title="Split the data into segments and read them."}
 
 The converted files should only get loaded by `mdnc.data.h5py.H5CParser`.
 
@@ -115,7 +115,7 @@ converter.close()
 
 Close the converter.
 
-## Example
+## Examples
 
 ???+ example "Example 1"
     === "Codes"

@@ -17,7 +17,6 @@ The workflow of this class is described in the following figure:
 
 {% raw %}
 ```mermaid
-%%{init: {'theme':'default'}}%%
 flowchart LR
     subgraph indexer [Indexer]
         data[(Data)]
@@ -75,7 +74,7 @@ The workflow could be divided into steps:
 
 **Requries**
 
-| Argument {: .w-8rem} | Type {: .w-5rem} | Description {: .w-8rem} |
+| Argument {: .w-6rem} | Type {: .w-4rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
 | `worker` | `#!py type` | A class used for generating worker instances, with `#!py __getitem__()` method implemented. This instance would be copied and used as indexer for different threads. |
 | `dset_size` | `#!py int` | The number of samples in the dataset. If given an `#!py np.ndarray`, the array would be used as indices, the size of the dataset would be inferred as the length of the array. |
@@ -214,7 +213,7 @@ A `#!py bool`, whether to return `#! torch.cuda.Tensor`. This value would be onl
 * The argument `out_type` is `#! 'cuda'`, or `#! 'cuda:x'` during the initialization.
 * The pyTorch is available.
 
-## Example
+## Examples
 
 ???+ example "Example 1: default mode"
     === "Codes"

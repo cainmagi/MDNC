@@ -35,8 +35,13 @@ $('pre.mermaid-container').each(function() {
 
 mermaid.initialize({
     startOnLoad: true,
-    theme: 'neutral',
-    themeCSS: '.label { font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, "Noto Serif SC", sans-serif; }'
+    theme: 'default',
+    themeCSS: '.label { font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, "Noto Serif SC", sans-serif; }',
+    mermaid: {
+        callback: function (id) {
+            $('#' + id).parent().parent().addClass('show');
+        },
+    },
 });
 
 // MathJax
@@ -51,14 +56,16 @@ window.MathJax = {
         tagSide: "right",
         tagIndent: ".8em",
         multlineWidth: "85%",
-        packages: {'[+]': ['base', 'boldsymbol', 'color']}
+        packages: {'[+]': ['base', 'boldsymbol', 'color']},
+        processEscapes: true,
+        processEnvironments: true
     },
     chtml: {
         displayAlign: "center"
     },
     options: {
-        ignoreHtmlClass: 'tex2jax_ignore',
-        processHtmlClass: 'tex2jax_process'
+        ignoreHtmlClass: '.*|',
+        processHtmlClass: 'arithmatex'
     },
     svg: {
         fontCache: 'global'

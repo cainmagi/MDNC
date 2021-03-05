@@ -15,7 +15,6 @@ The APIs of this package could be divided into the following sub-packages:
 The diagram of the MDNC is shown as follows:
 
 ```mermaid
-%%{init: {'theme':'default'}}%%
 flowchart LR
     mdnc:::module
     subgraph mdnc

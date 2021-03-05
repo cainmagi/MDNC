@@ -17,7 +17,7 @@ This parser is the upgraded version of [`mdnc.data.h5py.H5GParser`](../H5GParser
 
 This parser could also read the dataset converted by [`mdnc.data.h5py.H5SeqConverter`](../H5SeqConverter). The workflow is shown in the following figure:
 
-![](../seq-read.svg){.img-fluid tag=1 title="Split the data into segments and read them."}
+![](./seq-read.svg){.img-fluid tag=1 title="Split the data into segments and read them."}
 
 ## Arguments
 
@@ -309,7 +309,7 @@ dset.preproc
 
 The argument `#!py preprocfunc` during the initialziation. This property helps users to invoke the preprocessor manually.
 
-## Example
+## Examples
 
 ???+ example "Example 1"
     === "Codes"

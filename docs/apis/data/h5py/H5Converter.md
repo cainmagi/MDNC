@@ -70,7 +70,7 @@ converter.convert()
 
 Perform the data conversion.
 
-## Example
+## Examples
 
 ???+ example
     === "Codes"

@@ -1,7 +1,7 @@
 // Special format style
-div{
+div {
   // float right
-  .fl-right{
+  &.fl-right{
     clear: right;
     text-align: left;
     float: right;
@@ -14,7 +14,7 @@ div{
   }
 
   // overflow
-  .overflow {
+  &.overflow {
     padding-top: 0;
     padding-bottom: 0;
     margin-top: 0;

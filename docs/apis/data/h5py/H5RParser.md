@@ -265,7 +265,7 @@ dset.preproc
 
 The argument `#!py preprocfunc` during the initialziation. This property helps users to invoke the preprocessor manually.
 
-## Example
+## Examples
 
 ???+ example "Example 1"
     === "Codes"

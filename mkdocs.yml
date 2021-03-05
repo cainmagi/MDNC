@@ -126,7 +126,7 @@ markdown_extensions:
   - pymdownx.smartsymbols
   - pymdownx.superfences:
       custom_fences:
-        - { name: mermaid, class: mermaid-container, format: !!python/name:pymdownx.superfences.fence_code_format }
+        - { name: mermaid, class: "mermaid-container", format: !!python/name:pymdownx.superfences.fence_code_format }
         - { name: math, class: overflow, format: !!python/name:pymdownx.superfences.fence_div_format }
   - pymdownx.tabbed
   - pymdownx.tasklist:
@@ -156,6 +156,9 @@ nav:
         - "<span class='magic-codeicon-class'>MSequence</span>": apis/data/sequence/MSequence.md
         - "<span class='magic-codeicon-class'>MPSequence</span>": apis/data/sequence/MPSequence.md
         - "<span class='magic-codeicon-class'>MTSequence</span>": apis/data/sequence/MTSequence.md
+      - "<span class='magic-codeicon-module'>preprocs</span>":
+        - "<span class='magic-codeicon-class'>ProcAbstract</span>": apis/data/preprocs/ProcAbstract.md
+        - "<span class='magic-codeicon-class'>ProcMerge</span>": apis/data/preprocs/ProcMerge.md
 
 # Google Analytics
 google_analytics_4:

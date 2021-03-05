@@ -29,7 +29,7 @@ Iterate the whole pytorch model and summarize the infomation as a Keras-style te
 | `summary_str` | The summary text report. |
 | `params_info` | A `#!py tuple` of two values. The first value is the total parameter numbers. The second value is the trainable parameter numbers. |
 
-## Example
+## Examples
 
 See the example of [`mdnc.contribs.torchsummary.summary`](../summary/#example)
 

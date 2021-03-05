@@ -174,7 +174,7 @@ saver.attrs = dict(...)  # Use a dictionary to update attrs.
 
 Supports using a dictionary to update the attributes of the current `h5py` object. The returned `attrs` is used as `#!py h5py.AttributeManager`.
 
-## Example
+## Examples
 
 ???+ example "Example 1"
     === "Codes"
