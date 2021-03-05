@@ -22,7 +22,7 @@ import urllib3
 
 import tqdm
 
-__all__ = ['get_token', 'get_tarball_mode',
+__all__ = ['get_token',
            'download_tarball_link', 'download_tarball_public', 'download_tarball_private', 'download_tarball',
            'DataChecker']
 
@@ -38,8 +38,14 @@ class _SafePoolManager(urllib3.PoolManager):
         self.clear()
 
 
-def get_token(token=''):
-    '''Automatically get the token, if the token is missing.'''
+def get_token(token='', silent=True):
+    '''Automatically get the token, if the token is missing.
+    Arguments:
+        token: the given OAuth token. Only when this argument is unset,
+               the program will try to find a token from env.
+        silent: a flag. If set true, this tool would not ask for a token
+                when the token could not be found.
+    '''
     if not token:
         token = os.environ.get('GITTOKEN', None)
         if token is None:
@@ -47,16 +53,24 @@ def get_token(token=''):
         if isinstance(token, str) and token != '':
             token = token.split(':')[-1]
         else:
-            print('data.webtools: A Github OAuth token is required for downloading the data in private repository. Please provide your OAuth token:')
-            token = input('Token:')
-            if not token:
-                print('data.webtools: Provide blank token. Try to download the tarball without token.')
-            print('data.webtools: Tips: specify the environment variable $GITTOKEN or $GITHUB_API_TOKEN could help you skip this step.')
+            if not silent:
+                print('data.webtools: A Github OAuth token is required for downloading the data in private repository. Please provide your OAuth token:')
+                token = input('Token:')
+                if not token:
+                    print('data.webtools: Provide blank token. Try to download the tarball without token.')
+                print('data.webtools: Tips: specify the environment variable $GITTOKEN or $GITHUB_API_TOKEN could help you skip this step.')
+            else:
+                return ''
     return token
 
 
-def get_tarball_mode(name, mode='auto'):
-    '''Detect the tarball compression mode by file name.'''
+def __get_tarball_mode(name, mode='auto'):
+    '''Detect the tarball compression mode by file name.
+    Arguments:
+        name: the file name with a file name extension.
+        mode: the mode name, should be '', 'gz, ''bz2', or 'xz'. If specified,
+              the compression mode would not be detected by file name.
+    '''
     name = os.path.split(name)[-1]
     pos = name.find('?')
     if pos > 0:
@@ -89,7 +103,7 @@ def download_tarball_link(link, path='.', mode='auto', verbose=False):
         verbose: a flag, whether to show the downloaded size during
                  the web request.
     '''
-    mode = get_tarball_mode(name=link, mode=mode)
+    mode = __get_tarball_mode(name=link, mode=mode)
     os.makedirs(path, exist_ok=True)
     # Initialize urllib3
     with _SafePoolManager(retries=urllib3.util.Retry(connect=5, read=2, redirect=5),
@@ -192,7 +206,7 @@ def download_tarball_public(user, repo, tag, asset, path='.', mode='auto', verbo
         verbose: a flag, whether to show the downloaded size during
                  the web request.
     '''
-    mode = get_tarball_mode(name=asset, mode=mode)
+    mode = __get_tarball_mode(name=asset, mode=mode)
     os.makedirs(path, exist_ok=True)
     __download_tarball_from_repo(user=user, repo=repo, tag=tag, asset=asset,
                                  path=path, mode=mode, token=None, verbose=verbose)
@@ -219,7 +233,7 @@ def download_tarball_private(user, repo, tag, asset, path='.', mode='auto', toke
         verbose: a flag, whether to show the downloaded size during
                  the web request.
     '''
-    mode = get_tarball_mode(name=asset, mode=mode)
+    mode = __get_tarball_mode(name=asset, mode=mode)
     os.makedirs(path, exist_ok=True)
     token = get_token(token)
     __download_tarball_from_repo(user=user, repo=repo, tag=tag, asset=asset,
@@ -248,7 +262,7 @@ def download_tarball(user, repo, tag, asset, path='.', mode='auto', token=None, 
         verbose: a flag, whether to show the downloaded size during
                  the web request.
     '''
-    mode = get_tarball_mode(name=asset, mode=mode)
+    mode = __get_tarball_mode(name=asset, mode=mode)
     os.makedirs(path, exist_ok=True)
     # Detect the repository infomation first.
     is_public_mode = True
@@ -353,9 +367,16 @@ class DataChecker:
             trails.append(set_name + '.h5')
             trails.append(set_name + '.nc')
             trails.append(set_name + '.bcolz')
+        require = False
         for tr in trails:
-            if tr in query_list and (not os.path.isfile(os.path.join(set_folder, tr))):
-                return True
+            if tr in query_list:
+                require = True
+                break
+        if require:
+            for tr in trails:
+                if os.path.isfile(os.path.join(set_folder, tr)):
+                    return False
+            return True
         return False
 
     def query(self):

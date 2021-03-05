@@ -200,7 +200,7 @@ class TestWebTools:
     '''
     def __init__(self, temp_root='alpha'):
         self.root = temp_root
-        self.token = engine.webtools.get_token(token='')
+        self.token = engine.webtools.get_token(token='', silent=True)
         os.makedirs(self.root, exist_ok=True)
 
     def test_data_checker(self):
@@ -214,7 +214,6 @@ class TestWebTools:
         engine.webtools.download_tarball_link('https://github.com/cainmagi/Dockerfiles/releases/download/xubuntu-v1.5-u20.04/share-pixmaps.tar.xz', path=self.root, verbose=True)
 
     def test_download_by_info(self):
-        engine.webtools.download_tarball(user='cainmagi', repo='AGT-FWI-2020', tag='v1-v2-0.4', asset='true.tar.xz', path=self.root, token=self.token, verbose=True)
         engine.webtools.download_tarball(user='cainmagi', repo='Dockerfiles', tag='xubuntu-v1.5-u20.04', asset='xconfigs-u20-04.tar.xz', path=self.root, token=self.token, verbose=True)
 
 
