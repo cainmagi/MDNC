@@ -30,6 +30,8 @@ try:
 except ImportError:
     USE_TORCH_OUT = False
     import multiprocessing
+    
+__all__ = ['MSequence', 'MPSequence', 'MTSequence']
 
 
 class _MSequence:
@@ -113,8 +115,9 @@ class MSequence:
         '''
         Create the parser and its h5py file handle.
         Arguments:
-            worker: a class type, or something like this for creating a reader.
-                    The class should provide __getitem__ method.
+            worker: An instance, with __getitem__() method implemented. This
+                    instance would be copied and used as indexer for different
+                    processes or threads.
             dset_size: the number of samples in the dataset. If given an array,
                        the array would be used as indices, the dset_size would
                        be the length of the array.
@@ -170,8 +173,7 @@ class MSequence:
             self._indices = self.__create_indices()  # Create indices
         if self.dset_size < n_req:
             raise ValueError('data.sequence: The dataset should contains at least {0} samples.'.format(n_req))
-        self.length = np.ceil(self.dset_size / self.batch_size).astype(np.int)
-        self.batch_inds = self.__batch_indices()
+        self.length = int(np.ceil(self.dset_size / self.batch_size).astype(np.int))
 
         # Set Torch related APIs
         self.use_cuda = False
@@ -229,14 +231,7 @@ class MSequence:
         '''
         return self.length
 
-    def __batch_indices(self):
-        '''
-        Get the indices to all workers.
-        '''
-        batch_num = int(np.ceil(self.dset_size / self.batch_size))
-        return batch_num
-
-    def get_indicies(self, bind):
+    def __get_indicies(self, bind):
         '''
         Get indices from the batch index.
         '''
@@ -245,7 +240,7 @@ class MSequence:
 
     def _find_out_type_type(self):
         worker = self.worker()
-        idxs = self.get_indicies(0)
+        idxs = self.__get_indicies(0)
         data = worker[idxs]
         del worker
         if isinstance(data, (list, tuple)):
@@ -264,14 +259,14 @@ class MSequence:
         s = 0
         if self.shuffle:
             self.__shuffle()
-        for _ in range(min(max(1, self.buffer // 2), self.batch_inds)):
-            idxs = self.get_indicies(s)
+        for _ in range(min(max(1, self.buffer // 2), self.length)):
+            idxs = self.__get_indicies(s)
             s += 1
             self.qi.put(idxs)
 
         t = 0
-        while s < self.batch_inds:
-            idxs = self.get_indicies(s)
+        while s < self.length:
+            idxs = self.__get_indicies(s)
             s += 1
             data = self.qo.get()
             yield data
@@ -281,7 +276,7 @@ class MSequence:
             t += 1
             self.qi.put(idxs)
 
-        while t < self.batch_inds:
+        while t < self.length:
             data = self.qo.get()
             yield data
             if cur_id != self.start_id:
@@ -295,8 +290,8 @@ class MSequence:
 
         cur_id = self.start_id
         worker = self.manager.worker()
-        for s in range(self.batch_inds):
-            idxs = self.get_indicies(s)
+        for s in range(self.length):
+            idxs = self.__get_indicies(s)
             data = worker[idxs]
             if self.start_test_args['use_out_type']:
                 data = self.manager.out_func(data)

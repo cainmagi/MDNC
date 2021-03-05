@@ -42,6 +42,8 @@ import collections
 import torch
 import torch.nn as nn
 
+__all__ = ['summary', 'summary_string']
+
 
 def long_sum(v):
     if not all(map(lambda x: isinstance(x, int), v)):

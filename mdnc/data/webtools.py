@@ -22,6 +22,10 @@ import urllib3
 
 import tqdm
 
+__all__ = ['get_token', 'get_tarball_mode',
+           'download_tarball_link', 'download_tarball_public', 'download_tarball_private', 'download_tarball',
+           'DataChecker']
+
 
 class _SafePoolManager(urllib3.PoolManager):
     '''A wrapped urllib3.PoolManager with contex supported.

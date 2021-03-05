@@ -17,6 +17,9 @@
 import functools
 import torch.nn as nn
 
+__all__ = ['get_normalizer', 'get_upscaler', 'get_activator', 'get_adaptive_pooling',
+           'check_is_stride', 'get_convnd', 'cal_kernel_padding', 'cal_scaled_shapes']
+
 
 def get_normalizer(normalizer, order=2):
     if order == 3:
@@ -64,6 +67,19 @@ def get_activator(activator, in_planes=None):
         return None
 
 
+def get_adaptive_pooling(order=2, out_size=1):
+    if not isinstance(out_size, (list, tuple)):
+        out_size = (out_size, ) * order
+    if order == 3:
+        return nn.AdaptiveAvgPool3d(out_size)
+    elif order == 2:
+        return nn.AdaptiveAvgPool2d(out_size)
+    elif order == 1:
+        return nn.AdaptiveAvgPool1d(out_size)
+    else:
+        raise ValueError('modules.utils: The argument "order" could only be 1, 2, or 3.')
+
+
 def check_is_stride(stride):
     if isinstance(stride, (list, tuple)):
         for s in stride:
@@ -81,19 +97,6 @@ def get_convnd(order=2):
         return nn.Conv2d
     elif order == 1:
         return nn.Conv1d
-    else:
-        raise ValueError('modules.utils: The argument "order" could only be 1, 2, or 3.')
-
-
-def get_adaptive_pooling(order=2, out_size=1):
-    if not isinstance(out_size, (list, tuple)):
-        out_size = (out_size, ) * order
-    if order == 3:
-        return nn.AdaptiveAvgPool3d(out_size)
-    elif order == 2:
-        return nn.AdaptiveAvgPool2d(out_size)
-    elif order == 1:
-        return nn.AdaptiveAvgPool1d(out_size)
     else:
         raise ValueError('modules.utils: The argument "order" could only be 1, 2, or 3.')
 

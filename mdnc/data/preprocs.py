@@ -20,6 +20,9 @@ import numpy as np
 
 from scipy import signal
 
+__all__ = ['ProcAbstract', 'ProcMerge',
+           'ProcScaler', 'ProcNSTScaler', 'ProcFilter1d', 'ProcNSTFilter1d', 'ProcPad', 'ProcLifter']
+
 
 class _ProcMemDict:
     '''A memory dict used for storing the intermediate results
@@ -64,7 +67,8 @@ class ProcAbstractMeta(type):
 
 
 class ProcAbstract(metaclass=ProcAbstractMeta):
-    '''The basic processor class supporting cascading.
+    '''The basic processor class supporting cascading and
+    variable-level broadcasting..
     Should be inherited like the following example:
     ```python
     class ProcExample(ProcAbstract):
@@ -75,7 +79,7 @@ class ProcAbstract(metaclass=ProcAbstractMeta):
         def postprocess(self, ...):
             ...
     ```
-    The intertage has 3 requirements:
+    The intertage has 2 requirements:
         1. The init method need to call the init method of the base
            class.
         2. The preprocess() and postprocess() methods need to be
@@ -138,7 +142,7 @@ class ProcAbstract(metaclass=ProcAbstractMeta):
         proc = self
         has_ind_ = False
         while proc is not None:
-            if proc._ProcAbstract__inds is not None:
+            if proc._ProcAbstract__inds is not None or self._ProcAbstract__disable_inds:
                 has_ind_ = True
                 break
             proc = proc.parent
@@ -281,7 +285,11 @@ class ProcMerge(ProcAbstract):
                     be used as the parent of the current instance.
         '''
         super().__init__(parent=parent, _disable_inds=True)
-        self.num_procs, self.__procs_set = self.__init_with_procs(procs=procs, num_procs=num_procs)
+        self.__num_procs, self.__procs_set = self.__init_with_procs(procs=procs, num_procs=num_procs)
+
+    @property
+    def num_procs(self):
+        return self.__num_procs
 
     def __init_with_procs(self, procs, num_procs):
         if procs is not None and len(procs) > 0:
@@ -307,21 +315,21 @@ class ProcMerge(ProcAbstract):
     def __setitem__(self, idx, value):
         # Expand the idx to tuple
         if isinstance(idx, tuple):
-            if not all(map(lambda x: (isinstance(x, int) and x >= 0 and x < self.num_procs), idx)):
-                return ValueError('data.preprocs: When using mulitple indicies, the indices should be all integers in [0, {n}).'.format(n=self.num_procs))
+            if not all(map(lambda x: (isinstance(x, int) and x >= 0 and x < self.__num_procs), idx)):
+                return ValueError('data.preprocs: When using mulitple indicies, the indices should be all integers in [0, {n}).'.format(n=self.__num_procs))
         elif isinstance(idx, slice):
             x_start = idx.start if idx.start is not None else 0
             if x_start < 0:
-                raise ValueError('data.preprocs: The slice range only support [0, {n})'.format(n=self.num_procs))
-            x_stop = idx.stop if idx.stop is not None else self.num_procs
-            if x_stop > self.num_procs or x_stop <= x_start:
-                raise ValueError('data.preprocs: The slice range only support [0, {n}), not supporting blank range.'.format(n=self.num_procs))
+                raise ValueError('data.preprocs: The slice range only support [0, {n})'.format(n=self.__num_procs))
+            x_stop = idx.stop if idx.stop is not None else self.__num_procs
+            if x_stop > self.__num_procs or x_stop <= x_start:
+                raise ValueError('data.preprocs: The slice range only support [0, {n}), not supporting blank range.'.format(n=self.__num_procs))
             x_step = idx.step if idx.step else 1
             if x_step < 0 or x_step > (x_stop - x_start):
                 raise ValueError('data.preprocs: The slice step should ensure that the range is not blank.')
             idx = tuple(range(x_start, x_stop, x_step))
         elif idx is Ellipsis:
-            idx = tuple(range(self.num_procs))
+            idx = tuple(range(self.__num_procs))
         elif isinstance(idx, int):
             idx = (idx, )
         else:

@@ -21,6 +21,10 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+__all__ = ['setFigure', 'use_tex', 'fix_log_axis',
+           'AxisMultipleTicker',
+           'plot_hist', 'plot_bar', 'plot_scatter', 'plot_training_records', 'plot_error_curves', 'plot_distribution_curves']
+
 
 class setFigure(object):
     '''setFigure decorator.

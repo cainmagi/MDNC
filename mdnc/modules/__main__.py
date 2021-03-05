@@ -90,7 +90,7 @@ class TestConv(TestModuleAbstract):
         self.layers_2d = [engine.conv.ConvModern2d, ]
         self.layers_3d = [engine.conv.ConvModern3d, ]
         self.networks = [engine.conv.unet29, engine.conv.ae29, engine.conv.encnet22]
-        self.net_decs = [engine.conv.decnet22, ]
+        self.net_decs = [engine.conv.decnet23, ]
 
 
 class TestResNet(TestModuleAbstract):

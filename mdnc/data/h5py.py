@@ -29,6 +29,10 @@ import numpy as np
 
 from . import sequence
 
+__all__ = ['H52TXT', 'H52BIN', 'H5Converter', 'H5SeqConverter',
+           'H5SupSaverGroup', 'H5SupSaver',
+           'H5GParser', 'H5CParser', 'H5RParser']
+
 
 class H52TXT:
     '''An example of converter between HDF5 and TXT'''

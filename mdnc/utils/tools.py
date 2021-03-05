@@ -15,6 +15,8 @@
 
 import numpy as np
 
+__all__ = ['EpochMetrics', 'ContexWrapper']
+
 
 class EpochMetrics(dict):
     '''A dictionary for storing metrics.
