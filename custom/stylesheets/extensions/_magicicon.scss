@@ -24,7 +24,7 @@
   }
 }
 
-.md-nav__link{
+.md-nav__link {
   &:hover, &:focus {
     .magic-codeicon-package,
     .magic-codeicon-module,
@@ -45,6 +45,21 @@
     .magic-codeicon-function {
       &::before {
         background-color: var(--md-typeset-a-color);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 76.1875em) {
+  .md-nav__item--active>.md-nav__link {
+    &, &:hover, &:focus {
+      .magic-codeicon-package,
+      .magic-codeicon-module,
+      .magic-codeicon-class,
+      .magic-codeicon-function {
+        &::before {
+          background-color: var(--md-typeset-a-color);
+        }
       }
     }
   }
