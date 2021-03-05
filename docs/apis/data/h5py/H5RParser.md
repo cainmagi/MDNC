@@ -9,7 +9,7 @@ dset = mdnc.data.h5py.H5RParser(
 )
 ```
 
-This class allows users to feed one .h5 file, and convert it to [`mdnc.data.sequence.MPSequence`](../sequence/MPSequence). The realization could be described as:
+This class allows users to feed one .h5 file, and convert it to [`mdnc.data.sequence.MPSequence`](../../sequence/MPSequence). The realization could be described as:
 
 1. Create .h5 file handle.
 2. Using the user defined keywords to get a group of datasets.
@@ -155,7 +155,7 @@ Get a file object of the to-be-loaded file.
 dset.start(compat=None)
 ```
 
-Start the process pool. This method is implemented by [`mdnc.data.sequence.MPSequence`](../sequence/MPSequence). It supports context management.
+Start the process pool. This method is implemented by [`mdnc.data.sequence.MPSequence`](../../sequence/MPSequence). It supports context management.
 
 Running `start()` or `start_test()` would interrupt the started sequence.
 
@@ -190,7 +190,7 @@ Running `start()` or `start_test()` would interrupt the started sequence.
     To solve this problem, we need to fall back to multi-threading for the sequence out-type converter on Windows.
 
 ??? warning
-    Even if you set `#!py shuffle=False`, due to the mechanism of the parallelization, the sample order during the iteration may still get a little bit shuffled. To ensure your sample order not changed, please use `#!py shuffle=False` during the initialization and use [`#!py start_test()`](#start_test) instead.
+    Even if you set `#!py shuffle=False`, due to the mechanism of the parallelization, the sample order during the iteration may still get a little bit shuffled. To ensure your sample order not changed, please use `#!py shuffle=False` during the initialization and use [`start_test()`](#start_test) instead.
 
 -----
 
@@ -211,7 +211,7 @@ Running `start()` or `start_test()` would interrupt the started sequence.
 | `test_mode` | `#!py str` | Could be `#!py 'default'`, `#!py 'cpu'`, or `#!py 'numpy'`. <ul> <li>`#!py 'default'`: the output would be converted as `start()` mode.</li> <li>`#!py 'cpu'`: even set 'cuda' as output type, the testing output would be still not converted to GPU.</li> <li>`#!py 'numpy'`: would ignore all out_type configurations and return the original output. This output is still pre-processed.</li> </ul>  |
 
 ??? tip
-    This method also supports context management. See [`data.h5py.H5RParser.start`](#start) to check how to use it.
+    This method also supports context management. See [`start()`](#start) to check how to use it.
 
 -----
 
@@ -315,4 +315,4 @@ The argument `#!py preprocfunc` during the initialziation. This property helps u
                 print('data.h5py: Epoch 1, Batch {0}'.format(i), data[0].shape, data[1].shape)
         ```
 
-[pydoc-pickable]:https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled "What can be pickled and unpickled?"
+[pydoc-picklable]:https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled "What can be pickled and unpickled?"

@@ -152,6 +152,10 @@ nav:
         - "<span class='magic-codeicon-class'>H5GParser</span>": apis/data/h5py/H5GParser.md
         - "<span class='magic-codeicon-class'>H5CParser</span>": apis/data/h5py/H5CParser.md
         - "<span class='magic-codeicon-class'>H5RParser</span>": apis/data/h5py/H5RParser.md
+      - "<span class='magic-codeicon-module'>sequence</span>":
+        - "<span class='magic-codeicon-class'>MSequence</span>": apis/data/sequence/MSequence.md
+        - "<span class='magic-codeicon-class'>MPSequence</span>": apis/data/sequence/MPSequence.md
+        - "<span class='magic-codeicon-class'>MTSequence</span>": apis/data/sequence/MTSequence.md
 
 # Google Analytics
 google_analytics_4:

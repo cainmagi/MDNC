@@ -11,13 +11,13 @@ dset = mdnc.data.h5py.H5CParser(
 )
 ```
 
-This class allows users to feed one `.h5` file, and parse it by [`mdnc.data.sequence.MPSequence`](../sequence/MPSequence). The realization could be described as:
+This class allows users to feed one `.h5` file, and parse it by [`mdnc.data.sequence.MPSequence`](../../sequence/MPSequence). The realization could be described as:
 
-This parser is the upgraded version of [`mdnc.data.h5py.H5GParser`](./H5GParser), it is specially designed for parsing data to LSTM/ConvLSTM. A `sequence` dimension would be inserted between `batches` and `channels`. In each batch, the sequence is continuously extracted in the order of the batches. During each epoch, a sliding window would iterate the first axis (samples). The number of batches would be the same as using [`mdnc.data.h5py.H5GParser`](./H5GParser). For each variable specified by `keywords_sequence`, each sample in the mini-batch is a sequence.
+This parser is the upgraded version of [`mdnc.data.h5py.H5GParser`](../H5GParser), it is specially designed for parsing data to LSTM/ConvLSTM. A `sequence` dimension would be inserted between `batches` and `channels`. In each batch, the sequence is continuously extracted in the order of the batches. During each epoch, a sliding window would iterate the first axis (samples). The number of batches would be the same as using [`mdnc.data.h5py.H5GParser`](../H5GParser). For each variable specified by `keywords_sequence`, each sample in the mini-batch is a sequence.
 
-This parser could also read the dataset converted by [`mdnc.data.h5py.H5SeqConverter`](./H5SeqConverter). The workflow is shown in the following figure:
+This parser could also read the dataset converted by [`mdnc.data.h5py.H5SeqConverter`](../H5SeqConverter). The workflow is shown in the following figure:
 
-![](./seq-read.svg){.img-fluid tag=1 title="Split the data into segments and read them."}
+![](../seq-read.svg){.img-fluid tag=1 title="Split the data into segments and read them."}
 
 ## Arguments
 
@@ -29,7 +29,7 @@ This parser could also read the dataset converted by [`mdnc.data.h5py.H5SeqConve
 | `keywords_sequence` | `#!py (str, )` | The keyword of sequence data. The keywords in this list would be parsed as `(B, S, C1, C2, ...)`, where `B` and `S` are the sample number and sequence length (given by the argument `sequence_size`) respectively. It should be a list of keywords (or a single keyword). |
 | `keyword_single` | `#!py (str, )` | The keyword of single values. The keywords in this list would be parsed as `(B, C1, C2, ...)`, where `B` is the sample number. It should be a list of keywords (or a single keyword). |
 | `batch_size` | `#!py int` | Number of samples in each mini-batch. |
-| `sequence_size` | `#!py int` | The size of each sequence. It represents `S` of `(B, S, C1, C2, ...)`.. |
+| `sequence_size` | `#!py int` | The size of each sequence. It represents `S` of `(B, S, C1, C2, ...)`. |
 | `sequence_position` | `#!py int` | The aligned position between the single values and the sequence values. It should be in the range of `#!py >= 0` and `#!py < sequence_size`. |
 | `sequence_padding` | `#!py int` | The padding method for each epoch, it will influence the first or the final samples in the dataset. Could be `#!py 'same'`, `#!py 'zero'` or `#!py 'none'`. If set `#!py None`, the number of batches of each epoch would be a little bit smaller than the actual number. |
 | `shuffle` | `#!py bool` | If enabled, shuffle the data set at the beginning of each epoch. |
@@ -159,7 +159,7 @@ Get a file object of the to-be-loaded file.
 dset.start(compat=None)
 ```
 
-Start the process pool. This method is implemented by [`mdnc.data.sequence.MPSequence`](../sequence/MPSequence). It supports context management.
+Start the process pool. This method is implemented by [`mdnc.data.sequence.MPSequence`](../../sequence/MPSequence). It supports context management.
 
 Running `start()` or `start_test()` would interrupt the started sequence.
 
@@ -194,7 +194,7 @@ Running `start()` or `start_test()` would interrupt the started sequence.
     To solve this problem, we need to fall back to multi-threading for the sequence out-type converter on Windows.
 
 ??? warning
-    Even if you set `#!py shuffle=False`, due to the mechanism of the parallelization, the sample order during the iteration may still get a little bit shuffled. To ensure your sample order not changed, please use `#!py shuffle=False` during the initialization and use [`#!py start_test()`](#start_test) instead.
+    Even if you set `#!py shuffle=False`, due to the mechanism of the parallelization, the sample order during the iteration may still get a little bit shuffled. To ensure your sample order not changed, please use `#!py shuffle=False` during the initialization and use [`start_test()`](#start_test) instead.
 
 -----
 
@@ -215,7 +215,7 @@ Running `start()` or `start_test()` would interrupt the started sequence.
 | `test_mode` | `#!py str` | Could be `#!py 'default'`, `#!py 'cpu'`, or `#!py 'numpy'`. <ul> <li>`#!py 'default'`: the output would be converted as `start()` mode.</li> <li>`#!py 'cpu'`: even set 'cuda' as output type, the testing output would be still not converted to GPU.</li> <li>`#!py 'numpy'`: would ignore all out_type configurations and return the original output. This output is still pre-processed.</li> </ul>  |
 
 ??? tip
-    This method also supports context management. See [`data.h5py.H5CParser.start`](#start) to check how to use it.
+    This method also supports context management. See [`start()`](#start) to check how to use it.
 
 -----
 
@@ -339,4 +339,4 @@ The argument `#!py preprocfunc` during the initialziation. This property helps u
                 print('data.h5py:', i, d1[:,:], d2.shape, d3)
         ```
 
-[pydoc-pickable]:https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled "What can be pickled and unpickled?"
+[pydoc-picklable]:https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled "What can be pickled and unpickled?"

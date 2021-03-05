@@ -9,14 +9,14 @@ dset = mdnc.data.h5py.H5GParser(
 )
 ```
 
-Grouply parsing dataset. This class allows users to feed one .h5 file, and convert it to [`mdnc.data.sequence.MPSequence`](../sequence/MPSequence). The realization could be described as:
+Grouply parsing dataset. This class allows users to feed one .h5 file, and convert it to [`mdnc.data.sequence.MPSequence`](../../sequence/MPSequence). The realization could be described as:
 
-1. Create `.h5` file indexer, this indexer would be initialized by [`sequence.MPSequence`](../sequence/MPSequence). It would use the user defined keywords to get a group of `#!py h5py.Dataset`s.
+1. Create `.h5` file indexer, this indexer would be initialized by [`sequence.MPSequence`](../../sequence/MPSequence). It would use the user defined keywords to get a group of `#!py h5py.Dataset`s.
 2. Estimate the `#!py h5py.Dataset` sizes, each dataset should share the same size (but could have different shapes).
-3. Use the dataset size to create a [`sequence.MPSequence`](../sequence/MPSequence), and allows it to randomly shuffle the indices in each epoch.
-4. Invoke the [`sequence.MPSequence`](../sequence/MPSequence) APIs to serve the parallel dataset parsing.
+3. Use the dataset size to create a [`sequence.MPSequence`](../../sequence/MPSequence), and allows it to randomly shuffle the indices in each epoch.
+4. Invoke the [`sequence.MPSequence`](../../sequence/MPSequence) APIs to serve the parallel dataset parsing.
 
-Certainly, you could use this parser to load a single `#!py h5py.Dataset`. To find details about the parallel parsing workflow, please check [`mdnc.data.sequence.MPSequence`](../sequence/MPSequence).
+Certainly, you could use this parser to load a single `#!py h5py.Dataset`. To find details about the parallel parsing workflow, please check [`mdnc.data.sequence.MPSequence`](../../sequence/MPSequence).
 
 ## Arguments
 
@@ -151,7 +151,7 @@ Get a file object of the to-be-loaded file.
 dset.start(compat=None)
 ```
 
-Start the process pool. This method is implemented by [`mdnc.data.sequence.MPSequence`](../sequence/MPSequence). It supports context management.
+Start the process pool. This method is implemented by [`mdnc.data.sequence.MPSequence`](../../sequence/MPSequence). It supports context management.
 
 Running `start()` or `start_test()` would interrupt the started sequence.
 
@@ -186,7 +186,7 @@ Running `start()` or `start_test()` would interrupt the started sequence.
     To solve this problem, we need to fall back to multi-threading for the sequence out-type converter on Windows.
 
 ??? warning
-    Even if you set `#!py shuffle=False`, due to the mechanism of the parallelization, the sample order during the iteration may still get a little bit shuffled. To ensure your sample order not changed, please use `#!py shuffle=False` during the initialization and use [`#!py start_test()`](#start_test) instead.
+    Even if you set `#!py shuffle=False`, due to the mechanism of the parallelization, the sample order during the iteration may still get a little bit shuffled. To ensure your sample order not changed, please use `#!py shuffle=False` during the initialization and use [`start_test()`](#start_test) instead.
 
 -----
 
@@ -207,7 +207,7 @@ Running `start()` or `start_test()` would interrupt the started sequence.
 | `test_mode` | `#!py str` | Could be `#!py 'default'`, `#!py 'cpu'`, or `#!py 'numpy'`. <ul> <li>`#!py 'default'`: the output would be converted as `start()` mode.</li> <li>`#!py 'cpu'`: even set 'cuda' as output type, the testing output would be still not converted to GPU.</li> <li>`#!py 'numpy'`: would ignore all out_type configurations and return the original output. This output is still pre-processed.</li> </ul>  |
 
 ??? tip
-    This method also supports context management. See [`data.h5py.H5GParser.start`](#start) to check how to use it.
+    This method also supports context management. See [`start()`](#start) to check how to use it.
 
 -----
 
@@ -306,4 +306,4 @@ The argument `#!py preprocfunc` during the initialziation. This property helps u
                 print('Before: {0}, {1}; After: {0}, {1}.'.format(std_one, std_two, std_one_, std_two_))
         ```
 
-[pydoc-pickable]:https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled "What can be pickled and unpickled?"
+[pydoc-picklable]:https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled "What can be pickled and unpickled?"
