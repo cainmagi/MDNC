@@ -1,10 +1,5 @@
 // General styling for repository link icons
 .md-typeset {
-  a[href^="mailto:"]::before {
-    -webkit-mask-image: svg-load-s("mdi-mail");
-    mask-image: svg-load-s("mdi-mail");
-  }
-
   .magiclink-compare,
   .magiclink-commit,
   .magiclink-pull,
@@ -23,7 +18,25 @@
   .magiclink-compare,
   .magiclink-commit,
   .magiclink-pull,
-  .magiclink-issue,
+  .magiclink-issue {
+    &::before {
+      position: relative;
+      width: px2em(16px);
+      height: px2em(16px);
+      padding-right: px2em(16px);
+      background-color: var(--md-typeset-a-color);
+      background-size: px2em(16px);
+      transition: background-color 125ms;
+      content: "\a0";
+    }
+
+    &:hover::before {
+      background-color: var(--md-accent-fg-color);
+    }
+  }
+}
+
+.md-typeset:not(.md-footer-meta) {
   a[href^="mailto:"] {
     &::before {
       position: relative;
@@ -34,6 +47,8 @@
       background-size: px2em(16px);
       transition: background-color 125ms;
       content: "\a0";
+      -webkit-mask-image: svg-load-s("mdi-mail");
+      mask-image: svg-load-s("mdi-mail");
     }
 
     &:hover::before {
