@@ -345,6 +345,19 @@ class DataChecker:
         else:
             raise TypeError('data.webtools: The argument "file_names" requires to be a str or a sequence.')
 
+    @staticmethod
+    def __query_with_ext(set_folder, set_name, query_list):
+        set_name, set_ext = os.path.splitext(set_name)
+        trails = [set_name + set_ext, ]
+        if set_ext == '':
+            trails.append(set_name + '.h5')
+            trails.append(set_name + '.nc')
+            trails.append(set_name + '.bcolz')
+        for tr in trails:
+            if tr in query_list and (not os.path.isfile(os.path.join(set_folder, tr))):
+                return True
+        return False
+
     def query(self):
         '''Search the files in the query list, and download the datasets.'''
         query_list = set(self.query_list)
@@ -352,11 +365,7 @@ class DataChecker:
         required_sets = list()
         for dinfo in self.set_list['set_list']:
             for set_name in dinfo['items']:
-                set_name, set_ext = os.path.splitext(set_name)
-                if set_ext == '':
-                    set_ext = '.h5'
-                set_name = set_name + set_ext
-                if set_name in query_list and (not os.path.isfile(os.path.join(set_folder, set_name))):
+                if self.__query_with_ext(set_folder, set_name, query_list):
                     required_sets.append(dinfo)
                     break
         if required_sets:
