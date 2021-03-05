@@ -47,5 +47,17 @@
      <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5RParser/</loc>
      <lastmod>2021-03-05</lastmod>
      <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/data/sequence/MSequence/</loc>
+     <lastmod>2021-03-05</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/data/sequence/MPSequence/</loc>
+     <lastmod>2021-03-05</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/data/sequence/MTSequence/</loc>
+     <lastmod>2021-03-05</lastmod>
+     <changefreq>daily</changefreq>
     </url>
 </urlset>
