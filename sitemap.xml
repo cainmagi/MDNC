@@ -116,6 +116,22 @@
      <lastmod>2021-03-09</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/setFigure/</loc>
+     <lastmod>2021-03-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/use_tex/</loc>
+     <lastmod>2021-03-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/fix_log_axis/</loc>
+     <lastmod>2021-03-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/AxisMultipleTicker/</loc>
+     <lastmod>2021-03-09</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/utils/tools/EpochMetrics/</loc>
      <lastmod>2021-03-09</lastmod>
      <changefreq>daily</changefreq>
