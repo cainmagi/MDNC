@@ -1,8 +1,8 @@
 // SimpleLightBox
 $(document).ready(function() {
     // Overflow scrollbox
-    $('div .overflow').each(function() { 
-        $(this).wrapInner('<div class="check" />'); 
+    $('div.arithmatex').each(function() { 
+        $(this).wrap('<div class="overflow"></div>'); 
     });
     // SimpleLightBox
     var productImageGroups = [];

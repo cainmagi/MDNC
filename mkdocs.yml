@@ -33,6 +33,7 @@ theme:
     - navigation.expand
   icon:
     repo: fontawesome/brands/git-alt
+    logo: mdnc/logo
   palette:
     scheme: default
     primary: red
@@ -41,7 +42,6 @@ theme:
     text: Noto Sans
     code: Roboto Mono
   favicon: assets/icons/logo.png
-  logo: assets/icons/logo.svg
 
 plugins:
   - git-revision-date-localized
@@ -127,7 +127,7 @@ markdown_extensions:
   - pymdownx.superfences:
       custom_fences:
         - { name: mermaid, class: "mermaid-container", format: !!python/name:pymdownx.superfences.fence_code_format }
-        - { name: math, class: overflow, format: !!python/name:pymdownx.superfences.fence_div_format }
+        - { name: math, class: arithmatex, format: !!python/name:pymdownx.superfences.fence_div_format }
   - pymdownx.tabbed
   - pymdownx.tasklist:
       custom_checkbox: true
@@ -159,6 +159,19 @@ nav:
       - "<span class='magic-codeicon-module'>preprocs</span>":
         - "<span class='magic-codeicon-class'>ProcAbstract</span>": apis/data/preprocs/ProcAbstract.md
         - "<span class='magic-codeicon-class'>ProcMerge</span>": apis/data/preprocs/ProcMerge.md
+        - "<span class='magic-codeicon-class'>ProcScaler</span>": apis/data/preprocs/ProcScaler.md
+        - "<span class='magic-codeicon-class'>ProcNSTScaler</span>": apis/data/preprocs/ProcNSTScaler.md
+        - "<span class='magic-codeicon-class'>ProcFilter1d</span>": apis/data/preprocs/ProcFilter1d.md
+        - "<span class='magic-codeicon-class'>ProcNSTFilter1d</span>": apis/data/preprocs/ProcNSTFilter1d.md
+        - "<span class='magic-codeicon-class'>ProcPad</span>": apis/data/preprocs/ProcPad.md
+        - "<span class='magic-codeicon-class'>ProcLifter</span>": apis/data/preprocs/ProcLifter.md
+      - "<span class='magic-codeicon-module'>webtools</span>":
+        - "<span class='magic-codeicon-function'>get_token</span>": apis/data/webtools/get_token.md
+        - "<span class='magic-codeicon-function'>download_tarball_link</span>": apis/data/webtools/download_tarball_link.md
+        - "<span class='magic-codeicon-function'>download_tarball</span>": apis/data/webtools/download_tarball.md
+        - "<span class='magic-codeicon-function'>download_tarball_public</span>": apis/data/webtools/download_tarball_public.md
+        - "<span class='magic-codeicon-function'>download_tarball_private</span>": apis/data/webtools/download_tarball_private.md
+        - "<span class='magic-codeicon-class'>DataChecker</span>": apis/data/webtools/DataChecker.md
 
 # Google Analytics
 google_analytics_4:

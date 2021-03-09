@@ -37,7 +37,7 @@ This API is more intuitive for users to concatenate serveral processors together
 ??? warning
     The argument `num_procs` should be greater than `procs`, if both `num_procs` and `procs` are specified.
 
-## Abstract Methods
+## Methods
 
 ### :codicons-symbol-method: `preprocess`
 
@@ -230,7 +230,7 @@ There are many kinds of method for using this class. For example,
 
 This class could be also used for merge customized processor. But the customized processor should ensure the input and output numbers are the same, for example,
 
-???+ example "Example 3: out args changed"
+???+ example "Example 3"
     === "Codes"
         ```python linenums="1"
         import numpy as np

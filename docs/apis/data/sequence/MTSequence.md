@@ -9,7 +9,7 @@ manager = mdnc.data.sequence.MTSequence(
 )
 ```
 
-This class is a scheduler based on multi-threading. It is designed as an alternative [`keras.utils.Sequence`][keras-sequence]. The multi-threading codes are built on top of the [`threading`][pydoc-threading] module. It supports different workers and allows users to read datasets asynchronously and shuffle dataset randomly.
+This class is a scheduler based on multi-threading. It is designed as an alternative [`:fontawesome-solid-external-link-alt: keras.utils.Sequence`][keras-sequence]. The multi-threading codes are built on top of the [`:fontawesome-solid-external-link-alt: threading`][pydoc-threading] module. It supports different workers and allows users to read datasets asynchronously and shuffle dataset randomly.
 
 This class could be loaded without pyTorch.
 
@@ -87,7 +87,7 @@ The workflow could be divided into steps:
 | `seed` | `#!py int` | : the seed used for shuffling the data. If not set, would use random shuffle without seed. |
 
 ??? info
-    The argument `worker` does not require to be [picklable][pydoc-picklable] in this case, because all threads are mainted in the same process.
+    The argument `worker` does not require to be [:fontawesome-solid-external-link-alt: picklable][pydoc-picklable] in this case, because all threads are mainted in the same process.
 
 ## Methods
 

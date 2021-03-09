@@ -34,7 +34,7 @@ The basic processor class supporting cascading and variable-level broadcasting:
 | Argument {: .w-7rem} | Type {: .w-6rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
 | `inds` | `#!py int` or<br>`#!py (int, )` | Index or indicies of variables where the user implemented methods would be broadcasted. The variables not listed in this argument would be passed to the output without any processing. If set `#!py None`, methods would be broadcasted to all variables. |
-| `parent` | `#!py ProcAbstract` | Another derived class of `ProcAbstract`. The output of `#!py parent.preprocess()` would be used as the input of `#!py self.preprocess()`. The input of `#!py self.postprocess()` would be used as the input of `#!py parent.preprocess()`. |
+| `parent` | `#!py ProcAbstract` | Another instance derived from `ProcAbstract`. The output of `#!py parent.preprocess()` would be used as the input of `#!py self.preprocess()`. The input of `#!py self.postprocess()` would be used as the input of `#!py parent.preprocess()`. |
 | `_disable_inds` | `#!py bool` | A flag used by developers. If set `#!py True`, the broadcasting would not be used. It means that the user-implemented arguments would be exactly the arguments to be used. |
 
 ??? warning

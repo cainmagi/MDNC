@@ -9,9 +9,9 @@ manager = mdnc.data.sequence.MSequence(
 )
 ```
 
-This class is a scheduler based on multi-threading or multi-processing. It is designed as an alternative [`keras.utils.Sequence`][keras-sequence]. The multi-threading and multi-processing codes are built on top of the [`threading`][pydoc-threading] and [`multiprocessing`][pydoc-mp] modules respectively. It supports different workers and allows users to read datasets asynchronously and shuffle dataset randomly.
+This class is a scheduler based on multi-threading or multi-processing. It is designed as an alternative [`:fontawesome-solid-external-link-alt: keras.utils.Sequence`][keras-sequence]. The multi-threading and multi-processing codes are built on top of the [`:fontawesome-solid-external-link-alt: threading`][pydoc-threading] and [`:fontawesome-solid-external-link-alt: multiprocessing`][pydoc-mp] modules respectively. It supports different workers and allows users to read datasets asynchronously and shuffle dataset randomly.
 
-This class could be loaded without pyTorch. If the pyTorch is detected, the multiprocessing backend would be provided by [`torch.multiprocessing`][torch-mp].
+This class could be loaded without pyTorch. If the pyTorch is detected, the multiprocessing backend would be provided by [`:fontawesome-solid-external-link-alt: torch.multiprocessing`][torch-mp].
 
 The workflow of this class is described in the following figure:
 
@@ -91,7 +91,7 @@ The workflow could be divided into steps:
 | `seed` | `#!py int` | : the seed used for shuffling the data. If not set, would use random shuffle without seed. |
 
 ??? warning
-    The argument `worker` requires to be a [picklable object][pydoc-picklable]. It means:
+    The argument `worker` requires to be a [:fontawesome-solid-external-link-alt: picklable object][pydoc-picklable]. It means:
 
     * The `worker` itself should be defined in a global domain, not inside a function or a method.
     * All attributes of the `worker` should be picklable, i.e. a local function like `#!py lambda` expression should not be used.
