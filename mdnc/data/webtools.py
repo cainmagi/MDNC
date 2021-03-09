@@ -28,7 +28,7 @@ __all__ = ['get_token',
 
 
 class _SafePoolManager(urllib3.PoolManager):
-    '''A wrapped urllib3.PoolManager with contex supported.
+    '''A wrapped urllib3.PoolManager with context supported.
     This is a private class. Should not be used by users.
     '''
     def __enter__(self):
@@ -38,7 +38,7 @@ class _SafePoolManager(urllib3.PoolManager):
         self.clear()
 
 
-def get_token(token='', silent=True):
+def get_token(token='', silent=False):
     '''Automatically get the token, if the token is missing.
     Arguments:
         token: the given OAuth token. Only when this argument is unset,
@@ -94,7 +94,7 @@ def download_tarball_link(link, path='.', mode='auto', verbose=False):
     The tarball is directed by the link. This tool would not work on
     private github repository.
     The tarball would be sent to pipeline and not get stored.
-    Now supports gz or xz format.
+    Now supports gz, bz2 or xz format.
     Arguments:
         link: the web link.
         path: the extracted data root path. Should be a folder path.
@@ -202,7 +202,6 @@ def download_tarball_public(user, repo, tag, asset, path='.', mode='auto', verbo
         path: the extracted data root path. Should be a folder path.
         mode: the mode of extraction. Could be 'gz', 'bz2', 'xz' or
               'auto'.
-        token: the token required for downloading the private asset.
         verbose: a flag, whether to show the downloaded size during
                  the web request.
     '''
@@ -312,7 +311,7 @@ class DataChecker:
             self.set_list = json.load(f)
         self.query_list = list()
         self.root = root
-        self.token = token
+        self.token = get_token(token, silent=True)
         self.verbose = verbose
 
     @staticmethod
@@ -392,7 +391,7 @@ class DataChecker:
         if required_sets:
             print('data.webtools: There are required dataset missing. Start downloading from the online repository...')
             user = self.set_list.get('user', 'cainmagi')
-            repo = self.set_list.get('repo', 'Dockerfiles')
+            repo = self.set_list.get('repo', 'MDNC')
             for reqset in required_sets:
                 download_tarball(user=user, repo=repo,
                                  tag=reqset['tag'], asset=reqset['asset'], path=set_folder,

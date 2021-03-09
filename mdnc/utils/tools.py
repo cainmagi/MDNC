@@ -15,7 +15,7 @@
 
 import numpy as np
 
-__all__ = ['EpochMetrics', 'ContexWrapper']
+__all__ = ['EpochMetrics', 'ContextWrapper']
 
 
 class EpochMetrics(dict):
@@ -67,24 +67,28 @@ class EpochMetrics(dict):
         for k, log_list in super().items():
             yield k, self.reducer(log_list)
 
+    def values(self):
+        for v in super().values():
+            yield self.reducer(v)
 
-class ContexWrapper:
-    '''A simple wrapper for adding contex support to some special classes.
+
+class ContextWrapper:
+    '''A simple wrapper for adding context support to some special classes.
     For example, there is an instance f, it defines f.close(), but does
-    not support the contex. In this case, we could use this wrapper to
-    add contex support:
+    not support the context. In this case, we could use this wrapper to
+    add context support:
     ```python
     f = create_f(...)
-    with mdnc.utils.tools.ContexWrapper(f) as fc:
+    with mdnc.utils.tools.ContextWrapper(f) as fc:
         do some thing ...
-    # When leaving the contex, the f.close() method would be called
+    # When leaving the context, the f.close() method would be called
     # automatically.
     ```
     '''
     def __init__(self, instance, exit_method=None):
         '''Initialization
         Arguments:
-            instance: an instance requring the contex support.
+            instance: an instance requring the context support.
             exit_method: a function, if not provided, would call the
                          instance.close() method during the exiting
                          stage. If provided, would call

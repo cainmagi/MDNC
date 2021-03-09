@@ -429,12 +429,10 @@ class ProcNSTScaler(ProcAbstract):
     def __init__(self, dim=2, kernel_length=9, epsilon=1e-6, inds=None, parent=None):
         '''Initialization.
         Arguments:
-            shift:  the shifting parameter of the data. If set None,
-                    would be calculated by the given axis (axes).
-            scale:  the scaling parameter of the data. If set None,
-                    would be calculated by the given axis (axes).
-            axis:   the axis used for automatically calculating the
-                    shift and scale value.
+            dim: the dimension of the input data (to be normalized).
+            kernel_length: the length of the non-stationary sldiing
+                           window.
+            epsilon: the lower bound of the divisor used for scaling.
             inds:   the indices of the positional arguments that would
                     be applied with the processing.
             parent: An instance of the ProcAbstract. This instance would
@@ -741,7 +739,7 @@ class ProcFilter1d(ProcAbstract):
             band_low: the lower cut-off frequency. If only set this value,
                       the filter become high-pass.
             band_high: the higher cut-off frequency. If only set this value,
-                       the filter become high-pass.
+                       the filter become low-pass.
             nyquist: the nyquist frequency of the data.
             filter_type: the IIR filter type, could be
                          - butter - cheby1, - cheby2, - ellip, - bessel
@@ -788,10 +786,12 @@ class ProcNSTFilter1d(ProcAbstract):
             band_low: the lower cut-off frequency. If only set this value,
                       the filter become high-pass.
             band_high: the higher cut-off frequency. If only set this value,
-                       the filter become high-pass.
+                       the filter become low-pass.
             nyquist: the nyquist frequency of the data.
             filter_type: the IIR filter type, could be
                          - butter - cheby1, - cheby2, - ellip, - bessel
+                         the FIR filter type, could be
+                         - fft
             out_type: the output type, could be
                       - sosfilt2, - filt2, - sos, - ba
             filter_args: a dictionary including other filter arguments, not
@@ -832,10 +832,19 @@ class ProcPad(ProcAbstract):
     def __init__(self, pad_width, inds=None, parent=None, **kwargs):
         '''Initialization
         Arguments:
-
+            pad_width: number of values padded to the edges of each axis. Different
+                       from the original np.pad API, this argument supports negative
+                       values. A negative width represents a cropping size.
+            inds:   the indices of the positional arguments that would
+                    be applied with the processing.
+            parent: An instance of the ProcAbstract. This instance would
+                    be used as the parent of the current instance.
+            **kwargs: other keywords could be referred here:
+                https://numpy.org/doc/stable/reference/generated/numpy.pad.html
         '''
         super().__init__(inds=inds, parent=parent)
-        self.pad_width, self.crop_width = self.__split_pad_width(pad_width)
+        self.__pad_width, self.__crop_width = self.__split_pad_width(pad_width)
+        self.__pad_width_ = pad_width
         self.func_pad = functools.partial(np.pad, **kwargs)
 
     @staticmethod
@@ -879,6 +888,15 @@ class ProcPad(ProcAbstract):
                 return tuple(pad_width_), tuple(crop_width)
             else:
                 raise ValueError('data.preprocs: the crop arguments could not get separated from the pad arguments. The given arguments "pad_width" may be not valid.')
+    
+    @property
+    def pad_width(self):
+        return getattr
+    
+    @pad_width.setter
+    def pad_width(self, value):
+        self.__pad_width, self.__crop_width = self.__split_pad_width(value)
+        self.__pad_width_ = value
 
     @staticmethod
     def crop(x, crop_width):
@@ -899,13 +917,13 @@ class ProcPad(ProcAbstract):
             return x
 
     def preprocess(self, x):
-        x = self.func_pad(x, pad_width=self.pad_width)
-        x = self.crop(x, self.crop_width)
+        x = self.func_pad(x, pad_width=self.__pad_width)
+        x = self.crop(x, self.__crop_width)
         return x
 
     def postprocess(self, x):
-        x = self.func_pad(x, pad_width=self.crop_width)
-        x = self.crop(x, self.pad_width)
+        x = self.func_pad(x, pad_width=self.__crop_width)
+        x = self.crop(x, self.__pad_width)
         return x
 
 

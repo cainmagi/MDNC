@@ -161,7 +161,7 @@ class TestTools:
 
     def test_ctxwrapper(self):
         num_iters = 100
-        with engine.tools.ContexWrapper(tqdm.tqdm(total=num_iters)) as tq:
+        with engine.tools.ContextWrapper(tqdm.tqdm(total=num_iters)) as tq:
             for i in range(num_iters):
                 tq.update(1)
                 time.sleep(0.001)

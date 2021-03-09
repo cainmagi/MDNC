@@ -190,7 +190,7 @@ class H5SeqConverter:
         '''
         self.f_in = None
         self.f_out = None
-        self.__in_contex = False
+        self.__in_context = False
         self.__kwargs_ = {
             'logver': 0,
             'seq_len': 10,
@@ -206,12 +206,12 @@ class H5SeqConverter:
     def __enter__(self):
         if self.f_in is None or self.f_out is None:
             raise FileNotFoundError('data.h5py: The saver is closed now, should open a new file before entering the contex.')
-        self.__in_contex = True
+        self.__in_context = True
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.__close()
-        self.__in_contex = False
+        self.__in_context = False
 
     def __config_pass(self, kwargs, keys):
         if not isinstance(keys, (list, tuple)):
@@ -370,8 +370,8 @@ class H5SeqConverter:
             file_out_name: the path of the output data file. If not set, it would
                            be configured as file_in_name+'_seq'
         '''
-        if self.__in_contex:
-            raise RuntimeError('data.h5py: Should not open a file when the saver is managing a contex, because there is already an opened file. Try to exit the contex or create a new different saver.')
+        if self.__in_context:
+            raise RuntimeError('data.h5py: Should not open a file when the saver is managing a context, because there is already an opened file. Try to exit the context or create a new different saver.')
         file_in_name, file_in_ext = os.path.splitext(file_in_name)
         if file_out_name is None:
             file_out_name = file_in_name + '_seq'
@@ -398,8 +398,8 @@ class H5SeqConverter:
 
     def close(self):
         '''Close the converter.'''
-        if self.__in_contex:
-            raise RuntimeError('data.h5py: Should not close the file explicitly when the saver is managing a contex. Try to exit the contex or create a new different saver.')
+        if self.__in_context:
+            raise RuntimeError('data.h5py: Should not close the file explicitly when the saver is managing a context. Try to exit the context or create a new different saver.')
         self.__close()
 
 
@@ -426,7 +426,7 @@ class H5SupSaverGroup:
         self.parent = parent
         self.__root = self.__get_root_saver()
         self.__root_valid = isinstance(self.__root, H5SupSaver)
-        self.__in_contex = False
+        self.__in_context = False
         if self.__root_valid:
             self.__kwargs = self.__root.get_config('$root')
             self.__kwargs_ = self.__root.get_config('$root_')
@@ -436,13 +436,13 @@ class H5SupSaverGroup:
 
     def __enter__(self):
         if not self.is_open:
-            raise FileNotFoundError('data.h5py: The group is closed now, should not enter a new contex with it anymore.')
-        self.__in_contex = True
+            raise FileNotFoundError('data.h5py: The group is closed now, should not enter a new context with it anymore.')
+        self.__in_context = True
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.__close()
-        self.__in_contex = False
+        self.__in_context = False
 
     def __getitem__(self, keyword):
         if not self.is_open:
@@ -478,8 +478,8 @@ class H5SupSaverGroup:
         self.h = None
 
     def close(self):
-        if self.__in_contex:
-            raise RuntimeError('data.h5py: Should not close the group explicitly when the group is managing a contex. Try to exit the contex or create a new different group.')
+        if self.__in_context:
+            raise RuntimeError('data.h5py: Should not close the group explicitly when the group is managing a context. Try to exit the context or create a new different group.')
         self.__close()
 
     @property
@@ -693,7 +693,7 @@ class H5SupSaver:
                          existed file.
         '''
         self.f = None
-        self.__in_contex = False
+        self.__in_context = False
         self.__kwargs_ = {
             'logver': 0
         }
@@ -705,15 +705,15 @@ class H5SupSaver:
 
     def __enter__(self):
         if self.f is None:
-            raise FileNotFoundError('data.h5py: The saver is closed now, should open a new file before entering the contex.')
-        self.__in_contex = True
+            raise FileNotFoundError('data.h5py: The saver is closed now, should open a new file before entering the context.')
+        self.__in_context = True
         self.f.__enter__()
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.f.__exit__(exc_type, exc_value, exc_traceback)
         self.f = None
-        self.__in_contex = False
+        self.__in_context = False
 
     def __config_pass(self, kwargs, keys):
         if not isinstance(keys, (list, tuple)):
@@ -780,8 +780,8 @@ class H5SupSaver:
                          "enable_read" would be updated by this new
                          value.
         '''
-        if self.__in_contex:
-            raise RuntimeError('data.h5py: Should not open a file when the saver is managing a contex, because there is already an opened file. Try to exit the contex or create a new different saver.')
+        if self.__in_context:
+            raise RuntimeError('data.h5py: Should not open a file when the saver is managing a context, because there is already an opened file. Try to exit the context or create a new different saver.')
         file_name, file_ext = os.path.splitext(file_name)
         if file_ext != '.h5':
             file_name += '.h5'
@@ -801,8 +801,8 @@ class H5SupSaver:
 
     def close(self):
         '''Close the saver.'''
-        if self.__in_contex:
-            raise RuntimeError('data.h5py: Should not close the file explicitly when the saver is managing a contex. Try to exit the contex or create a new different saver.')
+        if self.__in_context:
+            raise RuntimeError('data.h5py: Should not close the file explicitly when the saver is managing a context. Try to exit the context or create a new different saver.')
         if self.f is not None:
             self.f.close()
         self.f = None
@@ -992,7 +992,7 @@ class _H5AParser(abc.ABC):
                 ...
             parser.finish()
         ```
-        Or using the contex:
+        Or using the context:
         ```python
             with parser.start() as m:
                 for ... in m:
@@ -1020,7 +1020,7 @@ class _H5AParser(abc.ABC):
                 ...
             manager.finish()
         ```
-        Or using the contex:
+        Or using the context:
         ```python
             with manager.start_test() as m:
                 for ... in m:

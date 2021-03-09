@@ -206,7 +206,7 @@ class TestWebTools:
     def test_data_checker(self):
         set_list_file = os.path.join(self.root, 'web-data')
         engine.webtools.DataChecker.init_set_list(set_list_file)
-        dc = engine.webtools.DataChecker(root=self.root, set_list_file=set_list_file, token='')
+        dc = engine.webtools.DataChecker(root=self.root, set_list_file=set_list_file, token=self.token)
         dc.add_query_file('dataset_file_name_01.txt')
         dc.query()
 

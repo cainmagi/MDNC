@@ -138,7 +138,7 @@ class MSequence:
         self.use_proc = thread_type == 'proc'
         if thread_type not in ('proc', 'thread'):
             raise TypeError('data.sequence: The given "thread_type" is invalid, should be "proc" or "thread", but given "{0}"'.format(thread_type))
-        self.pool_ctx = None  # The spawn contex
+        self.pool_ctx = None  # The spawn context
         self.pool_workers = list()  # List of processes for workers
         self.pool_converters = list()  # List of processes for converters
         self.qi = None  # Input queue
@@ -200,7 +200,7 @@ class MSequence:
         self.converter = CudaConverter(is_out_list=is_out_list, device=out_type) if self.use_cuda else None
         self.__compat = None
 
-        self.__in_contex = False
+        self.__in_context = False
         self.start_id = None
         self.start_current_mode = None
         self.start_test_args = None
@@ -312,13 +312,13 @@ class MSequence:
 
     def __enter__(self):
         if self.start_id is None:
-            raise OSError('data.sequence: Should not enter a manager contex before starting it. Try to use "with manager.start()" or "with manager.start_test()" to enter the contex.')
-        self.__in_contex = True
+            raise OSError('data.sequence: Should not enter a manager context before starting it. Try to use "with manager.start()" or "with manager.start_test()" to enter the context.')
+        self.__in_context = True
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.__finish()
-        self.__in_contex = False
+        self.__in_context = False
 
     def start(self, compat=None):
         '''Start the process pool.
@@ -329,7 +329,7 @@ class MSequence:
                 ...
             manager.finish()
         ```
-        Or using the contex:
+        Or using the context:
         ```python
             with manager.start() as m:
                 for ... in m:
@@ -343,8 +343,8 @@ class MSequence:
             compat: whether to fall back to multi-threading for the converter. If set None, the
                 decision would be made by checking os.name.
         '''
-        if self.__in_contex:
-            raise OSError('data.sequence: Should not start() the manager explicitly when it is already managed by a contex. Try to exit the contex before doing that.')
+        if self.__in_context:
+            raise OSError('data.sequence: Should not start() the manager explicitly when it is already managed by a context. Try to exit the context before doing that.')
         self.__start(compat=compat)
         return self
 
@@ -360,7 +360,7 @@ class MSequence:
                 ...
             manager.finish()
         ```
-        Or using the contex:
+        Or using the context:
         ```python
             with manager.start_test() as m:
                 for ... in m:
@@ -375,24 +375,24 @@ class MSequence:
                 'numpy': would ignore all out_type configurations and
                          return the original output.
         '''
-        if self.__in_contex:
-            raise OSError('data.sequence: Should not start() the manager explicitly when it is already managed by a contex. Try to exit the contex before doing that.')
+        if self.__in_context:
+            raise OSError('data.sequence: Should not start() the manager explicitly when it is already managed by a context. Try to exit the context before doing that.')
         self.__start_test(test_mode=test_mode)
         return self
 
     def finish(self):
         '''Finish the process poll
-        Would terminate all sub-processes and close the multiprocessing contex.
+        Would terminate all sub-processes and close the multiprocessing context.
         '''
-        if self.__in_contex:
-            raise OSError('data.sequence: Should not finish() the manager explicitly when it is already managed by a contex. Try to exit the contex before doing that.')
+        if self.__in_context:
+            raise OSError('data.sequence: Should not finish() the manager explicitly when it is already managed by a context. Try to exit the context before doing that.')
         self.__finish()
 
     def __start(self, compat=None):
         # Check the unfinished processes
         if self.pool_ctx:
             self.finish()
-        # Start a new contex.
+        # Start a new context.
         self.pool_ctx = multiprocessing.get_context('spawn')
         self.start_id = uuid.uuid4()
         self.start_current_mode = 'normal'
