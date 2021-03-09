@@ -59,7 +59,9 @@ Now we have such progress on the semi-product:
 
 ## Documentation
 
-To be built now...
+View the document via the following link:
+
+https://cainmagi.github.io/MDNC/
 
 ## Demos
 
@@ -89,10 +91,11 @@ The compatibility test is shown as below. The checked item means this package pe
 
 ## Update reports
 
-### 0.1.5 @ 3/2/2021
+### 0.1.5 @ 3/9/2021
 
 1. Add `DecoderNet` to our standard `module` protocol.
 2. Fix some bugs of `data.h5py` and `data.preprocs`.
+3. Make `draw.setFigure` enhanced by `contextlib`.
 
 ### 0.1.2 @ 2/27/2021
 

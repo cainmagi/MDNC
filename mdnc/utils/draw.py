@@ -16,7 +16,8 @@
 '''
 
 import itertools
-import functools
+import contextlib
+
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -26,51 +27,65 @@ __all__ = ['setFigure', 'use_tex', 'fix_log_axis',
            'plot_hist', 'plot_bar', 'plot_scatter', 'plot_training_records', 'plot_error_curves', 'plot_distribution_curves']
 
 
-class setFigure(object):
-    '''setFigure decorator.
-    A decorator class, which is used for changing the figure's
+class setFigure(contextlib.ContextDecorator):
+    '''setFigure context decorator.
+    A context decorator class, which is used for changing the figure's
     configurations locally for a specific function.
     An example is
     ```python
-        @mdnc.utils.draw.setFigure(font_size=12)
-        def plot_curve():
-            ...
+    @mdnc.utils.draw.setFigure(font_size=12)
+    def plot_curve():
+        ...
+    ```
+    Could be also used as
+    ```python
+    with mdnc.utils.draw.setFigure(font_size=12):
+        ...
     ```
     Arguments:
         style: the style of the figure. The available list could be
                referred here:
                https://matplotlib.org/stable/gallery/style_sheets/style_sheets_reference.html
-        font_size: the local font size for the decorated function.
+        font_name: the local font family name for the output figure.
+        font_size: the local font size for the output figure.
         use_tex: whether to use LaTeX backend for the output figure.
     '''
-    def __init__(self, style=None, font_size=None, use_tex=None):
+    def __init__(self, style=None, font_name=None, font_size=None, use_tex=None):
         self.style = style
+        self.font_name = font_name
         self.font_size = font_size
         self.use_tex = use_tex
 
-    def font_wrapped(self, foo, *args, **kwargs):
-        '''Wrapper for adding font configurations.'''
+        self.__stacks = dict()
+
+    @contextlib.contextmanager
+    def __set_font(self):
+        '''Context for setting font.'''
+        restore = dict()
+        if self.font_name:
+            restore['font.family'] = mpl.rcParams['font.family']
+            restore['font.sans-serif'] = mpl.rcParams['font.sans-serif']
+            mpl.rcParams['font.family'] = 'sans-serif'
+            mpl.rcParams['font.sans-serif'] = [self.font_name, ]
         if self.font_size:
-            curFont = mpl.rcParams['font.size']
+            restore['font.size'] = mpl.rcParams['font.size']
             mpl.rcParams['font.size'] = self.font_size
         try:
-            res = foo(*args, **kwargs)
+            yield
         finally:
-            if self.font_size:
-                mpl.rcParams['font.size'] = curFont
-        return res
+            for k, v in restore.items():
+                mpl.rcParams[k] = v
 
-    def style_wrapped(self, foo, *args, **kwargs):
-        '''Wrapper for adding style configurations.'''
+    def __set_style(self):
+        '''Context for adding style configurations.'''
         if self.style:
-            with plt.style.context(self.style):
-                res = foo(*args, **kwargs)
+            return plt.style.context(self.style)
         else:
-            res = foo(*args, **kwargs)
-        return res
+            return contextlib.nullcontext()
 
-    def tex_wrapped(self, foo, *args, **kwargs):
-        '''Wrapper for adding LaTeX configurations.'''
+    @contextlib.contextmanager
+    def __set_tex(self):
+        '''Context for adding LaTeX configurations.'''
         if self.use_tex is not None:
             restore = dict()
             useafm = mpl.rcParams.get('ps.useafm', None)
@@ -86,28 +101,27 @@ class setFigure(object):
             mpl.rcParams['pdf.use14corefonts'] = self.use_tex
             mpl.rcParams['text.usetex'] = self.use_tex
         try:
-            res = foo(*args, **kwargs)
+            yield
         finally:
             if self.use_tex is not None:
-                for k, v in restore:
+                for k, v in restore.items():
                     mpl.rcParams[k] = v
-        return res
 
-    @staticmethod
-    def func_wrapper(foo, wrapped_func):
-        '''A tool function for performing wrapper.'''
-        def feed_func(*args, **kwargs):
-            return wrapped_func(foo, *args, **kwargs)
-        return feed_func
+    def __enter__(self):
+        self.__stacks.clear()
+        self.__stacks['style'] = self.__set_style()
+        self.__stacks['font'] = self.__set_font()
+        self.__stacks['tex'] = self.__set_tex()
+        self.__stacks['style'].__enter__()
+        self.__stacks['font'].__enter__()
+        self.__stacks['tex'].__enter__()
+        return self
 
-    def __call__(self, foo, *args, **kwargs):
-        @functools.wraps(foo)
-        def inner_func(*args, **kwargs):
-            foo_font_size = self.func_wrapper(foo, self.font_wrapped)
-            foo_tex = self.func_wrapper(foo_font_size, self.tex_wrapped)
-            foo_style = self.func_wrapper(foo_tex, self.style_wrapped)
-            return foo_style(*args, **kwargs)
-        return inner_func
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.__stacks['tex'].__exit__(exc_type, exc_value, exc_traceback)
+        self.__stacks['font'].__exit__(exc_type, exc_value, exc_traceback)
+        self.__stacks['style'].__exit__(exc_type, exc_value, exc_traceback)
+        self.__stacks.clear()
 
 
 def use_tex(flag=False):
@@ -116,7 +130,7 @@ def use_tex(flag=False):
     `mdnc.utils.draw.setFigure` as a safer way.
     Arguments:
         flag: a bool, indicating whether to use the LaTeX backend
-            for drawing figures.
+            for rendering figure fonts.
     '''
     mpl.rcParams['ps.useafm'] = flag
     mpl.rcParams['pdf.use14corefonts'] = flag
@@ -127,7 +141,7 @@ def fix_log_axis(ax=None, axis='y'):
     '''Control the log axis to be limited in 10^n ticks.
     Arguments:
         ax: the axis that requires to be controlled. If set None,
-            the gca() would be used.
+            the plt.gca() would be used.
         axis: x, y or 'xy'.
     '''
     if ax is None:

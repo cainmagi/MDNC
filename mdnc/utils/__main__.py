@@ -20,6 +20,7 @@ import time
 import argparse
 
 import numpy as np
+import matplotlib.pyplot as plt
 import tqdm
 
 from mdnc import __version__
@@ -142,6 +143,13 @@ class TestDraw:
                                              xlabel='Step', ylabel=r'$\mathcal{L}$', y_log=True)
         engine.draw.plt.show()
 
+    def test_draw_context(self):
+        with engine.draw.setFigure(style='classic', font_size=16, font_name='arial'):
+            t = np.linspace(-10, 10, 100)
+            plt.plot(t, 1 / (1 + np.exp(-t)))
+            plt.title('In the context, font: arial.')
+            plt.show()
+
 
 class TestTools:
     '''Test functions for tools sub-module.
@@ -197,6 +205,7 @@ def test_utl_draw():
     print('Compatibility test: mdnc.utils.draw.')
     tester = TestDraw()
     tester.test_all()
+    tester.test_draw_context()
 
 
 def test_utl_tools():
