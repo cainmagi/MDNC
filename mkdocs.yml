@@ -30,7 +30,7 @@ theme:
   features:
     #- navigation.instant
     - navigation.tabs
-    - navigation.expand
+    # - navigation.expand
   icon:
     repo: fontawesome/brands/git-alt
     logo: mdnc/logo
@@ -59,6 +59,8 @@ plugins:
 extra:
   source:
     root: https://github.com/cainmagi/MDNC/blob/main/mdnc
+    version: 0.1.5
+    progress: 15
   disqus: 'mdnc-documentation'
   social:
     - icon: fontawesome/solid/globe
@@ -173,6 +175,11 @@ nav:
         - "<span class='magic-codeicon-function'>download_tarball_private</span>": apis/data/webtools/download_tarball_private.md
         - "<span class='magic-codeicon-class'>DataChecker</span>": apis/data/webtools/DataChecker.md
     - "<span class='magic-codeicon-package'>utils</span>":
+      - "<span class='magic-codeicon-module'>draw</span>":
+        - "<span class='magic-codeicon-class'>setFigure</span>": apis/utils/draw/setFigure.md
+        - "<span class='magic-codeicon-function'>use_tex</span>": apis/utils/draw/use_tex.md
+        - "<span class='magic-codeicon-function'>fix_log_axis</span>": apis/utils/draw/fix_log_axis.md
+        - "<span class='magic-codeicon-class'>AxisMultipleTicker</span>": apis/utils/draw/AxisMultipleTicker.md
       - "<span class='magic-codeicon-module'>tools</span>":
         - "<span class='magic-codeicon-class'>EpochMetrics</span>": apis/utils/tools/EpochMetrics.md
         - "<span class='magic-codeicon-class'>ContextWrapper</span>": apis/utils/tools/ContextWrapper.md

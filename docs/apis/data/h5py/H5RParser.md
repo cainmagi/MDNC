@@ -1,6 +1,6 @@
 # data.h5py.H5RParser
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1469)
+:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1469)
 
 ```python
 dset = mdnc.data.h5py.H5RParser(

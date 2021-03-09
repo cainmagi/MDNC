@@ -14,9 +14,9 @@ This is a homogeneous processor. It would remove the lower-frequency part of the
 \begin{equation}
 \left\{
     \begin{aligned}
-        \mathbf{y}_n &= \frac{\mathbf{x}_n - \boldsymbol{\mu}_n}{\boldsymbol{\min(\sigma}_n, \varepsilon)}, \\
-        \boldsymbol{\mu}_n &= \mathrm{Avg. pool}(\mathbf{x}_n, L), \\
-        \boldsymbol{\sigma}_n &= \mathrm{Max. pool}(\mathbf{x}_n - \boldsymbol{\mu}_n, L).
+        \mathbf{y}_n &= \frac{\mathbf{x}_n - \boldsymbol{\mu}_n}{\min(\boldsymbol{\sigma}_n, \varepsilon)}, \\
+        \boldsymbol{\mu}_n &= \mathrm{Avg. pool}(\mathbf{x}_n,~L), \\
+        \boldsymbol{\sigma}_n &= \mathrm{Max. pool}(\mathbf{x}_n - \boldsymbol{\mu}_n,~L).
     \end{aligned}
 \right.
 \end{equation}

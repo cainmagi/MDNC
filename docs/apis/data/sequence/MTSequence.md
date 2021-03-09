@@ -1,6 +1,6 @@
 # data.sequence.MTSequence
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
 
 ```python
 manager = mdnc.data.sequence.MTSequence(

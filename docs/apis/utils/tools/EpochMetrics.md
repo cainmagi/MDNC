@@ -3,7 +3,9 @@
 :codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
 
 ```python
-emdict = mdnc.utils.tools.EpochMetrics(reducer=np.mean)
+emdict = mdnc.utils.tools.EpochMetrics(
+    reducer=np.mean
+)
 ```
 
 A dictionary for storing metrics. The [`__setitem__`](#__setitem__) and [`__getitem__`](#__getitem__) operators are overloaded. This tool is used for calculating the statistics of epoch metrics easily. The following codes are equivalent:

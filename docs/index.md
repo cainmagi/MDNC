@@ -10,7 +10,7 @@ This is a pyTorch framework used for
 
 ???+ info
     Currently, this module is still under development. The current version is
-    [=12% "0.1.2"]{: .candystripe .candystripe-animate}
+    [={{ source.progress }}% "{{ source.version }}"]{: .candystripe .candystripe-animate}
     However, you could use this nightly version anyway. All available (stable) APIs of the current version would be recorded in this document.
 
 ## Overview

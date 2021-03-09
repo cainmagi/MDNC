@@ -1,6 +1,6 @@
 # data.h5py.H5SeqConverter
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L172)
+:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L172)
 
 ```python
 converter = mdnc.data.h5py.H5SeqConverter(

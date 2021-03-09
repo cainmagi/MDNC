@@ -3,7 +3,7 @@
 :codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
 
 ```python
-download_tarball_public(
+mdnc.data.webtools.download_tarball_public(
     user, repo, tag, asset,
     path='.', mode='auto', verbose=False
 )

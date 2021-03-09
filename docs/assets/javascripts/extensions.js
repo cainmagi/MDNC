@@ -50,7 +50,7 @@ window.MathJax = {
         load: ['[tex]/boldsymbol', '[tex]/color']
     },
     tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        inlineMath: [ ['\\(', '\\)'] ],
         tags: 'ams',
         displayMath: [ ["\\[","\\]"] ],
         tagSide: "right",

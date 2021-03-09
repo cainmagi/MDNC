@@ -1,6 +1,6 @@
 # data.h5py.H5SupSaver
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L676)
+:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L676)
 
 ```python
 saver = mdnc.data.h5py.H5SupSaver(

@@ -3,7 +3,7 @@
 :codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
 
 ```python
-token = get_token(
+token = mdnc.data.webtools.get_token(
     token='', silent=True
 )
 ```

@@ -18,7 +18,7 @@ This is a homogeneous processor. It accepts two variables `shift` ($\mu$), `scal
 
 where $\mathbf{x}_n$ and $\mathbf{y}_n$ are the i^th^ input argument and the corresponding output argument respectively.
 
-* If not setting $\mu$, would use the mean value of the input mini-batch to shift the argument, i.e. $\mu_n = \bar{\mathbf{x}_n}$;
+* If not setting $\mu$, would use the mean value of the input mini-batch to shift the argument, i.e. $\mu_n = \overline{\mathbf{x}}_n$;
 * If not setting $\sigma$, would use the max-abs value of the input mini-batch to scale the argument, i.e. $\sigma_n = \max |\mathbf{x}_n - \mu_n|$.
 
 The above two caulation is estimated on mini-batches. This configuration may cause unstable issues when the input mini-batches are not i.i.d.. Therefore, we recommend users to always set `shift` and `scale` manually.

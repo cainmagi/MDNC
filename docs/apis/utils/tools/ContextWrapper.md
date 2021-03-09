@@ -1,9 +1,11 @@
 # utils.tools.ContextWrapper
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
 
 ```python
-inst_wctx = mdnc.utils.tools.ContextWrapper(instance, exit_method=None)
+inst_wctx = mdnc.utils.tools.ContextWrapper(
+    instance, exit_method=None
+)
 ```
 
 A simple wrapper for adding context support to some special classes.
