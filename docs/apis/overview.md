@@ -75,7 +75,8 @@ To be built ...
 
 ### :codicons-package: `utils`
 
-To be documented ...
+* :codicons-symbol-namespace: `tools`: Light-weighted recording parsing tools used during training or testing.
+* :codicons-symbol-namespace: `draw`: Wrapped `matplotlib` drawing tools. Most of the utilities are designed as call-back based functions. This module also provide some specialized formatters.
 
 ### :codicons-package: `contribs`
 

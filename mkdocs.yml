@@ -172,6 +172,10 @@ nav:
         - "<span class='magic-codeicon-function'>download_tarball_public</span>": apis/data/webtools/download_tarball_public.md
         - "<span class='magic-codeicon-function'>download_tarball_private</span>": apis/data/webtools/download_tarball_private.md
         - "<span class='magic-codeicon-class'>DataChecker</span>": apis/data/webtools/DataChecker.md
+    - "<span class='magic-codeicon-package'>utils</span>":
+      - "<span class='magic-codeicon-module'>tools</span>":
+        - "<span class='magic-codeicon-class'>EpochMetrics</span>": apis/utils/tools/EpochMetrics.md
+        - "<span class='magic-codeicon-class'>ContextWrapper</span>": apis/utils/tools/ContextWrapper.md
 
 # Google Analytics
 google_analytics_4:

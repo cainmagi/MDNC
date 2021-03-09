@@ -4,7 +4,8 @@
 
 ```python
 download_tarball_public(
-    user, repo, tag, asset, path='.', mode='auto', verbose=False
+    user, repo, tag, asset,
+    path='.', mode='auto', verbose=False
 )
 ```
 

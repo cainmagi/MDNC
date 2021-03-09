@@ -4,7 +4,8 @@
 
 ```python
 download_tarball(
-    user, repo, tag, asset, path='.', mode='auto', token=None, verbose=False
+    user, repo, tag, asset,
+    path='.', mode='auto', token=None, verbose=False
 )
 ```
 
@@ -36,7 +37,7 @@ Now supports `gz`, `bz2` or `xz` format, see [:fontawesome-solid-external-link-a
 | `asset` | `#!py str` | The github asset (tarball) name (including the file name postfix) to be downloaded. |
 | `path`  | `#!py str` | The extracted data root path. Should be a folder path. |
 | `mode`  | `#!py str` | The mode of extraction. Could be `#!py 'gz'`, `#!py 'bz2'`, `#!py 'xz'` or `#!py 'auto'`. When using `#!py 'auto'`, the format would be guessed by the posfix of the file name in the link. |
-| `token` | `#!py str` | A given OAuth token. Only when this argument is unset, the program will try to find a token from enviornmental variables. To learn how to set the token, please refer to [`mdnc.data.webtools.get_token`](../get_token.md). |
+| `token` | `#!py str` | A given OAuth token. Only when this argument is unset, the program will try to find a token from enviornmental variables. To learn how to set the token, please refer to [`mdnc.data.webtools.get_token`](../get_token). |
 | `verbose`  | `#!py bool` | A flag, whether to show the downloaded size during the web request. |
 
 ## Examples

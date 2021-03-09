@@ -87,7 +87,7 @@ If `parent` exists, the output of this function would be passed as the input of 
 
 ## Operators
 
-### :codicons-symbol-operator: `#!py __getitem__()`
+### :codicons-symbol-operator: `#!py __getitem__`
 
 ```python
 proc_i = proc[idx]
@@ -123,7 +123,7 @@ Get the i^th^ sub-processor.
 
 -----
 
-### :codicons-symbol-operator: `#!py __setitem__()`
+### :codicons-symbol-operator: `#!py __setitem__`
 
 ```python
 proc[idx] = proc_i

@@ -1,14 +1,49 @@
-# data.webtools.Datachecker
+# data.webtools.DataChecker
 
 :codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
 
 ```python
-dchecker = mdnc.data.webtools.Datachecker(
+dchecker = mdnc.data.webtools.DataChecker(
     root='./datasets', set_list_file='web-data', token='', verbose=False
 )
 ```
 
 This data checker could check the local dataset folder, find the not existing datasets and fetch those required datasets from online repositories or links.
+
+The workflow is illustrated in the following figure,
+
+```mermaid
+flowchart LR
+    subgraph dchecker [DataChecker]
+        init(__init__)
+        add(add_query_file)
+        query(query)
+    end
+    init -->|load| webdata[(set_list_file)]
+    add -->|load| fnames[(file_names)]
+    query --> start
+    webdata --> |set_names| start
+    fnames --> |query_list| ifblock
+    flow:::flowstyle
+    subgraph flow [query work flow]
+        start([for each<br>dataset]) --> |set_names| eachset([for each<br>item])
+        eachset -->|set_name| ifblock{set_name<br>in<br>query_list?}:::ifstyle
+        ifblock -->|yes| ifblock2{file<br>exists?}:::ifstyle
+        ifblock2 --> |yes| eachset
+        ifblock2 --> |no| download[Download<br>the dataset]
+        download --> start
+    end
+    classDef ifstyle fill:#eee, stroke: #999;
+    classDef flowstyle fill:#FEEEF0, stroke: #b54051;
+```
+
+To use this class, users require to follow 3 steps:
+
+1. Initialize the `DataChecker` with the `set_list_file` argument, which is a json file. This file defines where the online datasets stored and what those datasets have.
+2. Use [`add_query_file`](#add_query_file) to add the require data file name.
+3. Invoke [`query`](#query), this method would start iterate the dataset list, then find and download all online datasets which satisfies the following conditions:
+    1. Has a file item that does not locally exist.
+    2. Has a file item that is required by the query list.
 
 A private repository requires a token. In this case, the argument `token` need to be not blank.
 
@@ -20,7 +55,7 @@ A private repository requires a token. In this case, the argument `token` need t
 | :------: | :-----: | :---------- |
 | `root` | `#!py str` | The root path of all maintained local datasets. |
 | `set_list_file` | `#!py str` | A json file recording the online repository paths (the file name extension could be absent) of the required datasets. |
-| `token` | `#!py int` or<br>`#!py (int, )` | The default Github OAuth token for downloading files from private repositories. If not set, the downloading from public repositories would not be influenced. To learn how to set the token, please refer to [`mdnc.data.webtools.get_token`](../get_token.md). |
+| `token` | `#!py int` or<br>`#!py (int, )` | The default Github OAuth token for downloading files from private repositories. If not set, the downloading from public repositories would not be influenced. To learn how to set the token, please refer to [`mdnc.data.webtools.get_token`](../get_token). |
 | `verbose`  | `#!py bool` | A flag, whether to show the downloaded size during the web request. |
 
 ## Methods
@@ -102,7 +137,7 @@ Here we show an example of creating and using the config file.
         dc.add_query_file('dataset_file_name_01.txt')
         dc.query()
         ```
-    
+
     === "Output"
         ```
         data.webtools: There are required dataset missing. Start downloading from the online repository...
@@ -131,4 +166,4 @@ The config file should be formatted like the following json examples:
     }
     ```
 
-    where the `set_list` contains a list of dictionaries. Each dictionary represents an `xz` file. The keyword `items` represnets the file name inside the `xz` file.
+    where the `set_list` contains a list of dictionaries. Each dictionary represents an `xz` file. The keyword `items` represents a list of file names inside the `xz` file.
