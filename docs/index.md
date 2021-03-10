@@ -1,6 +1,6 @@
 # <span style="color:var(--md-primary-fg-color)">M</span>odern <span style="color:var(--md-primary-fg-color)">D</span>eep <span style="color:var(--md-primary-fg-color)">N</span>etwork Toolkits for pyTor<span style="color:var(--md-primary-fg-color)">c</span>h (MDNC)
 
-![MDNC-logo](/assets/images/mdnc-logo.png)
+![MDNC-logo](./assets/images/mdnc-logo.png)
 {.mdnc-logo}
 
 This is a pyTorch framework used for
