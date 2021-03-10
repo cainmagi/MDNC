@@ -20,6 +20,19 @@
       vertical-align: text-bottom;
     }
   }
+
+  div, p{
+    &.mdnc-logo {
+      img, svg {
+        width: 80%;
+        max-width: px2rem(640px);
+        margin: 0 auto;
+      }
+    }
+  }
+  p.mdnc-logo {
+    text-align: center;
+  }
 }
 
 .md-header-nav__topic {
