@@ -235,14 +235,17 @@ class AxisMultipleTicker:
 
 
 def __plot_configs(xlabel=None, ylabel=None, figure_size=None,
-                   has_legend=False, legend_loc=None, legend_col=None):
+                   has_legend=False, legend_loc=None, legend_col=None,
+                   fig=None, ax=None):
     '''Final configurations shared by all utilities.'''
+    fig = fig if fig is not None else plt.gcf()
+    ax = ax if ax is not None else plt.gca()
     if xlabel:
-        plt.xlabel(xlabel)
+        ax.set_xlabel(xlabel)
     if ylabel:
-        plt.ylabel(ylabel)
+        ax.set_ylabel(ylabel)
     if figure_size:
-        plt.gcf().set_size_inches(*figure_size)
+        fig.set_size_inches(*figure_size)
     plt.tight_layout(rect=[0.03, 0, 0.97, 1])
     if has_legend:
         kwargs = dict()
@@ -250,32 +253,39 @@ def __plot_configs(xlabel=None, ylabel=None, figure_size=None,
             kwargs['loc'] = legend_loc
         if legend_col is not None:
             kwargs['ncol'] = legend_col
-        plt.legend(labelspacing=0., **kwargs)
+        ax.legend(labelspacing=0., **kwargs)
 
 
 def plot_hist(gen, normalized=False, cumulative=False,
               xlabel='Value', ylabel='Number of samples',
               x_log=False, y_log=False,
-              figure_size=(6, 5.5),
-              legend_loc=None, legend_col=None):
+              figure_size=(6, 5.5), legend_loc=None, legend_col=None,
+              fig=None, ax=None):
     '''Plot a histogram for multiple distributions.
     Arguments:
-        gen: a sample generator, each "yield" returns a sample. It
-            allows users to provide an extra kwargs dict for each
-            iteration. For each iteration it returns 1 1D data.
+        gen: a generator callable object (function), each "yield"
+             returns a sample. It allows users to provide an extra
+             kwargs dict for each iteration. For each iteration it
+             returns 1 1D data.
         normalized: whether to use normalization for each group
-            when drawing the histogram.
+                    when drawing the histogram.
         xlabel: the x axis label.
         ylabel: the y axis label.
         x_log: whether to convert the x axis into the log repre-
-            sentation.
+               sentation.
         y_log: whether to convert the y axis into the log repre-
-            sentation.
+               sentation.
         figure_size: the size of the output figure.
         legend_loc: the localtion of the legend. (The legend only
                     works when passing `label` to each iteration)
         legend_col: the column of the legend.
+        fig: a figure instance. If not given, would use plt.gcf()
+             for instead.
+        ax: a subplot instance. If not given, would use plt.gca()
+             for instead.
     '''
+    fig = fig if fig is not None else plt.gcf()
+    ax = ax if ax is not None else plt.gca()
     # Get iterator
     cit = itertools.cycle(mpl.rcParams['axes.prop_cycle'])
     # Set scale
@@ -292,34 +302,43 @@ def plot_hist(gen, normalized=False, cumulative=False,
             kwargs = dict()
         has_legend = 'label' in kwargs
         kwargs.update(c)
-        plt.hist(data, alpha=0.8, density=normalized, cumulative=cumulative, log=y_log, **kwargs)
+        ax.hist(data, alpha=0.8, density=normalized, cumulative=cumulative, log=y_log, **kwargs)
     __plot_configs(xlabel=xlabel, ylabel=ylabel, figure_size=figure_size,
-                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col)
+                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col,
+                   fig=fig, ax=ax)
 
 
 def plot_bar(gen, num,
              xlabel=None, ylabel='value',
              x_tick_labels=None, y_log=False,
-             figure_size=(6, 5.5),
-             legend_loc=None, legend_col=None):
+             figure_size=(6, 5.5), legend_loc=None, legend_col=None,
+             fig=None, ax=None):
     '''Plot a bar graph for multiple result groups.
     Arguments:
-        gen: a sample generator, each "yield" returns a sample. It
-            allows users to provide an extra kwargs dict for each
-            iteration. For each iteration it returns 1 1D data.
+        gen: a generator callable object (function), each "yield"
+             returns a sample. It allows users to provide an extra
+             kwargs dict for each iteration. For each iteration it
+             returns 1 1D data.
         num: the total number of data samples thrown by the
-            generator.
+             generator.
         xlabel: the x axis label.
         ylabel: the y axis label.
         x_tick_labels: the x tick labels that is used for
-            overriding the original value [0, 1, 2, ...].
+                       overriding the original value [0, 1, 2,
+                       ...].
         y_log: whether to convert the y axis into the log repre-
-            sentation.
+               sentation.
         figure_size: the size of the output figure.
         legend_loc: the localtion of the legend. (The legend only
                     works when passing `label` to each iteration)
         legend_col: the column of the legend.
+        fig: a figure instance. If not given, would use plt.gcf()
+             for instead.
+        ax: a subplot instance. If not given, would use plt.gca()
+             for instead.
     '''
+    fig = fig if fig is not None else plt.gcf()
+    ax = ax if ax is not None else plt.gca()
     # Get iterators
     cit = itertools.cycle(mpl.rcParams['axes.prop_cycle'])
     width = 0.75
@@ -333,7 +352,7 @@ def plot_bar(gen, num,
         x = None
     # Set scale
     if y_log:
-        plt.yscale('log')
+        ax.set_yscale('log')
     # Begin to parse data
     has_legend = False
     for data in gen:
@@ -348,45 +367,51 @@ def plot_bar(gen, num,
         kwargs.update(c)
         if x is None:
             x = np.arange(len(data))
-        plt.bar(x + wp + w / 2, data, w, **kwargs)
+        ax.bar(x + wp + w / 2, data, w, **kwargs)
     if x_tick_labels is not None:
-        ax = plt.gca()
         ax.set_xticks(x)
         ax.set_xticklabels(x_tick_labels)
     __plot_configs(xlabel=xlabel, ylabel=ylabel, figure_size=figure_size,
-                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col)
+                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col,
+                   fig=fig, ax=ax)
 
 
 def plot_scatter(gen,
                  xlabel=None, ylabel='value',
                  x_log=None, y_log=False,
-                 figure_size=(6, 5.5),
-                 legend_loc=None, legend_col=None):
+                 figure_size=(6, 5.5), legend_loc=None, legend_col=None,
+                 fig=None, ax=None):
     '''Plot a scatter graph for multiple data groups.
     Arguments:
-        gen: a sample generator, each "yield" returns a sample. It
-            allows users to provide an extra kwargs dict for each
-            iteration. For each iteration, it returns 2 1D arrays
-            or a 2D array.
+        gen: a generator callable object (function), each "yield"
+             returns a sample. It allows users to provide an extra
+             kwargs dict for each iteration. For each iteration,
+             it returns 2 1D arrays or a 2D array.
         xlabel: the x axis label.
         ylabel: the y axis label.
         x_log: whether to convert the x axis into the log repre-
-            sentation.
+               sentation.
         y_log: whether to convert the y axis into the log repre-
-            sentation.
+               sentation.
         figure_size: the size of the output figure.
         legend_loc: the localtion of the legend. (The legend only
                     works when passing `label` to each iteration)
         legend_col: the column of the legend.
+        fig: a figure instance. If not given, would use plt.gcf()
+             for instead.
+        ax: a subplot instance. If not given, would use plt.gca()
+             for instead.
     '''
+    fig = fig if fig is not None else plt.gcf()
+    ax = ax if ax is not None else plt.gca()
     # Get iterators
     cit = itertools.cycle(mpl.rcParams['axes.prop_cycle'])
     mit = itertools.cycle(['o', '^', 's', 'd', '*', 'P'])
     # Set scale
     if x_log:
-        plt.xscale('log')
+        ax.set_xscale('log')
     if y_log:
-        plt.yscale('log')
+        ax.set_yscale('log')
     # Begin to parse data
     has_legend = False
     for data in gen:
@@ -404,75 +429,83 @@ def plot_scatter(gen,
             kwargs = dict()
         has_legend = 'label' in kwargs
         kwargs.update(c)
-        plt.scatter(l_m, l_d, marker=m, **kwargs)
+        ax.scatter(l_m, l_d, marker=m, **kwargs)
     __plot_configs(xlabel=xlabel, ylabel=ylabel, figure_size=figure_size,
-                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col)
+                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col,
+                   fig=fig, ax=ax)
 
 
 def plot_training_records(gen,
                           xlabel=None, ylabel='value',
                           x_mark_num=None, y_log=False,
-                          figure_size=(6, 5.5),
-                          legend_loc=None, legend_col=None):
-    '''Plot a scatter graph for multiple data groups.
+                          figure_size=(6, 5.5), legend_loc=None, legend_col=None,
+                          fig=None, ax=None):
+    '''Plot a training curve graph for multiple data groups.
     Arguments:
-        gen: a sample generator, each "yield" returns a sample. It
-             allows users to provide an extra kwargs dict for each
-             iteration. For each iteration it returns 4 1D arrays,
-             or 2 2D arrays, or 2 1D arryas, or a 4D array, or a
-             2D array, or a 1D array.
+        gen: a generator callable object (function), each "yield"
+             returns a sample. It allows users to provide an extra
+             kwargs dict for each iteration. For each iteration,
+             it returns 4 1D arrays, or 2 2D arrays, or 2 1D arrays,
+             or a 4D array, or a 2D array, or a 1D array.
         xlabel: the x axis label.
         ylabel: the y axis label.
+        x_mark_num: the number of markers for the x axis.
         y_log: whether to convert the y axis into the log repre-
                sentation.
         figure_size: the size of the output figure.
         legend_loc: the localtion of the legend. (The legend only
                     works when passing `label` to each iteration)
         legend_col: the column of the legend.
+        fig: a figure instance. If not given, would use plt.gcf()
+             for instead.
+        ax: a subplot instance. If not given, would use plt.gca()
+             for instead.
     '''
+    fig = fig if fig is not None else plt.gcf()
+    ax = ax if ax is not None else plt.gca()
     # Get iterators
     cit = itertools.cycle(mpl.rcParams['axes.prop_cycle'])
     mit = itertools.cycle(['o', '^', 's', 'd', '*', 'P'])
     # Set scale
     if y_log:
-        plt.yscale('log')
+        ax.set_yscale('log')
     # Begin to parse data
     kwargs = dict()
     has_legend = False
     for data in gen:
         c, m = next(cit), next(mit)
-        hasValid = None
+        has_valid = None
         if isinstance(data, (tuple, list)):
             if isinstance(data[-1], dict):
                 *data, kwargs = data
             if len(data) == 4:  # 4 1D data tuple.
                 x, v, val_x, val_v = data
-                hasValid = True
+                has_valid = True
             elif len(data) == 2:  # 2 data tuple.
                 d1, d2 = data
                 if d1.ndim == 2 and d2.ndim == 2 and d1.shape[0] == 2 and d2.shape[0] == 2:
                     # 2 2D data.
                     x, v = d1
                     val_x, val_v = d2
-                    hasValid = True
+                    has_valid = True
                 elif d1.ndim == 1 and d2.ndim == 1:
                     # 2 1D data.
                     x, v = d1, d2
-                    hasValid = False
+                    has_valid = False
                 else:
                     raise ValueError('utils.draw: The input data shape is invalid, when using'
                                      'data sequence, there should be 4 1D data, or'
                                      ' 2 2D data, or 2 1D data.')
             elif len(data) == 1:
                 data = data[0]
-        if hasValid is None:
+        if has_valid is None:
             if data.ndim == 2:
                 if len(data) == 4:
                     x, v, val_x, val_v = data
-                    hasValid = True
+                    has_valid = True
                 elif len(data) == 2:
                     x, v = data
-                    hasValid = False
+                    has_valid = False
                 else:
                     raise ValueError('utils.draw: The input data shape is invalid, when using'
                                      'a single array, it should be 4D data, or'
@@ -480,7 +513,7 @@ def plot_training_records(gen,
             elif data.ndim == 1:
                 x = np.arange(0, len(data))
                 v = data
-                hasValid = False
+                has_valid = False
             else:
                 raise ValueError('utils.draw: The input data shape is invalid, when using'
                                  'a single array, it should be 4D data, or'
@@ -492,7 +525,7 @@ def plot_training_records(gen,
         get_label = base_label
         if isinstance(base_label, (list, tuple)):
             get_label = base_label[0]
-        elif (base_label is not None) and hasValid:
+        elif (base_label is not None) and has_valid:
             get_label = base_label + ' (train)'
         if x_mark_num is not None:
             x_mark = np.round(np.linspace(0, len(x) - 1, x_mark_num)).astype(np.int)
@@ -500,8 +533,8 @@ def plot_training_records(gen,
             x_mark = None
         marker = m if x_mark is not None else None
         ms = 7 if x_mark is not None else None
-        plt.plot(x, v, marker=marker, ms=ms, label=get_label, markevery=x_mark, **kwargs)
-        if hasValid:
+        ax.plot(x, v, marker=marker, ms=ms, label=get_label, markevery=x_mark, **kwargs)
+        if has_valid:
             if isinstance(base_label, (list, tuple)):
                 get_label = base_label[1]
             elif base_label is not None:
@@ -512,23 +545,24 @@ def plot_training_records(gen,
                 x_mark = None
             marker = m if x_mark is not None else None
             ms = 7 if x_mark is not None else None
-            plt.plot(val_x, val_v, linestyle='--', marker=marker, ms=ms, markevery=x_mark, label=get_label, **kwargs)
+            ax.plot(val_x, val_v, linestyle='--', marker=marker, ms=ms, markevery=x_mark, label=get_label, **kwargs)
     __plot_configs(xlabel=xlabel, ylabel=ylabel, figure_size=figure_size,
-                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col)
+                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col,
+                   fig=fig, ax=ax)
 
 
 def plot_error_curves(gen, x_error_num=10,
                       y_error_method='std', plot_method='error',
                       xlabel=None, ylabel='value',
                       y_log=False,
-                      figure_size=(6, 5.5),
-                      legend_loc=None, legend_col=None):
+                      figure_size=(6, 5.5), legend_loc=None, legend_col=None,
+                      fig=None, ax=None):
     '''Plot lines with error bars for multiple data groups.
     Arguments:
-        gen: a sample generator, each "yield" returns a sample. It
-            allows users to provide an extra kwargs dict for each
-            iteration. For each iteration it returns 1D + 2D arrays,
-            or a single 2D array.
+        gen: a generator callable object (function), each "yield"
+             returns a sample. It allows users to provide an extra
+             kwargs dict for each iteration. For each iteration,
+             it returns 1D + 2D arrays, or a single 2D array.
         x_error_num: the number of displayed error bars.
         y_error_method: the method for calculating the error bar.
             (1) std: use standard error.
@@ -539,18 +573,24 @@ def plot_error_curves(gen, x_error_num=10,
         xlabel: the x axis label.
         ylabel: the y axis label.
         y_log: whether to convert the y axis into the log repre-
-            sentation.
+               sentation.
         figure_size: the size of the output figure.
         legend_loc: the localtion of the legend. (The legend only
                     works when passing `label` to each iteration)
         legend_col: the column of the legend.
+        fig: a figure instance. If not given, would use plt.gcf()
+             for instead.
+        ax: a subplot instance. If not given, would use plt.gca()
+             for instead.
     '''
+    fig = fig if fig is not None else plt.gcf()
+    ax = ax if ax is not None else plt.gca()
     # Get iterators
     cit = itertools.cycle(mpl.rcParams['axes.prop_cycle'])
     mit = itertools.cycle(['o', '^', 's', 'd', '*', 'P'])
     # Set scale
     if y_log:
-        plt.yscale('log')
+        ax.set_yscale('log')
     # Begin to parse data
     has_legend = False
     kwargs = dict()
@@ -560,7 +600,7 @@ def plot_error_curves(gen, x_error_num=10,
         if isinstance(data, (tuple, list)):
             if isinstance(data[-1], dict):
                 *data, kwargs = data
-            if len(data) == 2:  # 4 1D data tuple.
+            if len(data) == 2:  # 2 1D data tuple.
                 x, data = data
             elif len(data) == 1:
                 data = data[0]
@@ -583,43 +623,50 @@ def plot_error_curves(gen, x_error_num=10,
             geterr = np.repeat(np.expand_dims(np.std(v, axis=1), axis=0), 2, axis=0)
         if plot_method == 'fill':
             mark_every = np.round(np.linspace(0, len(x) - 1, x_error_num)).astype(np.int).tolist()
-            plt.plot(x, avg, marker=m, ms=7, markevery=mark_every, **kwargs)
-            plt.fill_between(x, avg - geterr[0, ...], avg + geterr[1, ...], alpha=0.3, color=c['color'])
+            ax.plot(x, avg, marker=m, ms=7, markevery=mark_every, **kwargs)
+            ax.fill_between(x, avg - geterr[0, ...], avg + geterr[1, ...], alpha=0.3, color=c['color'])
         else:
             error_every = len(x) // x_error_num
-            plt.errorbar(x, avg, yerr=geterr, errorevery=error_every, marker=m, ms=5, markevery=error_every, **kwargs)
+            ax.errorbar(x, avg, yerr=geterr, errorevery=error_every, marker=m, ms=5, markevery=error_every, **kwargs)
     __plot_configs(xlabel=xlabel, ylabel=ylabel, figure_size=figure_size,
-                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col)
+                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col,
+                   fig=fig, ax=ax)
 
 
 def plot_distribution_curves(gen, method='mean', level=3, outlier=0.1,
                              xlabel=None, ylabel='value',
                              y_log=False,
-                             figure_size=(6, 5.5),
-                             legend_loc=None, legend_col=None):
+                             figure_size=(6, 5.5), legend_loc=None, legend_col=None,
+                             fig=None, ax=None):
     '''Plot lines with multi-level distribution for multiple data groups.
     This function has similar meaning of plot_error_curves. It is
     used for compressing the time-series histograms. Its output is
     similar to tensorboard.distribution.
     Arguments:
         gen: a sample generator, each "yield" returns a sample. It
-            allows users to provide an extra kwargs dict for each
-            iteration. For each iteration it returns 1D + 2D arrays,
-            or a single 2D array.
+             allows users to provide an extra kwargs dict for each
+             iteration. For each iteration it returns 1D + 2D arrays,
+             or a single 2D array.
         method: the method for calculating curves, use 'mean' or
-            'middle'.
+                'middle'.
         level: the histogram level.
-        outlier: outlier proportion, this part would be thrown when
-            drawing the figures.
+        outlier: outlier proportion, the part marked as outliers
+                 would be thrown away when drawing the figures.
         xlabel: the x axis label.
         ylabel: the y axis label.
         y_log: whether to convert the y axis into the log repre-
-            sentation.
+               sentation.
         figure_size: the size of the output figure.
         legend_loc: the localtion of the legend. (The legend only
                     works when passing `label` to each iteration)
         legend_col: the column of the legend.
+        fig: a figure instance. If not given, would use plt.gcf()
+             for instead.
+        ax: a subplot instance. If not given, would use plt.gca()
+             for instead.
     '''
+    fig = fig if fig is not None else plt.gcf()
+    ax = ax if ax is not None else plt.gca()
     if level < 1:
         raise TypeError('utils.draw: Histogram level should be at least 1.')
     if method not in ('mean', 'middle'):
@@ -629,7 +676,7 @@ def plot_distribution_curves(gen, method='mean', level=3, outlier=0.1,
     mit = itertools.cycle(['o', '^', 's', 'd', '*', 'P'])
     # Set scale
     if y_log:
-        plt.yscale('log')
+        ax.set_yscale('log')
     # Begin to parse data
     has_legend = False
     kwargs = dict()
@@ -674,8 +721,9 @@ def plot_distribution_curves(gen, method='mean', level=3, outlier=0.1,
                 vu.append(np.mean(vsort[:, (-pos):], axis=1))
         # Draw distributions
         mark_every = np.round(np.linspace(0, len(x) - 1, 10)).astype(np.int).tolist()
-        plt.plot(x, avg, marker=m, ms=7, markevery=mark_every, **kwargs)
+        ax.plot(x, avg, marker=m, ms=7, markevery=mark_every, **kwargs)
         for i in range(level):
-            plt.fill_between(x, vd[i], vu[i], alpha=0.2, color=c['color'])
+            ax.fill_between(x, vd[i], vu[i], alpha=0.2, color=c['color'])
     __plot_configs(xlabel=xlabel, ylabel=ylabel, figure_size=figure_size,
-                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col)
+                   has_legend=has_legend, legend_loc=legend_loc, legend_col=legend_col,
+                   fig=fig, ax=ax)
