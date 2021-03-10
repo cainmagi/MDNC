@@ -1,143 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://cainmagi.github.io/MDNC/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/installation/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/licenses/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/overview/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/contribs/torchsummary/summary/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/contribs/torchsummary/summary_string/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5Converter/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5SeqConverter/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5SupSaver/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5GParser/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5CParser/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/h5py/H5RParser/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/sequence/MSequence/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/sequence/MPSequence/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/sequence/MTSequence/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/preprocs/ProcAbstract/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/preprocs/ProcMerge/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/preprocs/ProcScaler/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/preprocs/ProcNSTScaler/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/preprocs/ProcFilter1d/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/preprocs/ProcNSTFilter1d/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/preprocs/ProcPad/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/preprocs/ProcLifter/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/webtools/get_token/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/webtools/download_tarball_link/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/webtools/download_tarball/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/webtools/download_tarball_public/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/webtools/download_tarball_private/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/data/webtools/DataChecker/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/setFigure/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/use_tex/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/fix_log_axis/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/AxisMultipleTicker/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/plot_hist/</loc>
+     <lastmod>2021-03-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/plot_bar/</loc>
+     <lastmod>2021-03-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/plot_scatter/</loc>
+     <lastmod>2021-03-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/plot_training_records/</loc>
+     <lastmod>2021-03-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/plot_error_curves/</loc>
+     <lastmod>2021-03-10</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://cainmagi.github.io/MDNC/apis/utils/draw/plot_distribution_curves/</loc>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/utils/tools/EpochMetrics/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://cainmagi.github.io/MDNC/apis/utils/tools/ContextWrapper/</loc>
-     <lastmod>2021-03-09</lastmod>
+     <lastmod>2021-03-10</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
