@@ -180,6 +180,12 @@ nav:
         - "<span class='magic-codeicon-function'>use_tex</span>": apis/utils/draw/use_tex.md
         - "<span class='magic-codeicon-function'>fix_log_axis</span>": apis/utils/draw/fix_log_axis.md
         - "<span class='magic-codeicon-class'>AxisMultipleTicker</span>": apis/utils/draw/AxisMultipleTicker.md
+        - "<span class='magic-codeicon-function'>plot_hist</span>": apis/utils/draw/plot_hist.md
+        - "<span class='magic-codeicon-function'>plot_bar</span>": apis/utils/draw/plot_bar.md
+        - "<span class='magic-codeicon-function'>plot_scatter</span>": apis/utils/draw/plot_scatter.md
+        - "<span class='magic-codeicon-function'>plot_training_records</span>": apis/utils/draw/plot_training_records.md
+        - "<span class='magic-codeicon-function'>plot_error_curves</span>": apis/utils/draw/plot_error_curves.md
+        - "<span class='magic-codeicon-function'>plot_distribution_curves</span>": apis/utils/draw/plot_distribution_curves.md
       - "<span class='magic-codeicon-module'>tools</span>":
         - "<span class='magic-codeicon-class'>EpochMetrics</span>": apis/utils/tools/EpochMetrics.md
         - "<span class='magic-codeicon-class'>ContextWrapper</span>": apis/utils/tools/ContextWrapper.md
