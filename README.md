@@ -1,5 +1,18 @@
 # Modern Deep Network Toolkits for pyTorch (MDNC)
 
+<p align="center">
+  <a href="https://github.com/cainmagi/MDNC">
+    <img src="https://cainmagi.github.io/MDNC/assets/images/mdnc-logo.png" width="70%" alt="MDNC" style="max-width:720px">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/cainmagi/MDNC/releases/latest"><img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/cainmagi/MDNC?logo=github&sort=semver&style=flat-square"></a>
+  <a href="https://github.com/cainmagi/MDNC/releases"><img alt="GitHub all releases" src="https://img.shields.io/github/downloads/cainmagi/MDNC/total?logo=github&style=flat-square"></a>
+  <a href="https://github.com/cainmagi/MDNC/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/cainmagi/MDNC?style=flat-square"></a>
+</p>
+
+
 This is a pyTorch framework used for
 
 * Creating specially designed networks or layers.
@@ -96,6 +109,7 @@ The compatibility test is shown as below. The checked item means this package pe
 1. Add `DecoderNet` to our standard `module` protocol.
 2. Fix some bugs of `data.h5py` and `data.preprocs`.
 3. Make `draw.setFigure` enhanced by `contextlib`.
+4. Add a title in `Readme.md`.
 
 ### 0.1.2 @ 2/27/2021
 
