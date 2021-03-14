@@ -1,6 +1,6 @@
 # data.preprocs.ProcPad
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/preprocs.py#L820){ target="_blank" }
 
 ```python
 proc = mdnc.data.preprocs.ProcPad(
@@ -129,16 +129,20 @@ The processor need to be derived. We have two ways to implement the derivation, 
         t = proc.preprocess(data)
         t_b = proc.postprocess(t)
 
-        fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
-        axs[0].plot(t[0])
-        axs[1].plot(t_b[0])
-        axs[2].plot(data[0])
-        axs[0].set_ylabel('Preprocessing')
-        axs[1].set_ylabel('Inversed preprocessing')
-        axs[2].set_ylabel('Raw data')
-        plt.tight_layout()
-        plt.show()
+        with mdnc.utils.draw.setFigure(font_size=12):
+            fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
+            axs[0].plot(t[0])
+            axs[1].plot(t_b[0])
+            axs[2].plot(data[0])
+            axs[0].set_ylabel('Preprocessing')
+            axs[1].set_ylabel('Inversed\npreprocessing')
+            axs[2].set_ylabel('Raw\ndata')
+            plt.tight_layout()
+            plt.show()
         ```
+
+    === "Output"
+        ![](./ex-ProcPad-1.svg){.img-fluid tag=1 title="Example of ProcPad (1D data)."}
 
 ???+ example "Example 2"
     === "Codes"
@@ -153,18 +157,22 @@ The processor need to be derived. We have two ways to implement the derivation, 
         t = proc.preprocess(data)
         t_b = proc.postprocess(t)
 
-        fig, axs = plt.subplots(nrows=1, ncols=3, sharex=True, sharey=True, figsize=(12, 4))
-        im1 = axs[0].imshow(t[2])
-        im2 = axs[1].imshow(t_b[0])
-        im3 = axs[2].imshow(data[0])
-        fig.colorbar(im1, ax=axs[0], pad=0.1, orientation='horizontal')
-        fig.colorbar(im2, ax=axs[1], pad=0.1, orientation='horizontal')
-        fig.colorbar(im3, ax=axs[2], pad=0.1, orientation='horizontal')
-        axs[0].set_ylabel('Preprocessing')
-        axs[1].set_ylabel('Inversed preprocessing')
-        axs[2].set_ylabel('Raw data')
-        plt.tight_layout()
-        plt.show()
+        with mdnc.utils.draw.setFigure(font_size=12):
+            fig, axs = plt.subplots(nrows=1, ncols=3, sharex=True, sharey=True, figsize=(12, 4))
+            im1 = axs[0].imshow(t[2])
+            im2 = axs[1].imshow(t_b[0])
+            im3 = axs[2].imshow(data[0])
+            fig.colorbar(im1, ax=axs[0], pad=0.1, orientation='horizontal')
+            fig.colorbar(im2, ax=axs[1], pad=0.1, orientation='horizontal')
+            fig.colorbar(im3, ax=axs[2], pad=0.1, orientation='horizontal')
+            axs[0].set_ylabel('Preprocessing')
+            axs[1].set_ylabel('Inversed\npreprocessing')
+            axs[2].set_ylabel('Raw data')
+            plt.tight_layout()
+            plt.show()
         ```
+
+    === "Output"
+        ![](./ex-ProcPad-2.svg){.img-fluid tag=1 title="Example of ProcPad (2D data)."}
 
 [numpy-pad]:https://numpy.org/doc/stable/reference/generated/numpy.pad.html "numpy.pad"

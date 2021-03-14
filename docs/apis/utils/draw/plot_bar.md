@@ -1,6 +1,6 @@
 # utils.draw.plot_bar
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L311){ target="_blank" }
 
 ```python
 mdnc.utils.draw.plot_bar(
@@ -41,7 +41,7 @@ Plot a bar graph for multiple result groups. Each group is given by a 1D data sa
         import mdnc
 
         @mdnc.utils.draw.setFigure(style='dark_background', font_size=14)
-        def test_plot_bar(self):
+        def test_plot_bar():
             def func_gen():
                 size = 5
                 x1 = np.abs(np.random.normal(loc=6.0, scale=3.0, size=size))
@@ -57,5 +57,8 @@ Plot a bar graph for multiple result groups. Each group is given by a 1D data sa
 
         test_plot_bar()
         ```
+
+    === "Output"
+        ![](./ex-plot_bar.svg){.img-fluid tag=1 title="Example of plot_bar."}
 
 [mpl-legend]:https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html "matplotlib.pyplot.legend"

@@ -1,6 +1,6 @@
 # data.h5py.H5Converter
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L82)
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L86){ target="_blank" }
 
 ```python
 converter = mdnc.data.h5py.H5Converter(
@@ -75,10 +75,47 @@ Perform the data conversion.
 ???+ example
     === "Codes"
         ```python linenums="1"
+        import os
+        import numpy as np
         import mdnc
 
-        cvt_o = mdnc.data.h5py.H5Converter('test_converter.h5', 'txt', to_other=True)
+        root_folder = 'alpha-test'
+        os.makedirs(root_folder, exist_ok=True)
+
+        # Prepare the datasets.
+        set_list_file = os.path.join(root_folder, 'web-data')
+        mdnc.data.webtools.DataChecker.init_set_list(set_list_file)
+        dc = mdnc.data.webtools.DataChecker(root=root_folder, set_list_file=set_list_file, token='', verbose=False)
+        dc.add_query_file('test_data_h5converter.h5')
+        dc.query()
+
+        # Perform test.
+        cvt_o = mdnc.data.h5py.H5Converter(os.path.join(root_folder, 'test_data_h5converter'), 'txt', to_other=True)
         cvt_o.convert()  # From HDF5 dataset to txt files.
-        cvt_i = mdnc.data.h5py.H5Converter('test_converter.h5', 'txt', to_other=False)
+        os.rename(os.path.join(root_folder, 'test_data_h5converter'), os.path.join(root_folder, 'test_data_h5converter_cvt'))
+        cvt_i = mdnc.data.h5py.H5Converter(os.path.join(root_folder, 'test_data_h5converter_cvt'), 'txt', to_other=False)
         cvt_i.convert()  # From txt files to HDF5 dataset.
+        ```
+
+    === "Output"
+        ```
+        data.webtools: All required datasets are available.
+        data.h5py: Have dumped /group1/x
+        data.h5py: Have dumped /group1/y
+        data.h5py: Have dumped /group2/group3/x
+        data.h5py: Have dumped /group2/group3/y
+        data.h5py: Have dumped /group2/x
+        data.h5py: Have dumped /group2/y
+        data.h5py: Have dumped /vds
+        data.h5py: Have dumped /x
+        data.h5py: Have dumped /y
+        data.h5py: Have dumped /group1/x
+        data.h5py: Have dumped /group1/y
+        data.h5py: Have dumped /group2/group3/x
+        data.h5py: Have dumped /group2/group3/y
+        data.h5py: Have dumped /group2/x
+        data.h5py: Have dumped /group2/y
+        data.h5py: Have dumped /vds
+        data.h5py: Have dumped /x
+        data.h5py: Have dumped /y
         ```

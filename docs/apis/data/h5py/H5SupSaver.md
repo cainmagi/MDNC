@@ -1,6 +1,6 @@
 # data.h5py.H5SupSaver
 
-:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L676)
+:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L680){ target="_blank" }
 
 ```python
 saver = mdnc.data.h5py.H5SupSaver(
@@ -179,30 +179,60 @@ Supports using a dictionary to update the attributes of the current `h5py` objec
 ???+ example "Example 1"
     === "Codes"
         ```python linenums="1"
+        import os
         import numpy as np
         import mdnc
 
-        with mdnc.data.h5py.H5SupSaver('test_h5supsaver.h5', enable_read=False) as s:
-            s.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
-            s.dump('one', np.ones([25, 20]), chunks=(1, 20))
-            s.dump('zero', np.zeros([25, 10]), chunks=(1, 10))
+        root_folder = 'alpha-test'
+        os.makedirs(root_folder, exist_ok=True)
+
+        if __name__ == '__main__':
+            # Perform test.
+            with mdnc.data.h5py.H5SupSaver(os.path.join(root_folder, 'test_h5supsaver'), enable_read=False) as s:
+                s.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
+                s.dump('one', np.ones([25, 20]), chunks=(1, 20))
+                s.dump('zero', np.zeros([25, 10]), chunks=(1, 10))
+        ```
+
+    === "Output"
+        ```
+        data.h5py: Current configuration is: {'dtype': <class 'numpy.float32'>, 'shuffle': True, 'fletcher32': True, 'compression': 'gzip'}
+        data.h5py: Dump one into the file. The data shape is (25, 20).
+        data.h5py: Dump zero into the file. The data shape is (25, 10).
         ```
 
 ???+ example "Example 2"
     === "Codes"
         ```python linenums="1"
+        import os
         import numpy as np
         import mdnc
 
-        saver = mdnc.data.h5py.H5SupSaver(enable_read=False)
-        saver.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
-        with saver.open('test_h5supsaver.h5') as s:
-            s.dump('test1', np.zeros([100, 20]))
-            gb = s['group1']
-            with gb['group2'] as g:
-                g.dump('test2', np.zeros([100, 20]))
-                g.dump('test2', np.ones([100, 20]))
-                g.attrs = {'new': 1}
-                g.set_link('test3', '/test1')
-            print('data.h5py: Check open: s["group1"]={0}, s["group1/group2"]={1}'.format(gb.is_open, g.is_open))
+        root_folder = 'alpha-test'
+        os.makedirs(root_folder, exist_ok=True)
+
+        if __name__ == '__main__':
+            # Perform test.
+            saver = mdnc.data.h5py.H5SupSaver(enable_read=False)
+            saver.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
+            with saver.open(os.path.join(root_folder, 'test_h5supsaver')) as s:
+                s.dump('test1', np.zeros([100, 20]))
+                gb = s['group1']
+                with gb['group2'] as g:
+                    g.dump('test2', np.zeros([100, 20]))
+                    g.dump('test2', np.ones([100, 20]))
+                    g.attrs = {'new': 1}
+                    g.set_link('test3', '/test1')
+                print('data.h5py: Check open: s["group1"]={0}, s["group1/group2"]={1}'.format(gb.is_open, g.is_open))
+        ```
+
+    === "Output"
+        ```
+        data.h5py: Current configuration is: {'dtype': <class 'numpy.float32'>, 'shuffle': True, 'fletcher32': True, 'compression': 'gzip'}
+        data.h5py: Open a new file: alpha-test\test_h5supsaver.h5
+        data.h5py: Dump test1 into the file. The data shape is (100, 20).
+        data.h5py: Dump test2 into the file. The data shape is (100, 20).
+        data.h5py: Dump 100 data samples into the existed dataset /group1/group2/test2. The data shape is (200, 20) now.
+        data.h5py: Create a soft link "test3", pointting to "/test1".
+        data.h5py: Check open: s["group1"]=True, s["group1/group2"]=False
         ```

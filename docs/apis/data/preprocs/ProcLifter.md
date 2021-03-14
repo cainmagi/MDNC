@@ -1,6 +1,6 @@
 # data.preprocs.ProcLifter
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/preprocs.py#L932){ target="_blank" }
 
 ```python
 proc = mdnc.data.preprocs.ProcLifter(
@@ -121,13 +121,17 @@ The processor need to be derived. We have two ways to implement the derivation, 
         x_ = proc.preprocess(x)
         xr = proc.postprocess(x_)
 
-        fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
-        axs[0].plot(t, x_)
-        axs[1].plot(t, xr)
-        axs[2].plot(t, x)
-        axs[0].set_ylabel('Preprocessing')
-        axs[1].set_ylabel('Inversed preprocessing')
-        axs[2].set_ylabel('Raw data')
-        plt.tight_layout()
-        plt.show()
+        with mdnc.utils.draw.setFigure(font_size=12):
+            fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
+            axs[0].plot(t, x_)
+            axs[1].plot(t, xr)
+            axs[2].plot(t, x)
+            axs[0].set_ylabel('Preprocessing')
+            axs[1].set_ylabel('Inversed\npreprocessing')
+            axs[2].set_ylabel('Raw\ndata')
+            plt.tight_layout()
+            plt.show()
         ```
+
+    === "Output"
+        ![](./ex-ProcLifter.svg){.img-fluid tag=1 title="Example of ProcLifter."}

@@ -1,6 +1,6 @@
 # utils.draw.use_tex
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L127){ target="_blank" }
 
 ```python
 mdnc.utils.draw.use_tex(
@@ -35,3 +35,6 @@ This function is not recommended, because it would take effects globally. Please
         plt.title(r'Use latex: $\frac{1}{1 + \exp (-t)}$.')
         plt.show()
         ```
+
+    === "Output"
+        ![](./ex-use_tex.svg){.img-fluid tag=1 title="Example of use_tex."}

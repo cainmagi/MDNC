@@ -1,6 +1,6 @@
 # utils.draw.plot_hist
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L259){ target="_blank" }
 
 ```python
 mdnc.utils.draw.plot_hist(
@@ -41,7 +41,7 @@ Plot a histogram for multiple distributions. Each distribution is given by a 1D 
         import mdnc
 
         @mdnc.utils.draw.setFigure(style='ggplot', font_size=14)
-        def test_plot_hist(self):
+        def test_plot_hist():
             def func_gen():
                 getbins = np.linspace(0, 25, 80)
                 x1 = np.random.normal(loc=7.0, scale=1.0, size=100)
@@ -54,5 +54,8 @@ Plot a histogram for multiple distributions. Each distribution is given by a 1D 
 
         test_plot_hist()
         ```
+
+    === "Output"
+        ![](./ex-plot_hist.svg){.img-fluid tag=1 title="Example of plot_hist."}
 
 [mpl-legend]:https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html "matplotlib.pyplot.legend"

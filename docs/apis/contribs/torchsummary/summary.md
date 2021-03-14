@@ -1,6 +1,6 @@
 # contribs.torchsummary.summary
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L60){ target="_blank" }
 
 ```python
 params_info = mdnc.contribs.torchsummary.summary(

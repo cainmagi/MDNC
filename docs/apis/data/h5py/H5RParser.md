@@ -1,6 +1,6 @@
 # data.h5py.H5RParser
 
-:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1469)
+:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1472){ target="_blank" }
 
 ```python
 dset = mdnc.data.h5py.H5RParser(
@@ -270,8 +270,12 @@ The argument `#!py preprocfunc` during the initialziation. This property helps u
 ???+ example "Example 1"
     === "Codes"
         ```python linenums="1"
+        import os
         import numpy as np
         import mdnc
+
+        root_folder = 'alpha-test'
+        os.makedirs(root_folder, exist_ok=True)
 
         class ProcCustom:
             def __init__(self, seed=1000, batch_size=16):
@@ -279,21 +283,140 @@ The argument `#!py preprocfunc` during the initialziation. This property helps u
                 self.random_rng = np.random.default_rng(seed)
 
             def __call__(self, ds_x1, ds_x2):
-                ind_x1 = np.sort(self.random_rng.integers(len(ds_x1), size=batch_size))
-                ind_x2 = np.sort(self.random_rng.integers(len(ds_x2), size=batch_size))
+                ind_x1 = np.sort(self.random_rng.choice(len(ds_x1), replace=False, size=self.batch_size))
+                ind_x2 = np.sort(self.random_rng.choice(len(ds_x2), replace=False, size=self.batch_size))
                 return ds_x1[ind_x1, ...], ds_x2[ind_x2, ...]
 
-        dset = mdnc.data.h5py.H5RParser('test_rparser', keywords=['one', 'zero'], preprocfunc=ProcCustom())
-        with dset.start() as p:
-            for i, data in enumerate(p):
-                print('data.h5py: Epoch 1, Batch {0}'.format(i), data[0].shape, data[1].shape)
+        if __name__ == '__main__':
+            # Prepare the datasets.
+            set_list_file = os.path.join(root_folder, 'web-data')
+            mdnc.data.webtools.DataChecker.init_set_list(set_list_file)
+            dc = mdnc.data.webtools.DataChecker(root=root_folder, set_list_file=set_list_file, token='', verbose=False)
+            dc.add_query_file('test_data_h5gparser.h5')
+            dc.query()
+
+            # Perform test.
+            dset = mdnc.data.h5py.H5RParser(os.path.join(root_folder, 'test_data_h5gparser'),
+                                            keywords=['one', 'zero'], preprocfunc=ProcCustom())
+            with dset.start() as p:
+                for i, data in enumerate(p):
+                    print('data.h5py: Epoch 1, Batch {0}'.format(i), data[0].shape, data[1].shape)
+        ```
+
+    === "Output"
+        ```
+        data.webtools: All required datasets are available.
+        data.h5py: Epoch 1, Batch 0 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 1 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 2 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 3 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 4 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 5 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 6 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 7 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 8 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 9 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 10 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 11 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 12 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 13 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 14 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 15 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 16 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 17 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 18 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 19 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 20 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 21 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 22 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 23 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 24 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 25 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 26 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 27 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 28 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 29 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 30 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 31 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 32 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 33 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 34 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 35 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 36 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 37 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 38 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 39 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 40 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 41 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 42 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 43 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 44 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 45 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 46 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 47 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 48 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 49 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 50 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 51 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 52 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 53 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 54 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 55 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 56 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 57 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 58 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 59 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 60 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 61 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 62 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 63 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 64 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 65 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 66 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 67 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 68 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 69 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 70 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 71 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 72 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 73 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 74 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 75 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 76 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 77 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 78 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 79 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 80 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 81 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 82 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 83 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 84 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 85 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 86 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 87 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 88 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 89 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 90 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 91 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 92 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 93 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 94 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 95 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 96 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 97 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 98 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 99 torch.Size([16, 20]) torch.Size([16, 10])
         ```
 
 ???+ example "Example 2"
     === "Codes"
         ```python linenums="1"
+        import os
         import numpy as np
         import mdnc
+
+        root_folder = 'alpha-test'
+        os.makedirs(root_folder, exist_ok=True)
 
         class ProcCustom(mdnc.data.preprocs.ProcAbstract):
             def __init__(self, seed=1000, batch_size=16, inds=None, parent=None):
@@ -302,17 +425,131 @@ The argument `#!py preprocfunc` during the initialziation. This property helps u
                 self.random_rng = np.random.default_rng(seed)
 
             def preprocess(self, ds):
-                ind = np.sort(self.random_rng.integers(len(ds), size=batch_size))
+                ind = np.sort(self.random_rng.choice(len(ds), replace=False, size=self.batch_size))
                 return ds[ind, ...]
 
             def postprocess(self, x):
                 return x
 
-        dset = mdnc.data.h5py.H5RParser('test_rparser', keywords=['one', 'zero'],
-                                        preprocfunc=mdnc.data.preprocs.ProcScaler(parent=ProcCustom()))
-        with dset.start() as p:
-            for i, data in enumerate(p):
-                print('data.h5py: Epoch 1, Batch {0}'.format(i), data[0].shape, data[1].shape)
+        if __name__ == '__main__':
+            # Prepare the datasets.
+            set_list_file = os.path.join(root_folder, 'web-data')
+            mdnc.data.webtools.DataChecker.init_set_list(set_list_file)
+            dc = mdnc.data.webtools.DataChecker(root=root_folder, set_list_file=set_list_file, token='', verbose=False)
+            dc.add_query_file('test_data_h5gparser.h5')
+            dc.query()
+
+            # Perform test.
+            dset = mdnc.data.h5py.H5RParser(os.path.join(root_folder, 'test_data_h5gparser'),
+                                            keywords=['one', 'zero'], preprocfunc=ProcCustom())
+            with dset.start() as p:
+                for i, data in enumerate(p):
+                    print('data.h5py: Epoch 1, Batch {0}'.format(i), data[0].shape, data[1].shape)
+        ```
+
+    === "Output"
+        ```
+        data.webtools: All required datasets are available.
+        data.h5py: Epoch 1, Batch 0 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 1 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 2 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 3 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 4 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 5 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 6 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 7 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 8 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 9 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 10 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 11 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 12 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 13 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 14 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 15 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 16 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 17 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 18 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 19 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 20 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 21 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 22 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 23 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 24 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 25 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 26 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 27 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 28 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 29 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 30 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 31 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 32 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 33 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 34 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 35 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 36 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 37 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 38 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 39 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 40 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 41 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 42 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 43 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 44 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 45 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 46 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 47 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 48 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 49 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 50 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 51 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 52 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 53 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 54 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 55 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 56 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 57 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 58 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 59 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 60 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 61 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 62 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 63 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 64 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 65 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 66 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 67 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 68 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 69 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 70 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 71 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 72 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 73 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 74 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 75 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 76 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 77 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 78 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 79 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 80 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 81 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 82 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 83 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 84 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 85 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 86 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 87 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 88 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 89 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 90 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 91 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 92 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 93 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 94 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 95 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 96 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 97 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 98 torch.Size([16, 20]) torch.Size([16, 10])
+        data.h5py: Epoch 1, Batch 99 torch.Size([16, 20]) torch.Size([16, 10])
         ```
 
 [pydoc-picklable]:https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled "What can be pickled and unpickled?"

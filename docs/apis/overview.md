@@ -56,7 +56,16 @@ To be built ...
 
 ### :codicons-package: `modules`
 
-To be documented ...
+* :codicons-symbol-namespace: `conv`: The implementation of the modern convolutional layer and convolutional networks. The networks include U-Net, auto-encoder, encoder and decoder (generator). The codes are inspried by:
+* :codicons-symbol-namespace: `resnet`: The implementation of the reisudal blocks and residual networks. The networks include U-Net, auto-encoder, encoder and decoder (generator).
+
+The codes are inspired by the following nice works:
+
+* [pytorch/vision/torchvision/models/resnet.py](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py){ .magiclink .magiclink-github .magiclink-repository}
+* @milesial/Pytorch-UNet
+* @nikhilroxtomar/Deep-Residual-Unet
+
+I would like to show my appreciation to them!
 
 ### :codicons-package: `models`
 

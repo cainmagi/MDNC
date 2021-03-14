@@ -1,6 +1,6 @@
 # utils.draw.plot_error_curves
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L554){ target="_blank" }
 
 ```python
 mdnc.utils.draw.plot_error_curves(
@@ -46,7 +46,7 @@ Plot lines with error bars for multiple data groups. Each group is given by:
         import mdnc
 
         @mdnc.utils.draw.setFigure(style='bmh', font_size=16)
-        def test_error_bar(self):
+        def test_error_bar():
             def func_gen():
                 size = 100
                 x = np.arange(start=0, stop=size)
@@ -68,5 +68,9 @@ Plot lines with error bars for multiple data groups. Each group is given by:
 
         test_error_bar()
         ```
+
+    === "Output"
+        ![](./ex-plot_error_curves-1.svg){.img-fluid tag=1 title="Example of plot_error_curves (bar style)."}
+        ![](./ex-plot_error_curves-2.svg){.img-fluid tag=2 title="Example of plot_error_curves (fill style)."}
 
 [mpl-legend]:https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html "matplotlib.pyplot.legend"

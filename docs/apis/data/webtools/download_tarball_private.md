@@ -1,6 +1,6 @@
 # data.webtools.download_tarball_private
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/data/webtools.py#L214){ target="_blank" }
 
 ```python
 mdnc.data.webtools.download_tarball_private(

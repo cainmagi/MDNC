@@ -1,6 +1,6 @@
 # utils.draw.plot_distribution_curves
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L636){ target="_blank" }
 
 ```python
 mdnc.utils.draw.plot_distribution_curves(
@@ -48,7 +48,7 @@ Plot lines with multi-level distribution for multiple data groups. Each group is
         import mdnc
 
         @mdnc.utils.draw.setFigure(style='classic', font_size=16)
-        def test_distribution(self):
+        def test_distribution():
             def func_gen():
                 size = 100
                 x = np.arange(start=0, stop=size)
@@ -65,6 +65,9 @@ Plot lines with multi-level distribution for multiple data groups. Each group is
 
         test_distribution()
         ```
+
+    === "Output"
+        ![](./ex-plot_distribution_curves.svg){.img-fluid tag=1 title="Example of plot_distribution_curves."}
 
 [mpl-legend]:https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html "matplotlib.pyplot.legend"
 [edward-tensorboard]:http://edwardlib.org/tutorials/tensorboard "Tensorboard tutorials"

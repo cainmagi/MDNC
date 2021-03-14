@@ -1,6 +1,6 @@
 # utils.draw.AxisMultipleTicker
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L161){ target="_blank" }
 
 ```python
 amticker = mdnc.utils.draw.AxisMultipleTicker(
@@ -74,3 +74,6 @@ The minor locator. Use the `matplotlib` API `#!py axis.set_set_minor_locator()` 
         plt.tight_layout()
         plt.show()
         ```
+
+    === "Output"
+        ![](./ex-AxisMultipleTicker.svg){.img-fluid tag=1 title="Example of AxisMultipleTicker."}

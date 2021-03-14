@@ -1,6 +1,6 @@
 # data.preprocs.ProcMerge
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/preprocs.py#L262){ target="_blank" }
 
 ```python
 proc = mdnc.data.preprocs.ProcMerge(
@@ -196,8 +196,8 @@ There are many kinds of method for using this class. For example,
         import numpy as np
         import mdnc
 
-        proc = mdnc.data.preprocs.ProcMerge([mdnc.data.preprocs.ProcScaler(), mdnc.data.preprocs.ProcNSTScaler()])
-        random_rng = np.random.default_rng
+        proc = mdnc.data.preprocs.ProcMerge([mdnc.data.preprocs.ProcScaler(), mdnc.data.preprocs.ProcNSTScaler(dim=1)])
+        random_rng = np.random.default_rng()
         x, y = random_rng.normal(loc=-1.0, scale=0.1, size=[5, 3]), random_rng.normal(loc=1.0, scale=3.0, size=[4, 2])
         x_, y_ = proc.preprocess(x, y)
         xr, yr = proc.postprocess(x_, y_)
@@ -207,6 +207,14 @@ There are many kinds of method for using this class. For example,
         print('Inverse error:', np.amax(np.abs(x - xr)), np.amax(np.abs(y - yr)))
         ```
 
+    === "Output"
+        ```
+        Processed shape: (5, 3) (4, 2)
+        Processed mean: 4.440892098500626e-16 2.7755575615628914e-17
+        Processed range: 1.0 1.0
+        Inverse error: 0.0 0.0
+        ```
+
 ???+ example "Example 2"
     === "Codes"
         ```python linenums="1"
@@ -214,11 +222,11 @@ There are many kinds of method for using this class. For example,
         import mdnc
 
         proc1 = mdnc.data.preprocs.ProcScaler()
-        proc2 = mdnc.data.preprocs.ProcNSTScaler(inds=0, parent=mdnc.data.preprocs.ProcScaler(inds=1))
+        proc2 = mdnc.data.preprocs.ProcNSTScaler(dim=1, inds=0, parent=mdnc.data.preprocs.ProcScaler(inds=1))
         proc = mdnc.data.preprocs.ProcMerge(num_procs=3)
         proc[0] = proc1
         proc[1:] = proc2
-        random_rng = np.random.default_rng
+        random_rng = np.random.default_rng()
         x, y, z = random_rng.normal(loc=-1.0, scale=0.1, size=[5, 3]), random_rng.normal(loc=1.0, scale=3.0, size=[4, 2]), random_rng.normal(loc=1.0, scale=3.0, size=[4, 2])
         x_, y_, z_ = proc.preprocess(x, y, z)
         xr, yr, zr = proc.postprocess(x_, y_, z_)
@@ -226,6 +234,14 @@ There are many kinds of method for using this class. For example,
         print('Processed mean:', np.mean(x_), np.mean(y_), np.mean(z_))
         print('Processed range:', np.amax(np.abs(x_)), np.amax(np.abs(y_)), np.amax(np.abs(z_)))
         print('Inverse error:', np.amax(np.abs(x - xr)), np.amax(np.abs(y - yr)), np.amax(np.abs(z - zr)))
+        ```
+
+    === "Output"
+        ```
+        Processed shape: (5, 3) (4, 2) (4, 2)
+        Processed mean: -1.7763568394002506e-16 -1.8041124150158794e-16 -1.314226505400029e-14
+        Processed range: 1.0 1.0 1.0
+        Inverse error: 0.0 1.1102230246251565e-16 0.0
         ```
 
 This class could be also used for merge customized processor. But the customized processor should ensure the input and output numbers are the same, for example,
@@ -248,11 +264,11 @@ This class could be also used for merge customized processor. But the customized
                 return x / self.a, y / (2 * self.a)
 
         proc1 = mdnc.data.preprocs.ProcScaler()
-        proc2 = mdnc.data.preprocs.ProcNSTScaler(parent=mdnc.data.preprocs.ProcDerived(a=2.0))
+        proc2 = mdnc.data.preprocs.ProcNSTScaler(dim=1, parent=ProcDerived(a=2.0))
         proc = mdnc.data.preprocs.ProcMerge(num_procs=3)
         proc[0] = proc1
         proc[1:] = proc2
-        random_rng = np.random.default_rng
+        random_rng = np.random.default_rng()
         x, y, z = random_rng.normal(loc=-1.0, scale=0.1, size=[5, 3]), random_rng.normal(loc=1.0, scale=3.0, size=[4, 2]), random_rng.normal(loc=1.0, scale=3.0, size=[4, 2])
         x_, y_, z_ = proc.preprocess(x, y, z)
         xr, yr, zr = proc.postprocess(x_, y_, z_)
@@ -260,4 +276,12 @@ This class could be also used for merge customized processor. But the customized
         print('Processed mean:', np.mean(x_), np.mean(y_), np.mean(z_))
         print('Processed range:', np.amax(np.abs(x_)), np.amax(np.abs(y_)), np.amax(np.abs(z_)))
         print('Inverse error:', np.amax(np.abs(x - xr)), np.amax(np.abs(y - yr)), np.amax(np.abs(z - zr)))
+        ```
+
+    === "Output"
+        ```
+        Processed shape: (5, 3) (4, 2) (4, 2)
+        Processed mean: -1.7763568394002506e-16 0.0 -5.273559366969494e-16
+        Processed range: 1.0 1.0 1.0
+        Inverse error: 0.0 2.220446049250313e-16 0.0
         ```

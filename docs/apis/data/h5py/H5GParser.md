@@ -1,6 +1,6 @@
 # data.h5py.H5GParser
 
-:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1297)
+:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1300){ target="_blank" }
 
 ```python
 dset = mdnc.data.h5py.H5GParser(
@@ -276,34 +276,97 @@ The argument `#!py preprocfunc` during the initialziation. This property helps u
 ???+ example "Example 1"
     === "Codes"
         ```python linenums="1"
+        import os
         import mdnc
 
-        dset = mdnc.data.h5py.H5GParser('test_gparser', ['one', 'zero'],
-                                        batch_size=3, num_workers=4, shuffle=True, preprocfunc=None)
-        with dset.start() as p:
-            for i, data in enumerate(p):
-                print('data.h5py: Epoch 1, Batch {0}'.format(i), data[0].shape, data[1].shape)
+        root_folder = 'alpha-test'
+        os.makedirs(root_folder, exist_ok=True)
 
-            for i, data in enumerate(p):
-                print('data.h5py: Epoch 2, Batch {0}'.format(i), data[0].shape, data[1].shape)
+        if __name__ == '__main__':
+            # Prepare the datasets.
+            set_list_file = os.path.join(root_folder, 'web-data')
+            mdnc.data.webtools.DataChecker.init_set_list(set_list_file)
+            dc = mdnc.data.webtools.DataChecker(root=root_folder, set_list_file=set_list_file, token='', verbose=False)
+            dc.add_query_file('test_data_h5gparser.h5')
+            dc.query()
+
+            # Perform test.
+            dset = mdnc.data.h5py.H5GParser(os.path.join(root_folder, 'test_data_h5gparser'), ['one', 'zero'],
+                                            batch_size=3, num_workers=4, shuffle=True, preprocfunc=None)
+            with dset.start() as p:
+                for i, data in enumerate(p):
+                    print('data.h5py: Epoch 1, Batch {0}'.format(i), data[0].shape, data[1].shape)
+
+                for i, data in enumerate(p):
+                    print('data.h5py: Epoch 2, Batch {0}'.format(i), data[0].shape, data[1].shape)
+        ```
+
+    === "Output"
+        ```
+        data.webtools: All required datasets are available.
+        data.h5py: Epoch 1, Batch 0 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 1, Batch 1 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 1, Batch 2 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 1, Batch 3 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 1, Batch 4 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 1, Batch 5 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 1, Batch 6 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 1, Batch 7 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 1, Batch 8 torch.Size([1, 20]) torch.Size([1, 10])
+        data.h5py: Epoch 2, Batch 0 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 2, Batch 1 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 2, Batch 2 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 2, Batch 3 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 2, Batch 4 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 2, Batch 5 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 2, Batch 6 torch.Size([1, 20]) torch.Size([1, 10])
+        data.h5py: Epoch 2, Batch 7 torch.Size([3, 20]) torch.Size([3, 10])
+        data.h5py: Epoch 2, Batch 8 torch.Size([3, 20]) torch.Size([3, 10])
         ```
 
 ???+ example "Example 2"
     === "Codes"
         ```python linenums="1"
+        import os
         import numpy as np
         import mdnc
 
-        dset = mdnc.data.h5py.H5GParser('test_gparser', ['one', 'zero'],
-                                        batch_size=3, num_workers=4, shuffle=True,
-                                        preprocfunc=mdnc.preprocs.ProcScaler())
-        with dset.start() as p:
-            for i, (d_one, d_two) in enumerate(p):
-                d_one, d_two = d_one.cpu().numpy(), d_two.cpu().numpy()
-                std_one, std_two = np.std(d_one), np.std(d_two)
-                d_one, d_two = p.preproc.postprocess(d_one, d_two)
-                std_one_, std_two_ = np.std(d_one), np.std(d_two)
-                print('Before: {0}, {1}; After: {0}, {1}.'.format(std_one, std_two, std_one_, std_two_))
+        root_folder = 'alpha-test'
+        os.makedirs(root_folder, exist_ok=True)
+
+        if __name__ == '__main__':
+            # Prepare the datasets.
+            set_list_file = os.path.join(root_folder, 'web-data')
+            mdnc.data.webtools.DataChecker.init_set_list(set_list_file)
+            dc = mdnc.data.webtools.DataChecker(root=root_folder, set_list_file=set_list_file, token='', verbose=False)
+            dc.add_query_file('test_data_h5gparser.h5')
+            dc.query()
+
+            # Perform test.
+            dset = mdnc.data.h5py.H5GParser(os.path.join(root_folder, 'test_data_h5gparser'), ['one', 'zero'],
+                                            batch_size=3, num_workers=4, shuffle=True,
+                                            preprocfunc=mdnc.data.preprocs.ProcScaler())
+            with dset.start_test() as p:
+                for i, (d_one, d_two) in enumerate(p):
+                    d_one, d_two = d_one.cpu().numpy(), d_two.cpu().numpy()
+                    std_one, std_two = np.std(d_one), np.std(d_two)
+                    d_one, d_two = p.preproc.postprocess(d_one, d_two)
+                    std_one_, std_two_ = np.std(d_one), np.std(d_two)
+                    print('Before: {0}, {1}; After: {2}, {3}.'.format(std_one, std_two, std_one_, std_two_))
+        ```
+
+    === "Output"
+        ```
+        data.webtools: All required datasets are available.
+        Before: 0.4213927686214447, 0.5810447931289673; After: 3.4976863861083984, 4.269893169403076.
+        Before: 0.47204485535621643, 0.5270004868507385; After: 3.2560627460479736, 5.232884407043457.
+        Before: 0.380888432264328, 0.5548458099365234; After: 2.69606876373291, 4.5017008781433105.
+        Before: 0.555243968963623, 0.5082056522369385; After: 3.231991767883301, 5.085717678070068.
+        Before: 0.39406657218933105, 0.5630286931991577; After: 2.8078441619873047, 5.10365629196167.
+        Before: 0.49584802985191345, 0.5255910754203796; After: 2.706739664077759, 5.646749019622803.
+        Before: 0.4346843361854553, 0.5725106000900269; After: 2.7871317863464355, 4.466533660888672.
+        Before: 0.5043540000915527, 0.5292088389396667; After: 2.373351573944092, 4.446733474731445.
+        Before: 0.46324262022972107, 0.6497944593429565; After: 2.350776433944702, 5.593009948730469.
         ```
 
 [pydoc-picklable]:https://docs.python.org/3/library/pickle.html#what-can-be-pickled-and-unpickled "What can be pickled and unpickled?"

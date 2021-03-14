@@ -1,6 +1,6 @@
 # data.preprocs.ProcAbstract
 
-:codicons-symbol-class: Abstract Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Abstract Class · [:octicons-file-code-24: Source]({{ source.root }}/data/preprocs.py#L69){ target="_blank" }
 
 ```python
 proc = mdnc.data.preprocs.ProcAbstract(
@@ -134,10 +134,19 @@ The processor need to be derived. We have two ways to implement the derivation, 
         print('Inverse error:', np.amax(np.abs(x - xr)), np.amax(np.abs(y - yr)), np.amax(np.abs(z - zr)))
 
         proc2 = ProcDerived(a=2.0, inds=[1, 2])
-        x_, y_, z_ = proc.preprocess(x, y, z)
-        xr, yr, zr = proc.postprocess(x_, y_, z_)
+        x_, y_, z_ = proc2.preprocess(x, y, z)
+        xr, yr, zr = proc2.postprocess(x_, y_, z_)
         print('Processed error:', np.amax(np.abs(x_ - x)), np.amax(np.abs(y_ - 2 * y)), np.amax(np.abs(z_ - 2 * z)))
         print('Inverse error:', np.amax(np.abs(x - xr)), np.amax(np.abs(y - yr)), np.amax(np.abs(z - zr)))
+        ```
+
+    === "Output"
+        ```
+        Processed shape: (5, 2) (3, 2) (4, 3)
+        Processed error: 0.0 0.0 0.0
+        Inverse error: 0.0 0.0 0.0
+        Processed error: 0.0 0.0 0.0
+        Inverse error: 0.0 0.0 0.0
         ```
 
 ???+ example "Example 2: without inds"
@@ -164,6 +173,13 @@ The processor need to be derived. We have two ways to implement the derivation, 
         print('Processed shape:', x_.shape, y_.shape, z_.shape)
         print('Processed error:', np.amax(np.abs(x_ - 2 * x)), np.amax(np.abs(y_ - 2 * y)), np.amax(np.abs(z_ - 2 * z)))
         print('Inverse error:', np.amax(np.abs(x - xr)), np.amax(np.abs(y - yr)), np.amax(np.abs(z - zr)))
+        ```
+
+    === "Output"
+        ```
+        Processed shape: (5, 2) (3, 2) (4, 3)
+        Processed error: 0.0 0.0 0.0
+        Inverse error: 0.0 0.0 0.0
         ```
 
 In the above two examples, the processor would multiply the inputs by `#!py 2.0`. The first implementation allows users to use the argument `inds` to determine which variables require to be processed. The user-implemented methods in the second example would fully control the input and output arguments.
@@ -193,8 +209,15 @@ Actually, the second implementation allows user to change the number of output a
         xm = proc.preprocess(x, y, z)
         xr, yr, zr = proc.postprocess(xm)
         print('Processed shape:', xm.shape)
-        print('Processed error:', np.amax(np.abs(xm - 2 * np.mean([x, y, z], axis=0)))
-        print('Inverse error:', np.amax(np.abs(xm - xr)), np.amax(np.abs(xm - yr)), np.amax(np.abs(xm - zr)))
+        print('Processed error:', np.amax(np.abs(xm - 2 * np.mean([x, y, z], axis=0))))
+        print('Inverse error:', np.amax(np.abs(x - xr)), np.amax(np.abs(y - yr)), np.amax(np.abs(z - zr)))
+        ```
+
+    === "Output"
+        ```
+        Processed shape: (5, 2)
+        Processed error: 0.0
+        Inverse error: 0.33333333333333326 0.33333333333333326 1.3333333333333333
         ```
 
 This operation is not invertible. We could find that the inverse error would be greater than `#!py 0`.

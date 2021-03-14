@@ -1,6 +1,6 @@
 # utils.draw.plot_scatter
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L379){ target="_blank" }
 
 ```python
 mdnc.utils.draw.plot_scatter(
@@ -43,7 +43,7 @@ Plot a scatter graph for multiple data groups. Each group is given by:
         import mdnc
 
         @mdnc.utils.draw.setFigure(style='seaborn-darkgrid', font_size=16)
-        def test_scatter(self):
+        def test_scatter():
             def func_gen():
                 size = 100
                 for i in range(3):
@@ -59,5 +59,8 @@ Plot a scatter graph for multiple data groups. Each group is given by:
 
         test_scatter()
         ```
+
+    === "Output"
+        ![](./ex-plot_scatter.svg){.img-fluid tag=1 title="Example of plot_scatter."}
 
 [mpl-legend]:https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html "matplotlib.pyplot.legend"

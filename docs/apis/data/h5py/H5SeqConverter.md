@@ -1,6 +1,6 @@
 # data.h5py.H5SeqConverter
 
-:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L172)
+:codicons-symbol-class: Class · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L176){ target="_blank" }
 
 ```python
 converter = mdnc.data.h5py.H5SeqConverter(
@@ -120,25 +120,73 @@ Close the converter.
 ???+ example "Example 1"
     === "Codes"
         ```python linenums="1"
+        import os
         import mdnc
 
-        with mdnc.data.h5py.H5SeqConverter('test_seqconverter.h5') as cvt:
-            cvt.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
-            cvt.convert('data_to_sequence')
-            cvt.copy('data_only_copied')
+        root_folder = 'alpha-test'
+        os.makedirs(root_folder, exist_ok=True)
+
+        if __name__ == '__main__':
+            # Prepare the datasets.
+            set_list_file = os.path.join(root_folder, 'web-data')
+            mdnc.data.webtools.DataChecker.init_set_list(set_list_file)
+            dc = mdnc.data.webtools.DataChecker(root=root_folder, set_list_file=set_list_file, token='', verbose=False)
+            dc.add_query_file('test_data_h5seqconverter1.h5')
+            dc.query()
+
+            # Perform test.
+            with mdnc.data.h5py.H5SeqConverter(os.path.join(root_folder, 'test_data_h5seqconverter1')) as cvt:
+                cvt.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
+                cvt.convert('data_to_sequence')
+                cvt.copy('data_only_copied')
+        ```
+
+    === "Output"
+        ```
+        data.webtools: All required datasets are available.
+        data.h5py: Current configuration is: {'dtype': <class 'numpy.float32'>, 'shuffle': True, 'fletcher32': True, 'compression': 'gzip'}
+        data.h5py: Convert data_to_sequence into the output file. The original data shape is (1000,), splitted into 64 parts.
+        data.h5py: Copy data_only_copied into the output file. The data shape is (1000,).
         ```
 
 ???+ example "Example 2"
     === "Codes"
         ```python linenums="1"
+        import os
         import mdnc
 
-        converter = mdnc.data.h5py.H5SeqConverter()
-        converter.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
-        with converter.open('test_seqconverter.h5') as cvt:
-            cvt.convert('data_to_sequence')
-            cvt.copy('data_only_copied')
-        with converter.open('test_seqconverter2.h5') as cvt:
-            cvt.convert('data_to_sequence')
-            cvt.copy('data_only_copied')
+        root_folder = 'alpha-test'
+        os.makedirs(root_folder, exist_ok=True)
+
+        if __name__ == '__main__':
+            # Prepare the datasets.
+            set_list_file = os.path.join(root_folder, 'web-data')
+            mdnc.data.webtools.DataChecker.init_set_list(set_list_file)
+            dc = mdnc.data.webtools.DataChecker(root=root_folder, set_list_file=set_list_file, token='', verbose=False)
+            dc.add_query_file(['test_data_h5seqconverter1.h5', 'test_data_h5seqconverter2.h5'])
+            dc.query()
+
+            # Perform test.
+            converter = mdnc.data.h5py.H5SeqConverter()
+            converter.config(logver=1, shuffle=True, fletcher32=True, compression='gzip')
+            with converter.open(os.path.join(root_folder, 'test_data_h5seqconverter1')) as cvt:
+                cvt.convert('data_to_sequence')
+                cvt.copy('data_only_copied')
+            with converter.open(os.path.join(root_folder, 'test_data_h5seqconverter2')) as cvt:
+                cvt.convert('data_to_sequence')
+                cvt.copy('data_only_copied')
+        ```
+
+    === "Output"
+        ```
+        data.webtools: All required datasets are available.
+        data.h5py: Current configuration is: {'dtype': <class 'numpy.float32'>, 'shuffle': True, 'fletcher32': True, 'compression': 'gzip'}
+        data.h5py: Open a new read file: alpha-test\test_data_h5seqconverter1.h5
+        data.h5py: Open a new output file: alpha-test\test_data_h5seqconverter1_seq.h5
+        data.h5py: Convert data_to_sequence into the output file. The original data shape is (1000,), splitted into 64 parts.
+        data.h5py: Copy data_only_copied into the output file. The data shape is (1000,).
+        data.h5py: Open a new read file: alpha-test\test_data_h5seqconverter2.h5
+        data.h5py: Open a new output file: alpha-test\test_data_h5seqconverter2_seq.h5
+        data.h5py: Convert data_to_sequence into the output file. The original data shape is (1000,), splitted into 64 parts.
+        data.h5py: Copy data_only_copied into the output file. The data shape is (1000,).
         ```

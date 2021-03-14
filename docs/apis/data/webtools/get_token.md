@@ -1,6 +1,6 @@
 # data.webtools.get_token
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/data/webtools.py#L41){ target="_blank" }
 
 ```python
 token = mdnc.data.webtools.get_token(

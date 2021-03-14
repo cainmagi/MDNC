@@ -1,6 +1,6 @@
 # utils.draw.fix_log_axis
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L140){ target="_blank" }
 
 ```python
 mdnc.utils.draw.fix_log_axis(
@@ -36,3 +36,6 @@ This function is not recommended, because it would take effects globally. Please
         mdnc.utils.draw.fix_log_axis(axis='y')
         plt.show()
         ```
+
+    === "Output"
+        ![](./ex-fix_log_axis.svg){.img-fluid tag=1 title="Example of fix_log_axis."}

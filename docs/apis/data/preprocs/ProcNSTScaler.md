@@ -1,10 +1,10 @@
 # data.preprocs.ProcNSTScaler
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/preprocs.py#L420){ target="_blank" }
 
 ```python
 proc = mdnc.data.preprocs.ProcNSTScaler(
-    dim=2, kernel_length=9, epsilon=1e-6, inds=None, parent=None
+    dim, kernel_length=9, epsilon=1e-6, inds=None, parent=None
 )
 ```
 
@@ -32,7 +32,7 @@ It is recommended to make `kernel_length` large enough especially when the data 
 
 | Argument {: .w-5rem} | Type {: .w-6rem} | Description {: .w-8rem} |
 | :------: | :-----: | :---------- |
-| `dim` | `#!py int` | The dimension of the input data, this value would also determine the dimension of the sliding window. |
+| `dim` | `#!py int` | The dimension of the input data, this value would also determine the dimension of the sliding window. Could be `#!py 1`, `#!py 2`, or `#!py 3`. |
 | `kernel_length` | `#!py int` or<br>`#!py (int, )` | The length of the sliding window. Could provide a window shape by using a sequence. |
 | `epsilon` | The lower bound of the divisor used for scaling. |
 | `inds` | `#!py int` or<br>`#!py (int, )` | Index or indicies of variables where the user implemented methods would be broadcasted. The variables not listed in this argument would be passed to the output without any processing. If set `#!py None`, methods would be broadcasted to all variables. |
@@ -144,6 +144,7 @@ The processor need to be derived. We have two ways to implement the derivation, 
     === "Codes"
         ```python linenums="1"
         import numpy as np
+        import matplotlib.pyplot as plt
         import mdnc
 
         proc = mdnc.data.preprocs.ProcNSTScaler(dim=1, kernel_length=9)
@@ -155,4 +156,25 @@ The processor need to be derived. We have two ways to implement the derivation, 
         print('Processed mean:', np.mean(x_), np.mean(y_))
         print('Processed max:', np.amax(x_), np.amax(y_))
         print('Inverse error:', np.amax(np.abs(x - xr)), np.amax(np.abs(y - yr)))
+
+        with mdnc.utils.draw.setFigure(font_size=12):
+            fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
+            axs[0].plot(x_[0])
+            axs[1].plot(xr[0])
+            axs[2].plot(x[0])
+            axs[0].set_ylabel('Preprocessing')
+            axs[1].set_ylabel('Inversed\npreprocessing')
+            axs[2].set_ylabel('Raw\ndata')
+            plt.tight_layout()
+            plt.show()
         ```
+
+    === "Output"
+        ```
+        Processed shape: (5, 100) (7, 200)
+        Processed mean: -0.003896614253474869 -0.00024727896038973684
+        Processed max: 1.0 1.0
+        Inverse error: 8.881784197001252e-16 1.7763568394002505e-15
+        ```
+
+        ![](./ex-ProcNSTScaler.svg){.img-fluid tag=1 title="Example of ProcNSTScaler."}

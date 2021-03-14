@@ -1,6 +1,6 @@
 # data.preprocs.ProcNSTFilter1d
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/preprocs.py#L770){ target="_blank" }
 
 ```python
 proc = mdnc.data.preprocs.ProcNSTFilter1d(
@@ -159,16 +159,20 @@ The processor need to be derived. We have two ways to implement the derivation, 
         t = proc.preprocess(data)
         t_b = proc.postprocess(t)
 
-        fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
-        axs[0].plot(t[0])
-        axs[1].plot(t_b[0])
-        axs[2].plot(data[0])
-        axs[0].set_ylabel('Preprocessing')
-        axs[1].set_ylabel('Inversed preprocessing')
-        axs[2].set_ylabel('Raw data')
-        plt.tight_layout()
-        plt.show()
+        with mdnc.utils.draw.setFigure(font_size=12):
+            fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
+            axs[0].plot(t[0])
+            axs[1].plot(t_b[0])
+            axs[2].plot(data[0])
+            axs[0].set_ylabel('Preprocessing')
+            axs[1].set_ylabel('Inversed\npreprocessing')
+            axs[2].set_ylabel('Raw\ndata')
+            plt.tight_layout()
+            plt.show()
         ```
+
+    === "Output"
+        ![](./ex-ProcNSTFilter1d.svg){.img-fluid tag=1 title="Example of ProcNSTFilter1d."}
 
 [scipy-butter]:https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html "scipy.signal.butter"
 [scipy-cheby1]:https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.cheby1.html "scipy.signal.cheby1"

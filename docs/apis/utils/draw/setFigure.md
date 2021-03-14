@@ -1,6 +1,6 @@
 # utils.draw.setFigure
 
-:codicons-symbol-class: Class · :octicons-mention-24: Decorator · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · :octicons-mention-24: Decorator · :codicons-symbol-field: Context · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L30){ target="_blank" }
 
 ```python
 mdnc.utils.draw.setFigure(
@@ -68,6 +68,9 @@ The following arguments would take effect only when they are configured explicit
         plot_local_setting()
         ```
 
+    === "Output"
+        ![](./ex-setFigure-dec.svg){.img-fluid tag=1 title="Example of setFigure (decorator)."}
+
 ???+ example "As context"
     === "Codes"
         ```python linenums="1"
@@ -81,6 +84,9 @@ The following arguments would take effect only when they are configured explicit
             plt.title('In the context, font: arial.')
             plt.show()
         ```
+
+    === "Output"
+        ![](./ex-setFigure-con.svg){.img-fluid tag=2 title="Example of setFigure (context)."}
 
 [mpl-stylecontext]:https://matplotlib.org/stable/api/style_api.html?highlight=style%20context#matplotlib.style.context
 [mpl-styleeg]:https://matplotlib.org/stable/gallery/style_sheets/style_sheets_reference.html

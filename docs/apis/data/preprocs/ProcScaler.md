@@ -1,6 +1,6 @@
 # data.preprocs.ProcScaler
 
-:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/h5py.py#L1351)
+:codicons-symbol-class: Class · [:octicons-file-code-24: Source]({{ source.root }}/data/preprocs.py#L381){ target="_blank" }
 
 ```python
 proc = mdnc.data.preprocs.ProcScaler(
@@ -131,6 +131,7 @@ The processor need to be derived. We have two ways to implement the derivation, 
     === "Codes"
         ```python linenums="1"
         import numpy as np
+        import matplotlib.pyplot as plt
         import mdnc
 
         proc = mdnc.data.preprocs.ProcScaler(shift=1.0, scale=3.0)
@@ -142,12 +143,34 @@ The processor need to be derived. We have two ways to implement the derivation, 
         print('Processed mean:', np.mean(x_), np.mean(y_))
         print('Processed std:', np.std(x_), np.std(y_))
         print('Inverse error:', np.amax(np.abs(x - xr)), np.amax(np.abs(y - yr)))
+
+        with mdnc.utils.draw.setFigure(font_size=12):
+            fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
+            axs[0].plot(x_[0])
+            axs[1].plot(xr[0])
+            axs[2].plot(x[0])
+            axs[0].set_ylabel('Preprocessing')
+            axs[1].set_ylabel('Inversed\npreprocessing')
+            axs[2].set_ylabel('Raw\ndata')
+            plt.tight_layout()
+            plt.show()
         ```
+
+    === "Output"
+        ```
+        Processed shape: (5, 4) (7, 5)
+        Processed mean: 0.3419675618982352 -0.6442542139897679
+        Processed std: 1.1930992341525517 2.3083982027807157
+        Inverse error: 0.0 0.0
+        ```
+
+        ![](./ex-ProcScaler-1.svg){.img-fluid tag=1 title="Example of ProcScaler (manually setting)."}
 
 ???+ example "Example 2"
     === "Codes"
         ```python linenums="1"
         import numpy as np
+        import matplotlib.pyplot as plt
         from sklearn import preprocessing
         import mdnc
 
@@ -162,4 +185,27 @@ The processor need to be derived. We have two ways to implement the derivation, 
         x_r_sl = rsc.inverse_transform(x_sl)
         print('Processed error:', np.amax(np.abs(x_ - x_sl)))
         print('Inverse error:', np.amax(np.abs(x_r - x_r_sl)))
+
+        with mdnc.utils.draw.setFigure(font_size=12):
+            fig, axs = plt.subplots(nrows=3, ncols=1, sharex=True, figsize=(12, 5))
+            axs[0].plot(x_[0], label='ProcScaler')
+            axs[0].plot(x_sl[0], label='RobustScaler')
+            axs[0].legend(loc='lower right')
+            axs[1].plot(x_r[0], label='ProcScaler')
+            axs[1].plot(x_r_sl[0], label='RobustScaler')
+            axs[1].legend(loc='lower right')
+            axs[2].plot(x[0])
+            axs[0].set_ylabel('Preprocessing')
+            axs[1].set_ylabel('Inversed\npreprocessing')
+            axs[2].set_ylabel('Raw\ndata')
+            plt.tight_layout()
+            plt.show()
         ```
+
+    === "Output"
+        ```
+        Processed error: 0.0
+        Inverse error: 0.0
+        ```
+
+        ![](./ex-ProcScaler-2.svg){.img-fluid tag=1 title="Example of ProcScaler (with sklearn)."}

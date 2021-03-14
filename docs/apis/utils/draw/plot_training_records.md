@@ -1,6 +1,6 @@
 # utils.draw.plot_training_records
 
-:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/contribs/torchsummary.py#L58)
+:codicons-symbol-method: Function · [:octicons-file-code-24: Source]({{ source.root }}/utils/draw.py#L438){ target="_blank" }
 
 ```python
 mdnc.utils.draw.plot_training_records(
@@ -77,5 +77,9 @@ Plot a training curve graph for multiple data groups. Each group is given by:
 
         test_training_records()
         ```
+
+    === "Output"
+        ![](./ex-plot_training_records-1.svg){.img-fluid tag=1 title="Example of plot_training_records (no validation)."}
+        ![](./ex-plot_training_records-2.svg){.img-fluid tag=2 title="Example of plot_training_records (with validation)."}
 
 [mpl-legend]:https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html "matplotlib.pyplot.legend"
