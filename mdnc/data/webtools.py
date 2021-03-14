@@ -332,6 +332,18 @@ class DataChecker:
                             'dataset_file_name_01.txt',
                             'dataset_file_name_02.txt'
                         ]
+                    },
+                    {
+                        'tag': 'test',
+                        'asset': 'test-datasets-2.tar.xz',
+                        'items': [
+                            'test_data_h5converter.h5',
+                            'test_data_h5cparser.h5',
+                            'test_data_h5cparser_seq.h5',
+                            'test_data_h5gparser.h5',
+                            'test_data_h5seqconverter1.h5',
+                            'test_data_h5seqconverter2.h5'
+                        ]
                     }
                 ],
                 'user': 'cainmagi',

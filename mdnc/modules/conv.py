@@ -2,17 +2,19 @@
 # -*- coding: UTF-8 -*-
 '''
 ################################################################
-# Modules - 1D convolutional network
+# Modules - convolutional network
 # @ Modern Deep Network Toolkits for pyTorch
 # Yuchen Jin @ cainmagi@gmail.com
 # Requirements: (Pay attention to version)
 #   python 3.5+
 #   pyTorch 1.0.0+
-# This module is the definition of the 1D convolutional network.
+# This module is the definition of the convolutional network.
 # The network could be initialized here and used for training
 # and processing.
 ################################################################
 '''
+
+import functools
 
 import torch
 import torch.nn as nn
@@ -71,7 +73,7 @@ class _ConvModernNd(nn.Module):
         '''
         super().__init__()
         ConvNd = get_convnd(order=order)
-        is_stride = check_is_stride(stride)
+        is_stride = check_is_stride(stride, output_size=output_size, scaler=scaler)
         seq = []
         if normalizer == 'null':
             if (not is_stride) or scaler == 'down':
@@ -183,7 +185,7 @@ class _BlockConvStkNd(nn.Module):
                 _ConvModernNd(order, (in_planes + ex_planes) if i == 0 else hidden_planes, hidden_planes,
                               kernel_size=kernel_size, padding=padding, stride=1, scaler='down')
             )
-        self.conv_scale = _ConvModernNd(order, hidden_planes, out_planes,
+        self.conv_scale = _ConvModernNd(order, hidden_planes if stack_level > 1 else (in_planes + ex_planes), out_planes,
                                         kernel_size=kernel_size, padding=padding, stride=stride, scaler=scaler)
 
     @staticmethod
@@ -235,13 +237,14 @@ class _UNetNd(nn.Module):
                     of convolutional layers of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
+            kernel_size: the kernel size of each block.
             in_planes: the channel number of the input data.
             out_planes: the channel number of the output data.
-            kernel_size: the kernel size of each block.
         '''
         super().__init__()
         if len(layers) < 2:
             raise ValueError('modules.conv: The argument "layers" should contain at least 2 values, but provide "{0}"'.format(layers))
+        self.__layers = layers
         ConvNd = get_convnd(order=order)
 
         ksize_e, psize_e, _ = cal_kernel_padding(kernel_size, ksize_plus=2)
@@ -273,7 +276,16 @@ class _UNetNd(nn.Module):
         self.conv_up_list.append(
             _BlockConvStkNd(order, channel, channel, hidden_planes=channel, kernel_size=ksize, padding=psize,
                             stride=1, stack_level=layers[0], ex_planes=channel, scaler='down'))
-        self.conv_final = ConvNd(channel, in_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+        self.conv_final = ConvNd(channel, out_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+
+    @property
+    def nlayers(self):
+        '''Return number of convolutional layers along the depth.
+        '''
+        if len(self.__layers) == 0:
+            return 0
+        n_layers = functools.reduce(lambda x, y: x + 2 * y, self.__layers[:-1], self.__layers[-1]) + 2
+        return n_layers
 
     def forward(self, x):
         x = self.conv_first(x)
@@ -314,6 +326,7 @@ class _AENd(nn.Module):
         super().__init__()
         if len(layers) < 2:
             raise ValueError('modules.conv: The argument "layers" should contain at least 2 values, but provide "{0}"'.format(layers))
+        self.__layers = layers
         ConvNd = get_convnd(order=order)
 
         ksize_e, psize_e, _ = cal_kernel_padding(kernel_size, ksize_plus=2)
@@ -345,7 +358,16 @@ class _AENd(nn.Module):
         self.conv_up_list.append(
             _BlockConvStkNd(order, channel, channel, hidden_planes=channel, kernel_size=ksize, padding=psize,
                             stride=1, stack_level=layers[0], scaler='down'))
-        self.conv_final = ConvNd(channel, in_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+        self.conv_final = ConvNd(channel, out_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+
+    @property
+    def nlayers(self):
+        '''Return number of convolutional layers along the depth.
+        '''
+        if len(self.__layers) == 0:
+            return 0
+        n_layers = functools.reduce(lambda x, y: x + 2 * y, self.__layers[:-1], self.__layers[-1]) + 2
+        return n_layers
 
     @staticmethod
     def cropping(x, x_ref_s):
@@ -399,6 +421,7 @@ class _EncoderNetNd(nn.Module):
         super().__init__()
         if len(layers) < 2:
             raise ValueError('modules.conv: The argument "layers" should contain at least 2 values, but provide "{0}"'.format(layers))
+        self.__layers = layers
         ConvNd = get_convnd(order=order)
 
         ksize_e, psize_e, _ = cal_kernel_padding(kernel_size, ksize_plus=2)
@@ -422,12 +445,23 @@ class _EncoderNetNd(nn.Module):
         if self.is_out_vector:
             self.fc = nn.Linear(channel, out_length, bias=True)
 
+    @property
+    def nlayers(self):
+        '''Return number of convolutional layers along the depth.
+        '''
+        if len(self.__layers) == 0:
+            return 0
+        n_layers = functools.reduce(lambda x, y: x + y, self.__layers, 0) + 2
+        return n_layers
+
     def forward(self, x):
         for layer in self.netbody:
             x = layer(x)
         if self.is_out_vector:
             x = torch.flatten(x, 1)
             return self.fc(x)
+        else:
+            return x
 
 
 class _DecoderNetNd(nn.Module):
@@ -462,12 +496,17 @@ class _DecoderNetNd(nn.Module):
         super().__init__()
         if len(layers) < 2:
             raise ValueError('modules.conv: The argument "layers" should contain at least 2 values, but provide "{0}"'.format(layers))
+        self.__layers = layers
+        self.__in_length = in_length
         ConvNd = get_convnd(order=order)
         ksize_e, psize_e, _ = cal_kernel_padding(kernel_size, ksize_plus=2)
         ksize, psize, stride = cal_kernel_padding(kernel_size)
         self.__order = order
+        if isinstance(out_size, int):
+            out_size = (out_size, ) * order
         self.shapes = cal_scaled_shapes(out_size, level=len(layers), stride=stride)
         channels = tuple(map(lambda n: channel * (2 ** n), range(len(layers) - 1, -1, -1)))
+        self.__in_channel = channels[0]
 
         # Require to convert the vector into channels
         self.is_in_vector = (in_length is not None and in_length > 0)
@@ -488,6 +527,22 @@ class _DecoderNetNd(nn.Module):
                             stride=stride, stack_level=layers[-1], scaler='up'))
         self.netbody = netbody
         self.conv_last = ConvNd(channels[-1], out_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+
+    @property
+    def input_size(self):
+        if self.is_in_vector:
+            return (self.__in_length, )
+        else:
+            return (self.__in_channel, *self.shapes[-1])
+
+    @property
+    def nlayers(self):
+        '''Return number of convolutional layers along the depth.
+        '''
+        if len(self.__layers) == 0:
+            return 0
+        n_layers = functools.reduce(lambda x, y: x + y, self.__layers, 0) + (3 if self.is_in_vector else 2)
+        return n_layers
 
     @staticmethod
     def cropping(x, x_ref_s):
@@ -672,9 +727,9 @@ class UNet1d(_UNetNd):
                     of convolutional layers of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
+            kernel_size: the kernel size of each block.
             in_planes: the channel number of the input data.
             out_planes: the channel number of the output data.
-            kernel_size: the kernel size of each block.
         '''
         super().__init__(1, channel=channel, layers=layers, kernel_size=kernel_size,
                          in_planes=in_planes, out_planes=out_planes)
@@ -698,9 +753,9 @@ class UNet2d(_UNetNd):
                     of convolutional layers of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
+            kernel_size: the kernel size of each block.
             in_planes: the channel number of the input data.
             out_planes: the channel number of the output data.
-            kernel_size: the kernel size of each block.
         '''
         super().__init__(order=2, channel=channel, layers=layers, kernel_size=kernel_size,
                          in_planes=in_planes, out_planes=out_planes)
@@ -724,9 +779,9 @@ class UNet3d(_UNetNd):
                     of convolutional layers of a stage. The stage numer, i.e.
                     the depth of the network is the length of this list.
         Arguments (optional):
+            kernel_size: the kernel size of each block.
             in_planes: the channel number of the input data.
             out_planes: the channel number of the output data.
-            kernel_size: the kernel size of each block.
         '''
         super().__init__(order=3, channel=channel, layers=layers, kernel_size=kernel_size,
                          in_planes=in_planes, out_planes=out_planes)
@@ -1267,7 +1322,7 @@ def decnet16(out_size, order=2, **kwargs):
     '''Constructs a conv.DecoderNet-16 model.
     Configurations:
         Network depth: 5
-        Stage details: [2, 2, 3, 3, 3]
+        Stage details: [3, 3, 2, 2, 2]
         First channel number: 64
     Arguments:
         out_size: the output shape of the network.
@@ -1276,7 +1331,7 @@ def decnet16(out_size, order=2, **kwargs):
     Other Arguments (see mdnc.modules.conv.DecoderNet*d):
         in_length, out_planes, kernel_size
     '''
-    model = __get_decnet_nd(order)(64, [2, 2, 3, 3, 3], out_size=out_size, **kwargs)
+    model = __get_decnet_nd(order)(64, [3, 3, 2, 2, 2], out_size=out_size, **kwargs)
     return model
 
 

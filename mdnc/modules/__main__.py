@@ -69,6 +69,7 @@ class TestModuleAbstract(abc.ABC):
             print('modules.modules: Test {0}d networks.'.format(order))
             for net in self.networks:
                 test_module = net(order=order, in_planes=input_size[0])
+                print('{0} with {1} layers along its depth.'.format(type(test_module).__name__, test_module.nlayers))
                 torchsummary.summary(test_module, input_size=input_size, device='cpu')
                 del test_module
 
@@ -77,6 +78,7 @@ class TestModuleAbstract(abc.ABC):
             print('modules.modules: Test {0}d decoders.'.format(order))
             for net in self.net_decs:
                 test_module = net(order=order, in_length=2, out_size=out_size[1:])
+                print('{0} with {1} layers along its depth.'.format(type(test_module).__name__, test_module.nlayers))
                 torchsummary.summary(test_module, input_size=(2, ), device='cpu')
                 del test_module
 

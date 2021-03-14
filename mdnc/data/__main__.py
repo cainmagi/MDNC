@@ -300,7 +300,7 @@ class TestPreProcs:
         plt.show()
 
     def test_2d(self):
-        x = engine.preprocs.ProcNSTScaler(parent=engine.preprocs.ProcLifter(a=1.0, parent=engine.preprocs.ProcPad(pad_width=((0, 0), (10, -10), (-10, 10)), mode='constant', constant_values=0.0)))
+        x = engine.preprocs.ProcNSTScaler(dim=2, parent=engine.preprocs.ProcLifter(a=1.0, parent=engine.preprocs.ProcPad(pad_width=((0, 0), (10, -10), (-10, 10)), mode='constant', constant_values=0.0)))
         with open(self.file_name, 'wb') as f:
             pickle.dump(x, f)
         with open(self.file_name, 'rb') as f:

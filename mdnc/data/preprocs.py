@@ -404,8 +404,8 @@ class ProcScaler(ProcAbstract):
         self.axis = axis
 
     def preprocess(self, x):
-        xmean = np.mean(x, axis=self.axis) if self.shift is None else self.shift
-        xscale = np.amax(np.abs(x - xmean), axis=self.axis) if self.scale is None else self.scale
+        xmean = np.mean(x, axis=self.axis, keepdims=True) if self.shift is None else self.shift
+        xscale = np.amax(np.abs(x - xmean), axis=self.axis, keepdims=True) if self.scale is None else self.scale
         self.set_mem('xmean', xmean)
         self.set_mem('xscale', xscale)
         return (x - xmean) / xscale
@@ -426,7 +426,7 @@ class ProcNSTScaler(ProcAbstract):
         https://stackoverflow.com/a/49317610
     '''
 
-    def __init__(self, dim=2, kernel_length=9, epsilon=1e-6, inds=None, parent=None):
+    def __init__(self, dim, kernel_length=9, epsilon=1e-6, inds=None, parent=None):
         '''Initialization.
         Arguments:
             dim: the dimension of the input data (to be normalized).
@@ -439,6 +439,8 @@ class ProcNSTScaler(ProcAbstract):
                     be used as the parent of the current instance.
         '''
         super().__init__(inds=inds, parent=parent)
+        if dim not in (1, 2, 3):
+            raise ValueError('data.preprocs: The argument "dim" requires to be 1, 2, or 3.')
         self.__dim = dim
         self.__kernel_length = kernel_length
         self.epsilon = epsilon
@@ -888,11 +890,11 @@ class ProcPad(ProcAbstract):
                 return tuple(pad_width_), tuple(crop_width)
             else:
                 raise ValueError('data.preprocs: the crop arguments could not get separated from the pad arguments. The given arguments "pad_width" may be not valid.')
-    
+
     @property
     def pad_width(self):
-        return getattr
-    
+        return object.__getattribute__(self, '_ProcPad__pad_width_')
+
     @pad_width.setter
     def pad_width(self, value):
         self.__pad_width, self.__crop_width = self.__split_pad_width(value)

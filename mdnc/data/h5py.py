@@ -783,8 +783,7 @@ class H5SupSaver:
         if self.__in_context:
             raise RuntimeError('data.h5py: Should not open a file when the saver is managing a context, because there is already an opened file. Try to exit the context or create a new different saver.')
         file_name, file_ext = os.path.splitext(file_name)
-        if file_ext != '.h5':
-            file_name += '.h5'
+        file_name += '.h5'
         self.close()
         if enable_read is None:
             enable_read = self.enable_read

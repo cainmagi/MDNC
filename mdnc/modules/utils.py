@@ -80,7 +80,9 @@ def get_adaptive_pooling(order=2, out_size=1):
         raise ValueError('modules.utils: The argument "order" could only be 1, 2, or 3.')
 
 
-def check_is_stride(stride):
+def check_is_stride(stride, output_size=None, scaler='down'):
+    if output_size is not None and scaler == 'up':
+        return True
     if isinstance(stride, (list, tuple)):
         for s in stride:
             if s > 1:

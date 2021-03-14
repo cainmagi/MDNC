@@ -17,10 +17,13 @@
 ################################################################
 # Update reports:
 # ---------------
-# 0.1.5 @ 3/9/2021
+# 0.1.5 @ 3/14/2021
 #   1. Add DecoderNet to our standard module protocol.
 #   2. Fix some bugs of data.h5py and data.preprocs.
 #   3. Make draw.setFigure enhanced by contextlib.
+#   4. Add a title in `Readme.md`.
+#   5. Fix typos and bugs in `data` and `modules`.
+#   6. Add properties `nlayers`, `input_size` for networks in `modules`.
 # 0.1.2 @ 2/27/2021
 #   1. Fix more feature problems in `contribs.torchsummary`.
 #   2. Fix bugs and finish `data.preprocs`.

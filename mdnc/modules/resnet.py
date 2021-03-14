@@ -2,19 +2,21 @@
 # -*- coding: UTF-8 -*-
 '''
 ################################################################
-# Modules - 1D residual network
+# Modules - residual network
 # @ Modern Deep Network Toolkits for pyTorch
 # Yuchen Jin @ cainmagi@gmail.com
 # Requirements: (Pay attention to version)
 #   python 3.5+
 #   pyTorch 1.0.0+
-# This module is the definition of the 1D residual network. The
+# This module is the definition of the residual network. The
 # network could be initialized here and used for training and
 # processing.
 # The codes are inspired by:
 #   https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py
 ################################################################
 '''
+
+import functools
 
 import torch
 import torch.nn as nn
@@ -26,6 +28,16 @@ __all__ = ['BlockPlain1d', 'BlockPlain2d', 'BlockPlain3d', 'BlockBottleneck1d', 
            'AE1d', 'AE2d', 'AE3d', 'ae16', 'ae32', 'ae44', 'ae65', 'ae83',
            'EncoderNet1d', 'EncoderNet2d', 'EncoderNet3d', 'encnet12', 'encnet32', 'encnet47', 'encnet62',
            'DecoderNet1d', 'DecoderNet2d', 'DecoderNet3d', 'decnet13', 'decnet33', 'decnet48', 'decnet63']
+
+
+def get_block_depth(block):
+    block = block.casefold()
+    if block == 'bottleneck':
+        return 3
+    elif block == 'plain':
+        return 2
+    else:
+        raise ValueError('module.resnet: The argument "block" should be "plain" or "bottleneck".')
 
 
 class _BlockFactory:
@@ -90,7 +102,7 @@ class _BlockFactory:
             order, normalizer, activator, layer_order.
         '''
         ConvNd = get_convnd(order=self.order)
-        is_stride = check_is_stride(stride)
+        is_stride = check_is_stride(stride, output_size=output_size, scaler=scaler)
         seq = []
         if self.normalizer == 'null':
             if (not is_stride) or scaler == 'down':
@@ -162,7 +174,7 @@ class _BlockFactory:
         Arguments (inherited):
             order, normalizer.
         '''
-        if check_is_stride(stride) or in_planes != out_planes:
+        if check_is_stride(stride, output_size=output_size, scaler=scaler) or in_planes != out_planes:
             ConvNd = get_convnd(order=self.order)
             seq = []
             if self.normalizer in 'null':
@@ -220,7 +232,7 @@ class _BlockPlainNd(nn.Module):
         Arguments (optional):
             kernel_size: the kernel size of this layer.
             stride: the stride size of this layer.
-            padding: the padding size of the convolutional layer.
+            padding: the padding size of the residual block.
             output_size: the size of the output data. This option is only used
                          when "scaler=up". When setting this value, the size
                          of the up-sampling would be given explicitly and
@@ -284,7 +296,7 @@ class _BlockBottleneckNd(nn.Module):
         Arguments (optional):
             kernel_size: the kernel size of this layer.
             stride: the stride size of this layer.
-            padding: the padding size of the convolutional layer.
+            padding: the padding size of the residual block.
             output_size: the size of the output data. This option is only used
                          when "scaler=up". When setting this value, the size
                          of the up-sampling would be given explicitly and
@@ -350,11 +362,11 @@ class _BlockResStkNd(nn.Module):
                            also used as the base of the following channels. If
                            not set, would use "out_planes" as the default
                            value.
-            kernel_size: the kernel size of the convolutional layers.
-            padding: the padding size of the convolutional layers.
-            stride: the stride size of the convolutional layers.
-            stack_level: the number of convolutional layers in this block,
-                         requiring to be >= 1.
+            kernel_size: the kernel size of the residual blocks.
+            padding: the padding size of the residual blocks.
+            stride: the stride size of the residual blocks.
+            stack_level: the number of residual blocks in this block, requiring
+                         to be >= 1.
             ex_planes: the channel number of the second input data. This value
                        is =0 in most time, but >0 during the decoding phase
                        of the U-Net. the extra input would be concatenated
@@ -388,7 +400,7 @@ class _BlockResStkNd(nn.Module):
                 Block(order, (in_planes + ex_planes) if i == 0 else hidden_planes, hidden_planes,
                       kernel_size=kernel_size, padding=padding, stride=1, scaler='down')
             )
-        self.conv_scale = Block(order, hidden_planes, out_planes,
+        self.conv_scale = Block(order, hidden_planes if stack_level > 1 else (in_planes + ex_planes), out_planes,
                                 kernel_size=kernel_size, padding=padding, stride=stride, scaler=scaler)
 
     @staticmethod
@@ -442,13 +454,15 @@ class _UNetNd(nn.Module):
         Arguments (optional):
             block: the block type, could be:
                    - bottleneck, - plain
+            kernel_size: the kernel size of each block.
             in_planes: the channel number of the input data.
             out_planes: the channel number of the output data.
-            kernel_size: the kernel size of each block.
         '''
         super().__init__()
         if len(layers) < 2:
             raise ValueError('modules.resnet: The argument "layers" should contain at least 2 values, but provide "{0}"'.format(layers))
+        self.__layers = layers
+        self.__block_depth = get_block_depth(block)
         ConvNd = get_convnd(order=order)
 
         ksize_e, psize_e, _ = cal_kernel_padding(kernel_size, ksize_plus=2)
@@ -480,7 +494,16 @@ class _UNetNd(nn.Module):
         self.conv_up_list.append(
             _BlockResStkNd(order, channel, channel, hidden_planes=channel, block=block,
                            kernel_size=ksize, padding=psize, stride=1, stack_level=layers[0], ex_planes=channel, scaler='down'))
-        self.conv_final = ConvNd(channel, in_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+        self.conv_final = ConvNd(channel, out_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+
+    @property
+    def nlayers(self):
+        '''Return number of convolutional layers along the depth.
+        '''
+        if len(self.__layers) == 0:
+            return 0
+        n_layers = functools.reduce(lambda x, y: x + 2 * self.__block_depth * y, self.__layers[:-1], self.__block_depth * self.__layers[-1]) + 2
+        return n_layers
 
     def forward(self, x):
         x = self.conv_first(x)
@@ -523,6 +546,8 @@ class _AENd(nn.Module):
         super().__init__()
         if len(layers) < 2:
             raise ValueError('modules.resnet: The argument "layers" should contain at least 2 values, but provide "{0}"'.format(layers))
+        self.__layers = layers
+        self.__block_depth = get_block_depth(block)
         ConvNd = get_convnd(order=order)
 
         ksize_e, psize_e, _ = cal_kernel_padding(kernel_size, ksize_plus=2)
@@ -554,7 +579,16 @@ class _AENd(nn.Module):
         self.conv_up_list.append(
             _BlockResStkNd(order, channel, channel, hidden_planes=channel, block=block,
                            kernel_size=ksize, padding=psize, stride=1, stack_level=layers[0], scaler='down'))
-        self.conv_final = ConvNd(channel, in_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+        self.conv_final = ConvNd(channel, out_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+
+    @property
+    def nlayers(self):
+        '''Return number of convolutional layers along the depth.
+        '''
+        if len(self.__layers) == 0:
+            return 0
+        n_layers = functools.reduce(lambda x, y: x + 2 * self.__block_depth * y, self.__layers[:-1], self.__block_depth * self.__layers[-1]) + 2
+        return n_layers
 
     @staticmethod
     def cropping(x, x_ref_s):
@@ -610,6 +644,8 @@ class _EncoderNetNd(nn.Module):
         super().__init__()
         if len(layers) < 2:
             raise ValueError('modules.resnet: The argument "layers" should contain at least 2 values, but provide "{0}"'.format(layers))
+        self.__layers = layers
+        self.__block_depth = get_block_depth(block)
         ConvNd = get_convnd(order=order)
 
         ksize_e, psize_e, _ = cal_kernel_padding(kernel_size, ksize_plus=2)
@@ -633,12 +669,23 @@ class _EncoderNetNd(nn.Module):
         if self.is_out_vector:
             self.fc = nn.Linear(channel, out_length, bias=True)
 
+    @property
+    def nlayers(self):
+        '''Return number of convolutional layers along the depth.
+        '''
+        if len(self.__layers) == 0:
+            return 0
+        n_layers = functools.reduce(lambda x, y: x + self.__block_depth * y, self.__layers, 0) + 2
+        return n_layers
+
     def forward(self, x):
         for layer in self.netbody:
             x = layer(x)
         if self.is_out_vector:
             x = torch.flatten(x, 1)
             return self.fc(x)
+        else:
+            return x
 
 
 class _DecoderNetNd(nn.Module):
@@ -675,12 +722,18 @@ class _DecoderNetNd(nn.Module):
         super().__init__()
         if len(layers) < 2:
             raise ValueError('modules.conv: The argument "layers" should contain at least 2 values, but provide "{0}"'.format(layers))
+        self.__layers = layers
+        self.__block_depth = get_block_depth(block)
+        self.__in_length = in_length
         ConvNd = get_convnd(order=order)
         ksize_e, psize_e, _ = cal_kernel_padding(kernel_size, ksize_plus=2)
         ksize, psize, stride = cal_kernel_padding(kernel_size)
         self.__order = order
+        if isinstance(out_size, int):
+            out_size = (out_size, ) * order
         self.shapes = cal_scaled_shapes(out_size, level=len(layers), stride=stride)
         channels = tuple(map(lambda n: channel * (2 ** n), range(len(layers) - 1, -1, -1)))
+        self.__in_channel = channels[0]
 
         # Require to convert the vector into channels
         self.is_in_vector = (in_length is not None and in_length > 0)
@@ -701,6 +754,22 @@ class _DecoderNetNd(nn.Module):
                            stride=stride, stack_level=layers[-1], scaler='up'))
         self.netbody = netbody
         self.conv_last = ConvNd(channels[-1], out_planes, kernel_size=ksize_e, stride=1, padding=psize_e, bias=True)
+
+    @property
+    def input_size(self):
+        if self.is_in_vector:
+            return (self.__in_length, )
+        else:
+            return (self.__in_channel, *self.shapes[-1])
+
+    @property
+    def nlayers(self):
+        '''Return number of convolutional layers along the depth.
+        '''
+        if len(self.__layers) == 0:
+            return 0
+        n_layers = functools.reduce(lambda x, y: x + self.__block_depth * y, self.__layers, 0) + (3 if self.is_in_vector else 2)
+        return n_layers
 
     @staticmethod
     def cropping(x, x_ref_s):
@@ -746,7 +815,7 @@ class BlockPlain1d(_BlockPlainNd):
         Arguments (optional):
             kernel_size: the kernel size of this layer.
             stride: the stride size of this layer.
-            padding: the padding size of the convolutional layer.
+            padding: the padding size of the residual block.
             output_size: the size of the output data. This option is only used
                          when "scaler=up". When setting this value, the size
                          of the up-sampling would be given explicitly and
@@ -794,7 +863,7 @@ class BlockPlain2d(_BlockPlainNd):
         Arguments (optional):
             kernel_size: the kernel size of this layer.
             stride: the stride size of this layer.
-            padding: the padding size of the convolutional layer.
+            padding: the padding size of the residual block.
             output_size: the size of the output data. This option is only used
                          when "scaler=up". When setting this value, the size
                          of the up-sampling would be given explicitly and
@@ -842,7 +911,7 @@ class BlockPlain3d(_BlockPlainNd):
         Arguments (optional):
             kernel_size: the kernel size of this layer.
             stride: the stride size of this layer.
-            padding: the padding size of the convolutional layer.
+            padding: the padding size of the residual block.
             output_size: the size of the output data. This option is only used
                          when "scaler=up". When setting this value, the size
                          of the up-sampling would be given explicitly and
@@ -890,7 +959,7 @@ class BlockBottleneck1d(_BlockBottleneckNd):
         Arguments (optional):
             kernel_size: the kernel size of this layer.
             stride: the stride size of this layer.
-            padding: the padding size of the convolutional layer.
+            padding: the padding size of the residual block.
             output_size: the size of the output data. This option is only used
                          when "scaler=up". When setting this value, the size
                          of the up-sampling would be given explicitly and
@@ -986,7 +1055,7 @@ class BlockBottleneck3d(_BlockBottleneckNd):
         Arguments (optional):
             kernel_size: the kernel size of this layer.
             stride: the stride size of this layer.
-            padding: the padding size of the convolutional layer.
+            padding: the padding size of the residual block.
             output_size: the size of the output data. This option is only used
                          when "scaler=up". When setting this value, the size
                          of the up-sampling would be given explicitly and
@@ -1034,9 +1103,9 @@ class UNet1d(_UNetNd):
         Arguments (optional):
             block: the block type, could be:
                    - bottleneck, - plain
+            kernel_size: the kernel size of each block.
             in_planes: the channel number of the input data.
             out_planes: the channel number of the output data.
-            kernel_size: the kernel size of each block.
         '''
         super().__init__(1, channel=channel, layers=layers, block=block, kernel_size=kernel_size,
                          in_planes=in_planes, out_planes=out_planes)
@@ -1062,9 +1131,9 @@ class UNet2d(_UNetNd):
         Arguments (optional):
             block: the block type, could be:
                    - bottleneck, - plain
+            kernel_size: the kernel size of each block.
             in_planes: the channel number of the input data.
             out_planes: the channel number of the output data.
-            kernel_size: the kernel size of each block.
         '''
         super().__init__(2, channel=channel, layers=layers, block=block, kernel_size=kernel_size,
                          in_planes=in_planes, out_planes=out_planes)
@@ -1090,9 +1159,9 @@ class UNet3d(_UNetNd):
         Arguments (optional):
             block: the block type, could be:
                    - bottleneck, - plain
+            kernel_size: the kernel size of each block.
             in_planes: the channel number of the input data.
             out_planes: the channel number of the output data.
-            kernel_size: the kernel size of each block.
         '''
         super().__init__(3, channel=channel, layers=layers, block=block, kernel_size=kernel_size,
                          in_planes=in_planes, out_planes=out_planes)
