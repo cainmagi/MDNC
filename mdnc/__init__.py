@@ -17,6 +17,8 @@
 ################################################################
 # Update reports:
 # ---------------
+# 0.1.6 @ 6/9/2021
+#   1. Support "thread_type" for data.h5py.H*Parser.
 # 0.1.5 @ 3/14/2021
 #   1. Add DecoderNet to our standard module protocol.
 #   2. Fix some bugs of data.h5py and data.preprocs.
@@ -46,7 +48,7 @@ from . import data
 from . import modules
 from . import utils
 
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 __all__ = [
     'contribs', 'data', 'modules', 'utils'

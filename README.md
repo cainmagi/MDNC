@@ -96,13 +96,17 @@ The compatibility test is shown as below. The checked item means this package pe
 | Enviroment | Win | Linux |
 | :---- | :----: | :----: |
 | pyTorch 1.7.0, Python 3.8 | :white_check_mark: | |
-| pyTorch 1.8.0, Python 3.8 | | |
+| pyTorch 1.8.0, Python 3.8 | :white_check_mark: | |
 | pyTorch 1.6.0, Python 3.7 | | |
 | pyTorch 1.4.0, Python 3.7 | | |
 | pyTorch 1.2.0, Python 3.6 | | |
 | pyTorch 1.0.0, Python 3.5 | | |
 
 ## Update reports
+
+### 0.1.6 (alpha) @ 6/9/2021
+
+1. Support `thread_type` for `data.h5py.H*Parser`.
 
 ### 0.1.5 @ 3/14/2021
 

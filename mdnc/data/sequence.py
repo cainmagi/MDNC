@@ -30,7 +30,7 @@ try:
 except ImportError:
     USE_TORCH_OUT = False
     import multiprocessing
-    
+
 __all__ = ['MSequence', 'MPSequence', 'MTSequence']
 
 

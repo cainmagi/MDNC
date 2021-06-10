@@ -1300,7 +1300,7 @@ class _H5RParser:
 class H5GParser(_H5AParser):
     '''Grouply parsing dataset
     This class allows users to feed one .h5 file, and convert it to
-    data.sequence.MPSequence. The realization could be described as:
+    data.sequence.MP(T)Sequence. The realization could be described as:
         (1) Create `.h5` file indexer, this indexer would be
             initialized by sequence.MPSequence. It would use the
             user defined keywords to get a group of datasets.
@@ -1312,7 +1312,7 @@ class H5GParser(_H5AParser):
             parsing.
     Certainly, you could use this parser to load a single dataset.
     '''
-    def __init__(self, file_name, keywords, batch_size=32, shuffle=True, shuffle_seed=1000, preprocfunc=None, num_workers=4, num_buffer=10):
+    def __init__(self, file_name, keywords, batch_size=32, shuffle=True, shuffle_seed=1000, preprocfunc=None, thread_type='proc', num_workers=4, num_buffer=10):
         '''
         Create the parser and its h5py file handle.
         Arguments:
@@ -1326,6 +1326,8 @@ class H5GParser(_H5AParser):
                          so that it could serve as a pre-processing tool.
                          Note that this tool would process the batches
                          produced by the parser.
+            thread_type: the backend of the multi-threading, could be 'proc' or
+                         'thread'.
             num_workers: the number of workers.
             num_buffer: the buffer size of the data pool, it means the number
                         of mini-batches.
@@ -1336,6 +1338,8 @@ class H5GParser(_H5AParser):
             self.keywords = keywords
         else:
             raise TypeError('data.h5py: The keywords should be a list of str or a str.')
+        if (not isinstance(thread_type, str)) or thread_type not in ('proc', 'thread'):
+            raise TypeError('data.h5py: The argument "thread_type" requires to be "proc" or "thread".')
         if len(self.keywords) == 0 or any(map(lambda x: (not isinstance(x, str)), self.keywords)):
             raise TypeError('data.h5py: The keywords should be a list of str or a str.')
         if (not os.path.isfile(file_name)) and (os.path.isfile(file_name + '.h5')):
@@ -1348,13 +1352,14 @@ class H5GParser(_H5AParser):
 
         self.worker = functools.partial(_H5GParser, file_name=file_name, keywords=self.keywords, preprocfunc=preprocfunc)
         self.preproc = preprocfunc if preprocfunc is not None else super()._preproc
-        self.smanager = sequence.MPSequence(self.worker, dset_size=self.size, num_workers=num_workers, num_converters=1, batch_size=batch_size, buffer=num_buffer, shuffle=shuffle, seed=shuffle_seed)
+        Manager = sequence.MPSequence if thread_type == 'proc' else sequence.MTSequence
+        self.smanager = Manager(self.worker, dset_size=self.size, num_workers=num_workers, num_converters=1, batch_size=batch_size, buffer=num_buffer, shuffle=shuffle, seed=shuffle_seed)
 
 
 class H5CParser(_H5AParser):
     '''Continuously parsing dataset
     This class allows users to feed one .h5 file, and convert it to
-    data.sequence.MPSequence. The realization could be described as:
+    data.sequence.MP(T)Sequence. The realization could be described as:
     This Parser is the upgraded version of H5GParser, it is specially
     designed for parsing data to LSTM/ConvLSTM. A `sequence` dimension
     would be inserted between `batches` and `channels`. In each batch,
@@ -1362,7 +1367,7 @@ class H5CParser(_H5AParser):
     '''
     def __init__(self, file_name, keywords_sequence, keywords_single, batch_size=32,
                  sequence_size=5, sequence_position=-1, sequence_padding='same',
-                 shuffle=True, shuffle_seed=1000, preprocfunc=None,
+                 shuffle=True, shuffle_seed=1000, thread_type='proc', preprocfunc=None,
                  num_workers=4, num_buffer=10):
         '''
         Create the parser and its h5py file handle.
@@ -1393,6 +1398,8 @@ class H5CParser(_H5AParser):
                          so that it could serve as a pre-processing tool.
                          Note that this tool would process the batches
                          produced by the parser.
+            thread_type: the backend of the multi-threading, could be 'proc' or
+                         'thread'.
             num_workers: the number of workers.
             num_buffer: the buffer size of the data pool, it means the number
                         of mini-batches.
@@ -1409,6 +1416,8 @@ class H5CParser(_H5AParser):
             self.keywords_single = keywords_single
         elif keywords_single is None:
             self.keywords_single = tuple()
+        if (not isinstance(thread_type, str)) or thread_type not in ('proc', 'thread'):
+            raise TypeError('data.h5py: The argument "thread_type" requires to be "proc" or "thread".')
         # Validate the keywords
         keywords = self.keywords_sequence + self.keywords_single
         if len(keywords) == 0 or any(map(lambda x: (not isinstance(x, str)), keywords)):
@@ -1448,7 +1457,8 @@ class H5CParser(_H5AParser):
                                         sequence_size=self.sequence_size, sequence_position=self.sequence_position, sequence_padding=self.sequence_padding,
                                         data_size=data_size, preprocfunc=preprocfunc)
         self.preproc = preprocfunc if preprocfunc is not None else super()._preproc
-        self.smanager = sequence.MPSequence(self.worker, dset_size=mps_indices, num_workers=num_workers, num_converters=1, batch_size=batch_size, buffer=num_buffer, shuffle=shuffle, seed=shuffle_seed)
+        Manager = sequence.MPSequence if thread_type == 'proc' else sequence.MTSequence
+        self.smanager = Manager(self.worker, dset_size=mps_indices, num_workers=num_workers, num_converters=1, batch_size=batch_size, buffer=num_buffer, shuffle=shuffle, seed=shuffle_seed)
 
     def get_indices(self, file_path, keywords, data_size):
         with h5py.File(file_path, 'r') as f:
@@ -1479,7 +1489,7 @@ class H5RParser(_H5AParser):
         (4) In each iteration, iterate all datasets.
     Certainly, you could use this parser to load a single dataset.
     '''
-    def __init__(self, file_name, keywords, preprocfunc, batch_num=100, num_workers=4, num_buffer=10):
+    def __init__(self, file_name, keywords, preprocfunc, batch_num=100, thread_type='proc', num_workers=4, num_buffer=10):
         '''
         Create the parser and its h5py file handle.
         Arguments:
@@ -1489,6 +1499,8 @@ class H5RParser(_H5AParser):
                          so that it could serve as a pre-processing tool.
             batch_num: the number of mini-batches in each epoch.
             batch_size: number of samples in each mini-batch.
+            thread_type: the backend of the multi-threading, could be 'proc' or
+                         'thread'.
             num_workers: the number of workers.
             num_buffer: the buffer size of the data pool, it means the number
                         of mini-batches.
@@ -1499,6 +1511,8 @@ class H5RParser(_H5AParser):
             self.keywords = keywords
         else:
             raise TypeError('data.h5py: The keywords should be a list of str or a str.')
+        if (not isinstance(thread_type, str)) or thread_type not in ('proc', 'thread'):
+            raise TypeError('data.h5py: The argument "thread_type" requires to be "proc" or "thread".')
         if len(self.keywords) == 0 or any(map(lambda x: (not isinstance(x, str)), self.keywords)):
             raise TypeError('data.h5py: The keywords should be a list of str or a str.')
         if (not os.path.isfile(file_name)) and (os.path.isfile(file_name + '.h5')):
@@ -1511,4 +1525,5 @@ class H5RParser(_H5AParser):
 
         self.worker = functools.partial(_H5RParser, file_name=file_name, keywords=keywords, procfunc=preprocfunc)
         self.preproc = preprocfunc if preprocfunc is not None else super()._preproc
-        self.smanager = sequence.MPSequence(self.worker, dset_size=self.size, num_workers=num_workers, num_converters=1, batch_size=1, buffer=num_buffer, shuffle=False)
+        Manager = sequence.MPSequence if thread_type == 'proc' else sequence.MTSequence
+        self.smanager = Manager(self.worker, dset_size=self.size, num_workers=num_workers, num_converters=1, batch_size=1, buffer=num_buffer, shuffle=False)
