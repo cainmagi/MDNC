@@ -17,8 +17,9 @@
 ################################################################
 # Update reports:
 # ---------------
-# 0.1.6 @ 6/9/2021
+# 0.1.6 @ 8/6/2021
 #   1. Support "thread_type" for data.h5py.H*Parser.
+#   2. Fix a bug when GPU is absent for data.sequence.
 # 0.1.5 @ 3/14/2021
 #   1. Add DecoderNet to our standard module protocol.
 #   2. Fix some bugs of data.h5py and data.preprocs.

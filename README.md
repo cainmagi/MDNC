@@ -104,9 +104,10 @@ The compatibility test is shown as below. The checked item means this package pe
 
 ## Update reports
 
-### 0.1.6 (alpha) @ 6/9/2021
+### 0.1.6 (alpha) @ 8/6/2021
 
 1. Support `thread_type` for `data.h5py.H*Parser`.
+2. Fix a bug when GPU is absent for `data.sequence`.
 
 ### 0.1.5 @ 3/14/2021
 

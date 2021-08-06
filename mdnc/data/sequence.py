@@ -181,7 +181,7 @@ class MSequence:
             if isinstance(out_type, str):
                 if out_type.startswith('cuda'):
                     proc_out_type = torch.FloatTensor
-                    self.use_cuda = True
+                    self.use_cuda = torch.cuda.is_available()
                 elif out_type == 'cpu':
                     proc_out_type = torch.FloatTensor
                 elif out_type == 'null':
